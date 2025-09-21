@@ -85,6 +85,7 @@ class SearchQuery(BaseModel):
     top_k: int = 10
     filters: dict[str, Any] = Field(default_factory=dict)
     include_quarantined: bool = False
+    embedding: list[float] | None = None
 
 
 class SearchResult(BaseModel):

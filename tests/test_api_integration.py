@@ -63,7 +63,7 @@ async def test_api_duckdb_backend_selection(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.api.QdrantClient')
+@patch('qdrant_client.QdrantClient')
 async def test_api_qdrant_preference_with_availability(mock_qdrant_client):
     """Test API preferring Qdrant when available."""
     # Mock successful Qdrant connection
@@ -83,7 +83,7 @@ async def test_api_qdrant_preference_with_availability(mock_qdrant_client):
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.api.QdrantClient')
+@patch('qdrant_client.QdrantClient')
 @patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_api_qdrant_fallback_to_duckdb(mock_transformer, mock_qdrant_client):
     """Test API falling back to DuckDB when Qdrant is unavailable."""

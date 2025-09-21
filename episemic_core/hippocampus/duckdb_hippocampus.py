@@ -281,6 +281,6 @@ class DuckDBHippocampus:
 
     def close(self):
         """Close database connection."""
-        if hasattr(self, 'conn'):
+        if hasattr(self, 'conn') and self.conn is not None:
             self.conn.close()
             self.conn = None
