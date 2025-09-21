@@ -189,6 +189,63 @@ episemic health
 episemic version
 ```
 
+### Library Usage
+
+Episemic can also be used as a Python library with an incredibly simple API:
+
+```python
+import asyncio
+from episemic_core import Episemic
+
+async def main():
+    # Initialize the memory system
+    async with Episemic() as episemic:
+        # Store a memory
+        memory = await episemic.remember(
+            "Machine learning models need training data",
+            title="ML Requirements",
+            tags=["ml", "training"]
+        )
+
+        # Search for memories
+        results = await episemic.recall("training data")
+
+        # Get a specific memory
+        retrieved = await episemic.get(memory.id)
+
+        print(f"Stored: {memory.title}")
+        print(f"Found {len(results)} related memories")
+
+asyncio.run(main())
+```
+
+**For non-async code, use the sync version:**
+
+```python
+from episemic_core import EpistemicSync
+
+episemic = EpistemicSync()
+episemic.start()
+
+# Store memories
+memory = episemic.remember("Important information", tags=["work"])
+
+# Search memories
+results = episemic.recall("important")
+
+print(f"Found {len(results)} memories")
+```
+
+**Key Features:**
+- 🎯 **Simple API** - Just `remember()` and `recall()` - that's it!
+- ⚡ **Smart Storage** - Automatically optimizes for fast retrieval and long-term storage
+- 🔍 **Intelligent Search** - Uses vector similarity, tags, and graph relationships
+- 🔧 **Easy Configuration** - Pass database settings as simple parameters
+- 🚀 **Async & Sync** - Works in both async and traditional Python code
+- 📊 **Rich Metadata** - Store additional data with any memory
+
+See [`examples/simple_usage.py`](examples/simple_usage.py) for more examples.
+
 ### Available Commands
 
 | Command | Description | Example |

@@ -47,6 +47,15 @@ run:
 build:
 	poetry build
 
+# Generate API documentation
+docs:
+	python generate_docs.py
+
+# View documentation
+docs-view:
+	@echo "Opening documentation in browser..."
+	@python -c "import webbrowser; webbrowser.open('file://$(PWD)/docs/index.html')"
+
 # Publish to PyPI (requires authentication)
 publish:
 	poetry publish
