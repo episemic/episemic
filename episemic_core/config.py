@@ -13,6 +13,12 @@ class QdrantConfig(BaseModel):
     vector_size: int = 768
 
 
+class DuckDBConfig(BaseModel):
+    """DuckDB local database configuration."""
+    db_path: str | None = None  # None for in-memory, or path to file
+    model_name: str = "all-MiniLM-L6-v2"  # Sentence transformer model
+
+
 class PostgreSQLConfig(BaseModel):
     """PostgreSQL database configuration."""
     host: str = "localhost"
@@ -41,9 +47,14 @@ class ConsolidationConfig(BaseModel):
 class EpistemicConfig(BaseModel):
     """Main configuration for Episemic Core."""
     qdrant: QdrantConfig = Field(default_factory=QdrantConfig)
+    duckdb: DuckDBConfig = Field(default_factory=DuckDBConfig)
     postgresql: PostgreSQLConfig = Field(default_factory=PostgreSQLConfig)
     redis: RedisConfig = Field(default_factory=RedisConfig)
     consolidation: ConsolidationConfig = Field(default_factory=ConsolidationConfig)
+
+    # Storage backend preference
+    use_duckdb_fallback: bool = True  # Use DuckDB by default
+    prefer_qdrant: bool = False  # Set to True to prefer Qdrant when available
 
     # Global settings
     enable_hippocampus: bool = True
@@ -74,6 +85,18 @@ class EpistemicConfig(BaseModel):
             config.qdrant.port = int(os.getenv("QDRANT_PORT"))
         if os.getenv("QDRANT_COLLECTION"):
             config.qdrant.collection_name = os.getenv("QDRANT_COLLECTION")
+
+        # DuckDB settings
+        if os.getenv("DUCKDB_PATH"):
+            config.duckdb.db_path = os.getenv("DUCKDB_PATH")
+        if os.getenv("DUCKDB_MODEL"):
+            config.duckdb.model_name = os.getenv("DUCKDB_MODEL")
+
+        # Storage backend preferences
+        if os.getenv("EPISEMIC_USE_DUCKDB"):
+            config.use_duckdb_fallback = os.getenv("EPISEMIC_USE_DUCKDB").lower() in ("true", "1", "yes")
+        if os.getenv("EPISEMIC_PREFER_QDRANT"):
+            config.prefer_qdrant = os.getenv("EPISEMIC_PREFER_QDRANT").lower() in ("true", "1", "yes")
 
         # PostgreSQL settings
         if os.getenv("POSTGRES_HOST"):

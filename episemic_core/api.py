@@ -5,6 +5,7 @@ from .config import EpistemicConfig
 from .consolidation import ConsolidationEngine
 from .cortex import Cortex
 from .hippocampus import Hippocampus
+from .hippocampus.duckdb_hippocampus import DuckDBHippocampus
 from .models import Memory, SearchQuery, SearchResult
 from .retrieval import RetrievalEngine
 
@@ -44,7 +45,7 @@ class EpistemicAPI:
         self._initialized = False
 
         # Core components
-        self.hippocampus: Hippocampus | None = None
+        self.hippocampus: Hippocampus | DuckDBHippocampus | None = None
         self.cortex: Cortex | None = None
         self.consolidation_engine: ConsolidationEngine | None = None
         self.retrieval_engine: RetrievalEngine | None = None
@@ -59,13 +60,24 @@ class EpistemicAPI:
         try:
             # Initialize components based on configuration
             if self.config.enable_hippocampus:
-                self.hippocampus = Hippocampus(
-                    qdrant_host=self.config.qdrant.host,
-                    qdrant_port=self.config.qdrant.port,
-                    redis_host=self.config.redis.host,
-                    redis_port=self.config.redis.port,
-                    collection_name=self.config.qdrant.collection_name,
-                )
+                # Try to determine which storage backend to use
+                use_duckdb = await self._should_use_duckdb()
+
+                if use_duckdb:
+                    # Use DuckDB fallback
+                    self.hippocampus = DuckDBHippocampus(
+                        db_path=self.config.duckdb.db_path,
+                        model_name=self.config.duckdb.model_name
+                    )
+                else:
+                    # Use Qdrant + Redis
+                    self.hippocampus = Hippocampus(
+                        qdrant_host=self.config.qdrant.host,
+                        qdrant_port=self.config.qdrant.port,
+                        redis_host=self.config.redis.host,
+                        redis_port=self.config.redis.port,
+                        collection_name=self.config.qdrant.collection_name,
+                    )
 
             if self.config.enable_cortex:
                 self.cortex = Cortex(
@@ -98,6 +110,39 @@ class EpistemicAPI:
             if self.config.debug:
                 print(f"Initialization failed: {e}")
             return False
+
+    async def _should_use_duckdb(self) -> bool:
+        """
+        Determine whether to use DuckDB or Qdrant based on configuration and availability.
+
+        Returns:
+            True if should use DuckDB, False if should use Qdrant.
+        """
+        # If explicitly configured to use DuckDB fallback, use it
+        if self.config.use_duckdb_fallback and not self.config.prefer_qdrant:
+            return True
+
+        # If prefer_qdrant is set, try to connect to Qdrant first
+        if self.config.prefer_qdrant:
+            try:
+                # Try to create a test connection to Qdrant
+                from qdrant_client import QdrantClient
+                client = QdrantClient(
+                    host=self.config.qdrant.host,
+                    port=self.config.qdrant.port,
+                    timeout=5  # Short timeout for quick check
+                )
+                # Try a simple health check
+                client.get_collections()
+                return False  # Qdrant is available
+            except Exception:
+                # Qdrant not available, fall back to DuckDB
+                if self.config.debug:
+                    print("Qdrant not available, falling back to DuckDB")
+                return True
+
+        # Default to DuckDB (no external dependencies)
+        return True
 
     async def store_memory(
         self,
@@ -176,6 +221,42 @@ class EpistemicAPI:
         self._check_initialized()
 
         if not self.retrieval_engine:
+            # Fallback to direct hippocampus search if retrieval engine not available
+            if self.hippocampus:
+                try:
+                    # Generate embedding for the query
+                    if hasattr(self.hippocampus, 'get_embedding'):
+                        embedding = await self.hippocampus.get_embedding(query)
+                        search_results = await self.hippocampus.vector_search(
+                            embedding, top_k, {"tags": tags[0]} if tags else None
+                        )
+                        # Convert to SearchResult format
+                        from .models import SearchResult, Memory
+                        results = []
+                        for result in search_results:
+                            memory = Memory(
+                                id=result["id"],
+                                text=result["content"],
+                                summary=result["content"][:200] + "..." if len(result["content"]) > 200 else result["content"],
+                                title=result.get("title", ""),
+                                source=result.get("source", ""),
+                                tags=result.get("tags", []),
+                                metadata=result.get("metadata", {}),
+                                created_at=result.get("created_at"),
+                                access_count=result.get("access_count", 0),
+                                last_accessed=result.get("last_accessed")
+                            )
+                            search_result = SearchResult(
+                                memory=memory,
+                                score=result.get("similarity", 1.0),
+                                context="",
+                                metadata=result.get("metadata", {})
+                            )
+                            results.append(search_result)
+                        return results
+                except Exception as e:
+                    if self.config.debug:
+                        print(f"Fallback search failed: {e}")
             return []
 
         search_query = SearchQuery(

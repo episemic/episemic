@@ -81,11 +81,12 @@ class Episemic:
         >>> memory = await episemic.get(memory_id)
     """
 
-    def __init__(self, **config_kwargs):
+    def __init__(self, config: EpistemicConfig | None = None, **config_kwargs):
         """
         Initialize Episemic memory system.
 
         Args:
+            config: EpistemicConfig object. If provided, config_kwargs are ignored.
             **config_kwargs: Configuration options such as:
                 - qdrant_host: Qdrant server host (default: "localhost")
                 - qdrant_port: Qdrant server port (default: 6333)
@@ -97,38 +98,43 @@ class Episemic:
                 - redis_port: Redis port (default: 6379)
                 - debug: Enable debug mode (default: False)
         """
-        # Convert simple kwargs to config
-        config_dict = {}
+        # Use provided config or create from kwargs
+        if config is not None:
+            self._config = config
+        else:
+            # Convert simple kwargs to config
+            config_dict = {}
 
-        if any(k.startswith('qdrant_') for k in config_kwargs):
-            config_dict['qdrant'] = {}
-            if 'qdrant_host' in config_kwargs:
-                config_dict['qdrant']['host'] = config_kwargs.pop('qdrant_host')
-            if 'qdrant_port' in config_kwargs:
-                config_dict['qdrant']['port'] = config_kwargs.pop('qdrant_port')
+            if any(k.startswith('qdrant_') for k in config_kwargs):
+                config_dict['qdrant'] = {}
+                if 'qdrant_host' in config_kwargs:
+                    config_dict['qdrant']['host'] = config_kwargs.pop('qdrant_host')
+                if 'qdrant_port' in config_kwargs:
+                    config_dict['qdrant']['port'] = config_kwargs.pop('qdrant_port')
 
-        if any(k.startswith('postgres_') for k in config_kwargs):
-            config_dict['postgresql'] = {}
-            if 'postgres_host' in config_kwargs:
-                config_dict['postgresql']['host'] = config_kwargs.pop('postgres_host')
-            if 'postgres_db' in config_kwargs:
-                config_dict['postgresql']['database'] = config_kwargs.pop('postgres_db')
-            if 'postgres_user' in config_kwargs:
-                config_dict['postgresql']['user'] = config_kwargs.pop('postgres_user')
-            if 'postgres_password' in config_kwargs:
-                config_dict['postgresql']['password'] = config_kwargs.pop('postgres_password')
+            if any(k.startswith('postgres_') for k in config_kwargs):
+                config_dict['postgresql'] = {}
+                if 'postgres_host' in config_kwargs:
+                    config_dict['postgresql']['host'] = config_kwargs.pop('postgres_host')
+                if 'postgres_db' in config_kwargs:
+                    config_dict['postgresql']['database'] = config_kwargs.pop('postgres_db')
+                if 'postgres_user' in config_kwargs:
+                    config_dict['postgresql']['user'] = config_kwargs.pop('postgres_user')
+                if 'postgres_password' in config_kwargs:
+                    config_dict['postgresql']['password'] = config_kwargs.pop('postgres_password')
 
-        if any(k.startswith('redis_') for k in config_kwargs):
-            config_dict['redis'] = {}
-            if 'redis_host' in config_kwargs:
-                config_dict['redis']['host'] = config_kwargs.pop('redis_host')
-            if 'redis_port' in config_kwargs:
-                config_dict['redis']['port'] = config_kwargs.pop('redis_port')
+            if any(k.startswith('redis_') for k in config_kwargs):
+                config_dict['redis'] = {}
+                if 'redis_host' in config_kwargs:
+                    config_dict['redis']['host'] = config_kwargs.pop('redis_host')
+                if 'redis_port' in config_kwargs:
+                    config_dict['redis']['port'] = config_kwargs.pop('redis_port')
 
-        # Add remaining kwargs directly
-        config_dict.update(config_kwargs)
+            # Add remaining kwargs directly
+            config_dict.update(config_kwargs)
 
-        self._config = EpistemicConfig(**config_dict) if config_dict else EpistemicConfig()
+            self._config = EpistemicConfig(**config_dict) if config_dict else EpistemicConfig()
+
         self._api = EpistemicAPI(self._config)
         self._started = False
 
@@ -183,8 +189,28 @@ class Episemic:
         )
 
         if memory_id:
-            internal_memory = await self._api.get_memory(memory_id)
-            return Memory(internal_memory) if internal_memory else None
+            # Try to get the memory back, but if retrieval is disabled, create a simple response
+            try:
+                internal_memory = await self._api.get_memory(memory_id)
+                if internal_memory:
+                    return Memory(internal_memory)
+            except Exception:
+                # If retrieval fails (e.g., retrieval engine not available),
+                # create a basic memory object from the stored data
+                pass
+
+            # Return a basic confirmation that the memory was stored
+            from .models import Memory as InternalMemory
+            basic_memory = InternalMemory(
+                id=memory_id,
+                text=text,
+                summary=text[:200] + "..." if len(text) > 200 else text,
+                title=title or text[:50] + "..." if len(text) > 50 else text,
+                source="api",
+                tags=tags or [],
+                metadata=metadata or {}
+            )
+            return Memory(basic_memory)
 
         return None
 
@@ -334,8 +360,8 @@ class EpistemicSync:
         >>> results = episemic.recall("important")
     """
 
-    def __init__(self, **config_kwargs):
-        self._async_episemic = Episemic(**config_kwargs)
+    def __init__(self, config: EpistemicConfig | None = None, **config_kwargs):
+        self._async_episemic = Episemic(config=config, **config_kwargs)
         self._loop = None
 
     def _run_async(self, coro):
