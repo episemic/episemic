@@ -299,6 +299,20 @@ graph TB
 | `make package-test` | Build and upload to test PyPI |
 | `make package-prod` | Build and upload to production PyPI |
 
+## 🔢 Version Management
+
+| Command | Description |
+|---------|-------------|
+| `make version` | Show current version |
+| `make bump-patch` | Bump patch version (0.1.1 → 0.1.2) |
+| `make bump-minor` | Bump minor version (0.1.2 → 0.2.0) |
+| `make bump-major` | Bump major version (0.1.2 → 1.0.0) |
+| `make release-patch` | Bump patch version and upload to test PyPI |
+| `make release-minor` | Bump minor version and upload to test PyPI |
+| `make release-major` | Bump major version and upload to test PyPI |
+
+See [VERSIONING.md](VERSIONING.md) for detailed version management documentation.
+
 ## 🧪 Testing Guidelines
 
 ### Test Structure
