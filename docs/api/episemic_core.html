@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Python: package episemic_core</title>
+</head><body>
+
+<table class="heading">
+<tr class="heading-text decor">
+<td class="title">&nbsp;<br><strong class="title">episemic_core</strong> (version 0.1.0)</td>
+<td class="extra"><a href=".">index</a><br><a href="file:/Users/adityakarnam/Projects/episemic/episemic_core/__init__.py">/Users/adityakarnam/Projects/episemic/episemic_core/__init__.py</a></td></tr></table>
+    <p><span class="code"><a href="#Episemic">Episemic</a>&nbsp;-&nbsp;Simple&nbsp;memory&nbsp;system&nbsp;for&nbsp;AI&nbsp;agents.</span></p>
+<p>
+<table class="section">
+<tr class="decor pkg-content-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Package Contents</strong></td></tr>
+    
+<tr><td class="decor pkg-content-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><table><tr><td class="multicolumn"><a href="episemic_core.api.html">api</a><br>
+<a href="episemic_core.cli.html"><strong>cli</strong>&nbsp;(package)</a><br>
+<a href="episemic_core.config.html">config</a><br>
+</td><td class="multicolumn"><a href="episemic_core.consolidation.html"><strong>consolidation</strong>&nbsp;(package)</a><br>
+<a href="episemic_core.cortex.html"><strong>cortex</strong>&nbsp;(package)</a><br>
+<a href="episemic_core.hippocampus.html"><strong>hippocampus</strong>&nbsp;(package)</a><br>
+</td><td class="multicolumn"><a href="episemic_core.models.html">models</a><br>
+<a href="episemic_core.retrieval.html"><strong>retrieval</strong>&nbsp;(package)</a><br>
+<a href="episemic_core.simple.html">simple</a><br>
+</td><td class="multicolumn"></td></tr></table></td></tr></table><p>
+<table class="section">
+<tr class="decor index-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Classes</strong></td></tr>
+    
+<tr><td class="decor index-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><dl>
+<dt class="heading-text"><a href="builtins.html#object">builtins.object</a>
+</dt><dd>
+<dl>
+<dt class="heading-text"><a href="episemic_core.simple.html#Episemic">episemic_core.simple.Episemic</a>
+</dt><dt class="heading-text"><a href="episemic_core.simple.html#EpistemicSync">episemic_core.simple.EpistemicSync</a>
+</dt><dt class="heading-text"><a href="episemic_core.simple.html#Memory">episemic_core.simple.Memory</a>
+</dt><dt class="heading-text"><a href="episemic_core.simple.html#SearchResult">episemic_core.simple.SearchResult</a>
+</dt></dl>
+</dd>
+</dl>
+ <p>
+<table class="section">
+<tr class="decor title-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><a name="Episemic">class <strong>Episemic</strong></a>(<a href="builtins.html#object">builtins.object</a>)</td></tr>
+    
+<tr><td class="decor title-decor" rowspan=2><span class="code">&nbsp;&nbsp;&nbsp;</span></td>
+<td class="decor title-decor" colspan=2><span class="code"><a href="#Episemic">Episemic</a>(**config_kwargs)<br>
+&nbsp;<br>
+Simple&nbsp;memory&nbsp;system&nbsp;for&nbsp;AI&nbsp;agents.<br>
+&nbsp;<br>
+Example:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;#&nbsp;Basic&nbsp;usage<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;episemic&nbsp;=&nbsp;<a href="#Episemic">Episemic</a>()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;await&nbsp;episemic.<a href="#Episemic-start">start</a>()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;#&nbsp;Store&nbsp;a&nbsp;memory<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;memory&nbsp;=&nbsp;await&nbsp;episemic.<a href="#Episemic-remember">remember</a>("Important&nbsp;information",&nbsp;tags=["work"])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;#&nbsp;Search&nbsp;memories<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;results&nbsp;=&nbsp;await&nbsp;episemic.<a href="#Episemic-recall">recall</a>("important")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;#&nbsp;Get&nbsp;a&nbsp;specific&nbsp;memory<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;memory&nbsp;=&nbsp;await&nbsp;episemic.<a href="#Episemic-get">get</a>(memory_id)<br>&nbsp;</span></td></tr>
+<tr><td>&nbsp;</td>
+<td class="singlecolumn">Methods defined here:<br>
+<dl><dt>async <a name="Episemic-__aenter__"><strong>__aenter__</strong></a>(self)</dt><dd><span class="code">Async&nbsp;context&nbsp;manager&nbsp;entry.</span></dd></dl>
+
+<dl><dt>async <a name="Episemic-__aexit__"><strong>__aexit__</strong></a>(self, exc_type, exc_val, exc_tb)</dt><dd><span class="code">Async&nbsp;context&nbsp;manager&nbsp;exit.</span></dd></dl>
+
+<dl><dt><a name="Episemic-__init__"><strong>__init__</strong></a>(self, **config_kwargs)</dt><dd><span class="code">Initialize&nbsp;<a href="#Episemic">Episemic</a>&nbsp;memory&nbsp;system.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;**config_kwargs:&nbsp;Configuration&nbsp;options&nbsp;such&nbsp;as:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;qdrant_host:&nbsp;Qdrant&nbsp;server&nbsp;host&nbsp;(default:&nbsp;"localhost")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;qdrant_port:&nbsp;Qdrant&nbsp;server&nbsp;port&nbsp;(default:&nbsp;6333)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;postgres_host:&nbsp;PostgreSQL&nbsp;host&nbsp;(default:&nbsp;"localhost")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;postgres_db:&nbsp;PostgreSQL&nbsp;database&nbsp;(default:&nbsp;"episemic")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;postgres_user:&nbsp;PostgreSQL&nbsp;user&nbsp;(default:&nbsp;"postgres")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;postgres_password:&nbsp;PostgreSQL&nbsp;password&nbsp;(default:&nbsp;"postgres")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;redis_host:&nbsp;Redis&nbsp;host&nbsp;(default:&nbsp;"localhost")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;redis_port:&nbsp;Redis&nbsp;port&nbsp;(default:&nbsp;6379)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;debug:&nbsp;Enable&nbsp;debug&nbsp;mode&nbsp;(default:&nbsp;False)</span></dd></dl>
+
+<dl><dt>async <a name="Episemic-consolidate"><strong>consolidate</strong></a>(self) -&gt; int</dt><dd><span class="code">Run&nbsp;memory&nbsp;consolidation&nbsp;to&nbsp;optimize&nbsp;storage.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Number&nbsp;of&nbsp;memories&nbsp;processed.</span></dd></dl>
+
+<dl><dt>async <a name="Episemic-find_related"><strong>find_related</strong></a>(self, memory_id: str, limit: int = 5) -&gt; list[episemic_core.simple.SearchResult]</dt><dd><span class="code">Find&nbsp;memories&nbsp;related&nbsp;to&nbsp;a&nbsp;specific&nbsp;memory.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;memory_id:&nbsp;The&nbsp;reference&nbsp;memory&nbsp;ID<br>
+&nbsp;&nbsp;&nbsp;&nbsp;limit:&nbsp;Maximum&nbsp;number&nbsp;of&nbsp;related&nbsp;memories<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;List&nbsp;of&nbsp;related&nbsp;memories.</span></dd></dl>
+
+<dl><dt>async <a name="Episemic-forget"><strong>forget</strong></a>(self, memory_id: str) -&gt; bool</dt><dd><span class="code">Remove&nbsp;a&nbsp;memory&nbsp;from&nbsp;the&nbsp;system.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;memory_id:&nbsp;The&nbsp;memory&nbsp;to&nbsp;remove<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;True&nbsp;if&nbsp;successful,&nbsp;False&nbsp;otherwise.</span></dd></dl>
+
+<dl><dt>async <a name="Episemic-get"><strong>get</strong></a>(self, memory_id: str) -&gt; episemic_core.simple.Memory | None</dt><dd><span class="code">Get&nbsp;a&nbsp;specific&nbsp;memory&nbsp;by&nbsp;ID.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;memory_id:&nbsp;The&nbsp;memory&nbsp;identifier<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Memory">Memory</a>&nbsp;<a href="builtins.html#object">object</a>&nbsp;if&nbsp;found,&nbsp;None&nbsp;otherwise.</span></dd></dl>
+
+<dl><dt>async <a name="Episemic-health"><strong>health</strong></a>(self) -&gt; bool</dt><dd><span class="code">Check&nbsp;if&nbsp;the&nbsp;memory&nbsp;system&nbsp;is&nbsp;healthy.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;True&nbsp;if&nbsp;all&nbsp;components&nbsp;are&nbsp;working,&nbsp;False&nbsp;otherwise.</span></dd></dl>
+
+<dl><dt>async <a name="Episemic-recall"><strong>recall</strong></a>(self, query: str, limit: int = 10, tags: list[str] | None = None) -&gt; list[episemic_core.simple.SearchResult]</dt><dd><span class="code">Search&nbsp;for&nbsp;memories.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;query:&nbsp;What&nbsp;to&nbsp;search&nbsp;for<br>
+&nbsp;&nbsp;&nbsp;&nbsp;limit:&nbsp;Maximum&nbsp;number&nbsp;of&nbsp;results<br>
+&nbsp;&nbsp;&nbsp;&nbsp;tags:&nbsp;Optional&nbsp;tag&nbsp;filters<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;List&nbsp;of&nbsp;search&nbsp;results&nbsp;with&nbsp;relevance&nbsp;scores.</span></dd></dl>
+
+<dl><dt>async <a name="Episemic-remember"><strong>remember</strong></a>(self, text: str, title: str | None = None, tags: list[str] | None = None, metadata: dict | None = None) -&gt; episemic_core.simple.Memory | None</dt><dd><span class="code">Store&nbsp;a&nbsp;new&nbsp;memory.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;text:&nbsp;The&nbsp;content&nbsp;to&nbsp;remember<br>
+&nbsp;&nbsp;&nbsp;&nbsp;title:&nbsp;Optional&nbsp;title&nbsp;for&nbsp;the&nbsp;memory<br>
+&nbsp;&nbsp;&nbsp;&nbsp;tags:&nbsp;Optional&nbsp;list&nbsp;of&nbsp;tags<br>
+&nbsp;&nbsp;&nbsp;&nbsp;metadata:&nbsp;Optional&nbsp;additional&nbsp;data<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Memory">Memory</a>&nbsp;<a href="builtins.html#object">object</a>&nbsp;if&nbsp;successful,&nbsp;None&nbsp;otherwise.</span></dd></dl>
+
+<dl><dt>async <a name="Episemic-start"><strong>start</strong></a>(self) -&gt; bool</dt><dd><span class="code">Start&nbsp;the&nbsp;memory&nbsp;system.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;True&nbsp;if&nbsp;started&nbsp;successfully,&nbsp;False&nbsp;otherwise.</span></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><span class="code">dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</span></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><span class="code">list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</span></dd>
+</dl>
+</td></tr></table> <p>
+<table class="section">
+<tr class="decor title-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><a name="EpistemicSync">class <strong>EpistemicSync</strong></a>(<a href="builtins.html#object">builtins.object</a>)</td></tr>
+    
+<tr><td class="decor title-decor" rowspan=2><span class="code">&nbsp;&nbsp;&nbsp;</span></td>
+<td class="decor title-decor" colspan=2><span class="code"><a href="#EpistemicSync">EpistemicSync</a>(**config_kwargs)<br>
+&nbsp;<br>
+Synchronous&nbsp;wrapper&nbsp;for&nbsp;<a href="#Episemic">Episemic</a>&nbsp;(for&nbsp;non-async&nbsp;code).<br>
+&nbsp;<br>
+Example:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;episemic&nbsp;=&nbsp;<a href="#EpistemicSync">EpistemicSync</a>()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;episemic.<a href="#EpistemicSync-start">start</a>()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;memory&nbsp;=&nbsp;episemic.<a href="#EpistemicSync-remember">remember</a>("Important&nbsp;info")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;results&nbsp;=&nbsp;episemic.<a href="#EpistemicSync-recall">recall</a>("important")<br>&nbsp;</span></td></tr>
+<tr><td>&nbsp;</td>
+<td class="singlecolumn">Methods defined here:<br>
+<dl><dt><a name="EpistemicSync-__init__"><strong>__init__</strong></a>(self, **config_kwargs)</dt><dd><span class="code">Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</span></dd></dl>
+
+<dl><dt><a name="EpistemicSync-consolidate"><strong>consolidate</strong></a>(self) -&gt; int</dt><dd><span class="code">Run&nbsp;memory&nbsp;consolidation.</span></dd></dl>
+
+<dl><dt><a name="EpistemicSync-find_related"><strong>find_related</strong></a>(self, memory_id: str, limit: int = 5) -&gt; list[episemic_core.simple.SearchResult]</dt><dd><span class="code">Find&nbsp;related&nbsp;memories.</span></dd></dl>
+
+<dl><dt><a name="EpistemicSync-forget"><strong>forget</strong></a>(self, memory_id: str) -&gt; bool</dt><dd><span class="code">Remove&nbsp;a&nbsp;memory.</span></dd></dl>
+
+<dl><dt><a name="EpistemicSync-get"><strong>get</strong></a>(self, memory_id: str) -&gt; episemic_core.simple.Memory | None</dt><dd><span class="code">Get&nbsp;a&nbsp;specific&nbsp;memory.</span></dd></dl>
+
+<dl><dt><a name="EpistemicSync-health"><strong>health</strong></a>(self) -&gt; bool</dt><dd><span class="code">Check&nbsp;system&nbsp;health.</span></dd></dl>
+
+<dl><dt><a name="EpistemicSync-recall"><strong>recall</strong></a>(self, query: str, limit: int = 10, tags: list[str] | None = None) -&gt; list[episemic_core.simple.SearchResult]</dt><dd><span class="code">Search&nbsp;for&nbsp;memories.</span></dd></dl>
+
+<dl><dt><a name="EpistemicSync-remember"><strong>remember</strong></a>(self, text: str, title: str | None = None, tags: list[str] | None = None, metadata: dict | None = None) -&gt; episemic_core.simple.Memory | None</dt><dd><span class="code">Store&nbsp;a&nbsp;new&nbsp;memory.</span></dd></dl>
+
+<dl><dt><a name="EpistemicSync-start"><strong>start</strong></a>(self) -&gt; bool</dt><dd><span class="code">Start&nbsp;the&nbsp;memory&nbsp;system.</span></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><span class="code">dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</span></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><span class="code">list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</span></dd>
+</dl>
+</td></tr></table> <p>
+<table class="section">
+<tr class="decor title-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><a name="Memory">class <strong>Memory</strong></a>(<a href="builtins.html#object">builtins.object</a>)</td></tr>
+    
+<tr><td class="decor title-decor" rowspan=2><span class="code">&nbsp;&nbsp;&nbsp;</span></td>
+<td class="decor title-decor" colspan=2><span class="code"><a href="#Memory">Memory</a>(internal_memory)<br>
+&nbsp;<br>
+A&nbsp;simple&nbsp;memory&nbsp;<a href="builtins.html#object">object</a>&nbsp;that&nbsp;users&nbsp;interact&nbsp;with.<br>&nbsp;</span></td></tr>
+<tr><td>&nbsp;</td>
+<td class="singlecolumn">Methods defined here:<br>
+<dl><dt><a name="Memory-__init__"><strong>__init__</strong></a>(self, internal_memory)</dt><dd><span class="code">Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</span></dd></dl>
+
+<dl><dt><a name="Memory-__repr__"><strong>__repr__</strong></a>(self) -&gt; str</dt><dd><span class="code">Return&nbsp;repr(self).</span></dd></dl>
+
+<dl><dt><a name="Memory-__str__"><strong>__str__</strong></a>(self) -&gt; str</dt><dd><span class="code">Return&nbsp;str(self).</span></dd></dl>
+
+<hr>
+Readonly properties defined here:<br>
+<dl><dt><strong>created_at</strong></dt>
+<dd><span class="code">When&nbsp;the&nbsp;memory&nbsp;was&nbsp;created&nbsp;(ISO&nbsp;format).</span></dd>
+</dl>
+<dl><dt><strong>id</strong></dt>
+<dd><span class="code">Unique&nbsp;memory&nbsp;identifier.</span></dd>
+</dl>
+<dl><dt><strong>metadata</strong></dt>
+<dd><span class="code">Additional&nbsp;memory&nbsp;metadata.</span></dd>
+</dl>
+<dl><dt><strong>tags</strong></dt>
+<dd><span class="code">Memory&nbsp;tags.</span></dd>
+</dl>
+<dl><dt><strong>text</strong></dt>
+<dd><span class="code">The&nbsp;memory&nbsp;content.</span></dd>
+</dl>
+<dl><dt><strong>title</strong></dt>
+<dd><span class="code">Memory&nbsp;title.</span></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><span class="code">dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</span></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><span class="code">list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</span></dd>
+</dl>
+</td></tr></table> <p>
+<table class="section">
+<tr class="decor title-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><a name="SearchResult">class <strong>SearchResult</strong></a>(<a href="builtins.html#object">builtins.object</a>)</td></tr>
+    
+<tr><td class="decor title-decor" rowspan=2><span class="code">&nbsp;&nbsp;&nbsp;</span></td>
+<td class="decor title-decor" colspan=2><span class="code"><a href="#SearchResult">SearchResult</a>(internal_result)<br>
+&nbsp;<br>
+A&nbsp;search&nbsp;result&nbsp;with&nbsp;memory&nbsp;and&nbsp;relevance&nbsp;score.<br>&nbsp;</span></td></tr>
+<tr><td>&nbsp;</td>
+<td class="singlecolumn">Methods defined here:<br>
+<dl><dt><a name="SearchResult-__init__"><strong>__init__</strong></a>(self, internal_result)</dt><dd><span class="code">Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</span></dd></dl>
+
+<dl><dt><a name="SearchResult-__str__"><strong>__str__</strong></a>(self) -&gt; str</dt><dd><span class="code">Return&nbsp;str(self).</span></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><span class="code">dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</span></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><span class="code">list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</span></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table class="section">
+<tr class="decor functions-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Functions</strong></td></tr>
+    
+<tr><td class="decor functions-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><dl><dt>async <a name="-create_memory_system"><strong>create_memory_system</strong></a>(**config_kwargs) -&gt; episemic_core.simple.Episemic</dt><dd><span class="code">Create&nbsp;and&nbsp;start&nbsp;a&nbsp;memory&nbsp;system&nbsp;in&nbsp;one&nbsp;call.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;**config_kwargs:&nbsp;Configuration&nbsp;options<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Started&nbsp;<a href="#Episemic">Episemic</a>&nbsp;instance.</span></dd></dl>
+</td></tr></table><p>
+<table class="section">
+<tr class="decor data-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Data</strong></td></tr>
+    
+<tr><td class="decor data-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><strong>__all__</strong> = ['Episemic', 'EpistemicSync', 'Memory', 'SearchResult', 'create_memory_system']<br>
+<strong>__email__</strong> = 'your.email@example.com'</td></tr></table><p>
+<table class="section">
+<tr class="decor author-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Author</strong></td></tr>
+    
+<tr><td class="decor author-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn">Your&nbsp;Name</td></tr></table>
+</body></html>

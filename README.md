@@ -88,6 +88,8 @@ graph TB
             Vector Storage`"]
             H2["`**Redis Cache**
             Session Storage`"]
+            H3["`**DuckDB (Default)**
+            Local Vector Storage`"]
         end
 
         subgraph Cortex["🏛️ Cortex (Long-term Storage)"]
@@ -121,6 +123,8 @@ graph TB
         Relational Database`"]
         REDIS["`**Redis**
         Cache & Sessions`"]
+        DUCKDB["`**DuckDB (Default)**
+        Local Database`"]
     end
 
     CMD --> TYPER
@@ -129,6 +133,7 @@ graph TB
 
     Hippocampus --> QDRANT
     Hippocampus --> REDIS
+    Hippocampus --> DUCKDB
     Cortex --> POSTGRES
 
     Consolidation --> Hippocampus
@@ -164,6 +169,33 @@ pip install poetry
 poetry install
 ```
 
+### Storage Options
+
+**Episemic** now supports two storage modes:
+
+1. **🦆 DuckDB (Default)** - Local, zero-dependency storage
+   - **No setup required** - works out of the box
+   - **Perfect for development** and testing
+   - **Local file storage** with in-memory fallback
+   - **Built-in vector search** using sentence transformers
+
+2. **⚡ Qdrant + PostgreSQL** - Production-ready distributed storage
+   - **High performance** vector search with Qdrant
+   - **Rich relational features** with PostgreSQL
+   - **Horizontal scaling** support
+   - **Production deployment** ready
+
+By default, Episemic uses **DuckDB** which requires no external services. Simply install and start using:
+
+```python
+from episemic_core import Episemic
+
+# Works immediately - no setup needed!
+async with Episemic() as episemic:
+    memory = await episemic.remember("Hello world!")
+    results = await episemic.recall("world")
+```
+
 ### CLI Usage
 
 ```bash
@@ -188,6 +220,113 @@ episemic health
 # Show version
 episemic version
 ```
+
+### Library Usage
+
+Episemic can also be used as a Python library with an incredibly simple API:
+
+```python
+import asyncio
+from episemic_core import Episemic
+
+async def main():
+    # Initialize the memory system
+    async with Episemic() as episemic:
+        # Store a memory
+        memory = await episemic.remember(
+            "Machine learning models need training data",
+            title="ML Requirements",
+            tags=["ml", "training"]
+        )
+
+        # Search for memories
+        results = await episemic.recall("training data")
+
+        # Get a specific memory
+        retrieved = await episemic.get(memory.id)
+
+        print(f"Stored: {memory.title}")
+        print(f"Found {len(results)} related memories")
+
+asyncio.run(main())
+```
+
+**For non-async code, use the sync version:**
+
+```python
+from episemic_core import EpistemicSync
+
+episemic = EpistemicSync()
+episemic.start()
+
+# Store memories
+memory = episemic.remember("Important information", tags=["work"])
+
+# Search memories
+results = episemic.recall("important")
+
+print(f"Found {len(results)} memories")
+```
+
+**Key Features:**
+- 🎯 **Simple API** - Just `remember()` and `recall()` - that's it!
+- ⚡ **Smart Storage** - Automatically optimizes for fast retrieval and long-term storage
+- 🔍 **Intelligent Search** - Uses vector similarity, tags, and graph relationships
+- 🔧 **Easy Configuration** - Pass database settings as simple parameters
+- 🚀 **Async & Sync** - Works in both async and traditional Python code
+- 📊 **Rich Metadata** - Store additional data with any memory
+
+### Configuration Options
+
+#### DuckDB (Default - No Setup)
+```python
+from episemic_core import Episemic
+
+# Use default in-memory storage
+async with Episemic() as episemic:
+    await episemic.remember("Hello world!")
+
+# Or specify a local file
+async with Episemic() as episemic:
+    episemic._config.duckdb.db_path = "./my_memories.db"
+    await episemic.start()
+    await episemic.remember("Persistent memory!")
+```
+
+#### Qdrant + PostgreSQL (Production)
+```python
+from episemic_core import Episemic, EpistemicConfig
+
+# Configure for production use
+config = EpistemicConfig()
+config.prefer_qdrant = True  # Use Qdrant when available
+config.qdrant.host = "your-qdrant-host"
+config.postgresql.host = "your-postgres-host"
+config.postgresql.database = "episemic_prod"
+
+async with Episemic(config=config) as episemic:
+    await episemic.remember("Production memory!")
+```
+
+#### Environment Variables
+```bash
+# DuckDB configuration
+export DUCKDB_PATH="/path/to/memories.db"
+export DUCKDB_MODEL="all-MiniLM-L12-v2"
+
+# Qdrant configuration
+export QDRANT_HOST="localhost"
+export QDRANT_PORT="6333"
+export EPISEMIC_PREFER_QDRANT="true"
+
+# PostgreSQL configuration
+export POSTGRES_HOST="localhost"
+export POSTGRES_DB="episemic"
+export POSTGRES_USER="postgres"
+export POSTGRES_PASSWORD="your-password"
+```
+
+See [`examples/simple_usage.py`](examples/simple_usage.py) for more examples.
 
 ### Available Commands
 
@@ -234,11 +373,15 @@ make check
 
 ```
 episemic_core/
-├── __init__.py              # Package initialization
+├── __init__.py              # Package initialization & simple API
+├── simple.py                # User-friendly simple API
+├── api.py                   # High-level internal API
+├── config.py                # Configuration management
 ├── models.py                # Pydantic data models
-├── hippocampus/            # Fast memory storage (Qdrant + Redis)
+├── hippocampus/            # Fast memory storage
 │   ├── __init__.py
-│   └── hippocampus.py
+│   ├── hippocampus.py      # Qdrant + Redis implementation
+│   └── duckdb_hippocampus.py # DuckDB fallback implementation
 ├── cortex/                 # Long-term memory (PostgreSQL)
 │   ├── __init__.py
 │   └── cortex.py
@@ -251,4 +394,13 @@ episemic_core/
 └── cli/                    # Typer CLI interface
     ├── __init__.py
     └── main.py
+
+tests/                      # Test suite
+├── test_simple_api.py      # Simple API tests
+├── test_duckdb_fallback.py # DuckDB fallback tests
+└── ...
+
+docs/                       # Generated documentation
+├── index.html              # Documentation portal
+└── api/                    # pydoc-generated docs
 ```

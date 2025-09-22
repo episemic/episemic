@@ -1,17 +1,16 @@
-"""Episemic Core - A brain-inspired memory system for AI agents."""
+"""Episemic - Simple memory system for AI agents."""
 
 __version__ = "0.1.0"
 __author__ = "Your Name"
 __email__ = "your.email@example.com"
 
-from .consolidation import ConsolidationEngine
-from .cortex import Cortex
-from .hippocampus import Hippocampus
-from .retrieval import RetrievalEngine
+# Simple, user-friendly API
+from .simple import Episemic, EpistemicSync, Memory, SearchResult, create_memory_system
 
 __all__ = [
-    "Hippocampus",
-    "Cortex",
-    "ConsolidationEngine",
-    "RetrievalEngine",
+    "Episemic",          # Main async interface
+    "EpistemicSync",     # Sync interface for non-async code
+    "Memory",            # Memory object
+    "SearchResult",      # Search result with memory + score
+    "create_memory_system",  # Quick setup function
 ]

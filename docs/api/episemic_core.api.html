@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Python: module episemic_core.api</title>
+</head><body>
+
+<table class="heading">
+<tr class="heading-text decor">
+<td class="title">&nbsp;<br><strong class="title"><a href="episemic_core.html" class="white">episemic_core</a>.api</strong></td>
+<td class="extra"><a href=".">index</a><br><a href="file:/Users/adityakarnam/Projects/episemic/episemic_core/api.py">/Users/adityakarnam/Projects/episemic/episemic_core/api.py</a></td></tr></table>
+    <p><span class="code">High-level&nbsp;API&nbsp;for&nbsp;Episemic&nbsp;Core&nbsp;-&nbsp;Simple&nbsp;library&nbsp;interface.</span></p>
+<p>
+<table class="section">
+<tr class="decor index-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Classes</strong></td></tr>
+    
+<tr><td class="decor index-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><dl>
+<dt class="heading-text"><a href="builtins.html#object">builtins.object</a>
+</dt><dd>
+<dl>
+<dt class="heading-text"><a href="episemic_core.api.html#EpistemicAPI">EpistemicAPI</a>
+</dt></dl>
+</dd>
+</dl>
+ <p>
+<table class="section">
+<tr class="decor title-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><a name="EpistemicAPI">class <strong>EpistemicAPI</strong></a>(<a href="builtins.html#object">builtins.object</a>)</td></tr>
+    
+<tr><td class="decor title-decor" rowspan=2><span class="code">&nbsp;&nbsp;&nbsp;</span></td>
+<td class="decor title-decor" colspan=2><span class="code"><a href="#EpistemicAPI">EpistemicAPI</a>(config:&nbsp;episemic_core.config.EpistemicConfig&nbsp;|&nbsp;None&nbsp;=&nbsp;None)<br>
+&nbsp;<br>
+High-level&nbsp;API&nbsp;for&nbsp;Episemic&nbsp;Core&nbsp;memory&nbsp;system.<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;provides&nbsp;a&nbsp;simple&nbsp;interface&nbsp;for&nbsp;using&nbsp;Episemic&nbsp;as&nbsp;a&nbsp;Python&nbsp;library.<br>
+&nbsp;<br>
+Example:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;api&nbsp;=&nbsp;<a href="#EpistemicAPI">EpistemicAPI</a>()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;await&nbsp;api.<a href="#EpistemicAPI-initialize">initialize</a>()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;#&nbsp;Store&nbsp;a&nbsp;memory<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;memory_id&nbsp;=&nbsp;await&nbsp;api.<a href="#EpistemicAPI-store_memory">store_memory</a>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"This&nbsp;is&nbsp;important&nbsp;information",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title="Important&nbsp;Note",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tags=["important",&nbsp;"note"]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;...&nbsp;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;#&nbsp;Search&nbsp;for&nbsp;memories<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;results&nbsp;=&nbsp;await&nbsp;api.<a href="#EpistemicAPI-search">search</a>("important&nbsp;information",&nbsp;top_k=5)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;#&nbsp;Get&nbsp;a&nbsp;specific&nbsp;memory<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;memory&nbsp;=&nbsp;await&nbsp;api.<a href="#EpistemicAPI-get_memory">get_memory</a>(memory_id)<br>&nbsp;</span></td></tr>
+<tr><td>&nbsp;</td>
+<td class="singlecolumn">Methods defined here:<br>
+<dl><dt>async <a name="EpistemicAPI-__aenter__"><strong>__aenter__</strong></a>(self)</dt><dd><span class="code">Async&nbsp;context&nbsp;manager&nbsp;entry.</span></dd></dl>
+
+<dl><dt>async <a name="EpistemicAPI-__aexit__"><strong>__aexit__</strong></a>(self, exc_type, exc_val, exc_tb)</dt><dd><span class="code">Async&nbsp;context&nbsp;manager&nbsp;exit.</span></dd></dl>
+
+<dl><dt><a name="EpistemicAPI-__init__"><strong>__init__</strong></a>(self, config: episemic_core.config.EpistemicConfig | None = None)</dt><dd><span class="code">Initialize&nbsp;Episemic&nbsp;API.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;config:&nbsp;Configuration&nbsp;<a href="builtins.html#object">object</a>.&nbsp;If&nbsp;None,&nbsp;uses&nbsp;default&nbsp;configuration.</span></dd></dl>
+
+<dl><dt>async <a name="EpistemicAPI-consolidate_memory"><strong>consolidate_memory</strong></a>(self, memory_id: str) -&gt; bool</dt><dd><span class="code">Manually&nbsp;trigger&nbsp;consolidation&nbsp;for&nbsp;a&nbsp;specific&nbsp;memory.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;memory_id:&nbsp;The&nbsp;memory&nbsp;ID&nbsp;to&nbsp;consolidate<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;True&nbsp;if&nbsp;consolidation&nbsp;successful,&nbsp;False&nbsp;otherwise.</span></dd></dl>
+
+<dl><dt>async <a name="EpistemicAPI-get_memory"><strong>get_memory</strong></a>(self, memory_id: str) -&gt; episemic_core.models.Memory | None</dt><dd><span class="code">Retrieve&nbsp;a&nbsp;specific&nbsp;memory&nbsp;by&nbsp;ID.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;memory_id:&nbsp;The&nbsp;memory&nbsp;ID&nbsp;to&nbsp;retrieve<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Memory&nbsp;<a href="builtins.html#object">object</a>&nbsp;if&nbsp;found,&nbsp;None&nbsp;otherwise.</span></dd></dl>
+
+<dl><dt>async <a name="EpistemicAPI-get_related_memories"><strong>get_related_memories</strong></a>(self, memory_id: str, max_related: int = 5) -&gt; list[episemic_core.models.SearchResult]</dt><dd><span class="code">Get&nbsp;memories&nbsp;related&nbsp;to&nbsp;a&nbsp;specific&nbsp;memory.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;memory_id:&nbsp;The&nbsp;reference&nbsp;memory&nbsp;ID<br>
+&nbsp;&nbsp;&nbsp;&nbsp;max_related:&nbsp;Maximum&nbsp;number&nbsp;of&nbsp;related&nbsp;memories&nbsp;to&nbsp;return<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;List&nbsp;of&nbsp;related&nbsp;memories&nbsp;with&nbsp;relevance&nbsp;scores.</span></dd></dl>
+
+<dl><dt>async <a name="EpistemicAPI-health_check"><strong>health_check</strong></a>(self) -&gt; dict[str, bool]</dt><dd><span class="code">Check&nbsp;the&nbsp;health&nbsp;status&nbsp;of&nbsp;all&nbsp;components.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Dictionary&nbsp;with&nbsp;health&nbsp;status&nbsp;of&nbsp;each&nbsp;component.</span></dd></dl>
+
+<dl><dt>async <a name="EpistemicAPI-initialize"><strong>initialize</strong></a>(self) -&gt; bool</dt><dd><span class="code">Initialize&nbsp;all&nbsp;system&nbsp;components.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;True&nbsp;if&nbsp;initialization&nbsp;successful,&nbsp;False&nbsp;otherwise.</span></dd></dl>
+
+<dl><dt>async <a name="EpistemicAPI-run_auto_consolidation"><strong>run_auto_consolidation</strong></a>(self) -&gt; int</dt><dd><span class="code">Run&nbsp;automatic&nbsp;consolidation&nbsp;sweep.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Number&nbsp;of&nbsp;memories&nbsp;processed.</span></dd></dl>
+
+<dl><dt>async <a name="EpistemicAPI-search"><strong>search</strong></a>(self, query: str, top_k: int = 10, tags: list[str] | None = None, include_quarantined: bool = False, embedding: list[float] | None = None) -&gt; list[episemic_core.models.SearchResult]</dt><dd><span class="code">Search&nbsp;for&nbsp;memories&nbsp;using&nbsp;multiple&nbsp;retrieval&nbsp;strategies.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;query:&nbsp;Search&nbsp;query&nbsp;text<br>
+&nbsp;&nbsp;&nbsp;&nbsp;top_k:&nbsp;Maximum&nbsp;number&nbsp;of&nbsp;results&nbsp;to&nbsp;return<br>
+&nbsp;&nbsp;&nbsp;&nbsp;tags:&nbsp;Optional&nbsp;tag&nbsp;filters<br>
+&nbsp;&nbsp;&nbsp;&nbsp;include_quarantined:&nbsp;Whether&nbsp;to&nbsp;include&nbsp;quarantined&nbsp;memories<br>
+&nbsp;&nbsp;&nbsp;&nbsp;embedding:&nbsp;Optional&nbsp;pre-computed&nbsp;query&nbsp;embedding<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;List&nbsp;of&nbsp;search&nbsp;results&nbsp;with&nbsp;relevance&nbsp;scores.</span></dd></dl>
+
+<dl><dt>async <a name="EpistemicAPI-store_memory"><strong>store_memory</strong></a>(self, text: str, title: str | None = None, source: str = 'api', tags: list[str] | None = None, embedding: list[float] | None = None, metadata: dict | None = None, store_in_hippocampus: bool = True, store_in_cortex: bool = True) -&gt; str | None</dt><dd><span class="code">Store&nbsp;a&nbsp;new&nbsp;memory&nbsp;in&nbsp;the&nbsp;system.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;text:&nbsp;The&nbsp;main&nbsp;content&nbsp;of&nbsp;the&nbsp;memory<br>
+&nbsp;&nbsp;&nbsp;&nbsp;title:&nbsp;Optional&nbsp;title&nbsp;for&nbsp;the&nbsp;memory<br>
+&nbsp;&nbsp;&nbsp;&nbsp;source:&nbsp;Source&nbsp;identifier&nbsp;(default:&nbsp;"api")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;tags:&nbsp;Optional&nbsp;list&nbsp;of&nbsp;tags<br>
+&nbsp;&nbsp;&nbsp;&nbsp;embedding:&nbsp;Optional&nbsp;pre-computed&nbsp;embedding&nbsp;vector<br>
+&nbsp;&nbsp;&nbsp;&nbsp;metadata:&nbsp;Optional&nbsp;additional&nbsp;metadata<br>
+&nbsp;&nbsp;&nbsp;&nbsp;store_in_hippocampus:&nbsp;Whether&nbsp;to&nbsp;store&nbsp;in&nbsp;fast&nbsp;hippocampus&nbsp;layer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;store_in_cortex:&nbsp;Whether&nbsp;to&nbsp;store&nbsp;in&nbsp;persistent&nbsp;cortex&nbsp;layer<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Memory&nbsp;ID&nbsp;if&nbsp;successful,&nbsp;None&nbsp;otherwise.</span></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><span class="code">dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</span></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><span class="code">list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</span></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table class="section">
+<tr class="decor functions-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Functions</strong></td></tr>
+    
+<tr><td class="decor functions-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><dl><dt><a name="-create_config"><strong>create_config</strong></a>(**kwargs) -&gt; episemic_core.config.EpistemicConfig</dt><dd><span class="code">Create&nbsp;configuration&nbsp;with&nbsp;custom&nbsp;parameters.</span></dd></dl>
+ <dl><dt><a name="-create_config_from_env"><strong>create_config_from_env</strong></a>() -&gt; episemic_core.config.EpistemicConfig</dt><dd><span class="code">Create&nbsp;configuration&nbsp;from&nbsp;environment&nbsp;variables.</span></dd></dl>
+ <dl><dt>async <a name="-create_memory_system"><strong>create_memory_system</strong></a>(config: episemic_core.config.EpistemicConfig | None = None) -&gt; episemic_core.api.EpistemicAPI</dt><dd><span class="code">Create&nbsp;and&nbsp;initialize&nbsp;a&nbsp;memory&nbsp;system.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;config:&nbsp;Optional&nbsp;configuration<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Initialized&nbsp;<a href="#EpistemicAPI">EpistemicAPI</a>&nbsp;instance.</span></dd></dl>
+</td></tr></table>
+</body></html>

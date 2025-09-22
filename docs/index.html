@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Episemic Core Documentation</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .section {
+            background: white;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            border: 1px solid #e1e5e9;
+        }
+        .section h2 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        .api-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .api-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .api-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.1);
+        }
+        .api-card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .api-card p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .api-card a {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.9em;
+            transition: background 0.2s;
+        }
+        .api-card a:hover {
+            background: #2980b9;
+        }
+        .code-snippet {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Monaco', 'Consolas', monospace;
+        }
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #e74c3c;
+            margin: 20px 0;
+        }
+        .toc {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .toc h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .toc li {
+            padding: 5px 0;
+        }
+        .toc a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        .badges {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            margin: 0 5px;
+            background: #27ae60;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧠 Episemic Core</h1>
+        <p>Brain-inspired memory system for AI agents</p>
+        <div class="badges">
+            <span class="badge">Python 3.11+</span>
+            <span class="badge">Async/Await</span>
+            <span class="badge">Brain-Inspired</span>
+            <span class="badge">Production Ready</span>
+        </div>
+    </div>
+
+    <div class="toc">
+        <h3>📚 Table of Contents</h3>
+        <ul>
+            <li><a href="#quick-start">Quick Start</a></li>
+            <li><a href="#user-api">User API Documentation</a></li>
+            <li><a href="#internal-api">Internal API Documentation</a></li>
+            <li><a href="#architecture">Architecture Documentation</a></li>
+            <li><a href="#examples">Examples & Guides</a></li>
+        </ul>
+    </div>
+
+    <div class="highlight">
+        <strong>🎯 For Users:</strong> Start with the <a href="#user-api">Simple API Documentation</a> below.
+        The internal architecture is completely hidden from you - just use <code>episemic.remember()</code> and <code>episemic.recall()</code>!
+    </div>
+
+    <section id="quick-start" class="section">
+        <h2>🚀 Quick Start</h2>
+        <p>Get started with Episemic in just a few lines of code:</p>
+
+        <div class="code-snippet">
+import asyncio
+from episemic_core import Episemic
+
+async def main():
+    async with Episemic() as episemic:
+        # Store a memory
+        memory = await episemic.remember(
+            "Python is great for AI development",
+            tags=["programming", "python"]
+        )
+
+        # Search memories
+        results = await episemic.recall("python programming")
+
+        print(f"Found {len(results)} memories")
+
+asyncio.run(main())
+        </div>
+
+        <p><strong>For non-async code:</strong></p>
+        <div class="code-snippet">
+from episemic_core import EpistemicSync
+
+episemic = EpistemicSync()
+episemic.start()
+
+memory = episemic.remember("Important info", tags=["work"])
+results = episemic.recall("important")
+        </div>
+    </section>
+
+    <section id="user-api" class="section">
+        <h2>👤 User API Documentation</h2>
+        <p>These are the only classes and methods you need to know as a user:</p>
+
+        <div class="api-grid">
+            <div class="api-card">
+                <h3>🧠 Episemic (Main Class)</h3>
+                <p>The main async interface for storing and retrieving memories. Use this for modern async Python code.</p>
+                <a href="api/episemic_core.simple.html#Episemic">View Documentation</a>
+            </div>
+
+            <div class="api-card">
+                <h3>🔄 EpistemicSync</h3>
+                <p>Synchronous wrapper for traditional Python code that doesn't use async/await.</p>
+                <a href="api/episemic_core.simple.html#EpistemicSync">View Documentation</a>
+            </div>
+
+            <div class="api-card">
+                <h3>💭 Memory</h3>
+                <p>Simple memory object with properties like .text, .title, .tags, .created_at, and .metadata.</p>
+                <a href="api/episemic_core.simple.html#Memory">View Documentation</a>
+            </div>
+
+            <div class="api-card">
+                <h3>🔍 SearchResult</h3>
+                <p>Search result containing a Memory object and relevance score (0.0 to 1.0).</p>
+                <a href="api/episemic_core.simple.html#SearchResult">View Documentation</a>
+            </div>
+        </div>
+
+        <h3>📋 API Methods</h3>
+        <ul>
+            <li><code>await episemic.remember(text, title=None, tags=None)</code> - Store a memory</li>
+            <li><code>await episemic.recall(query, limit=10, tags=None)</code> - Search for memories</li>
+            <li><code>await episemic.get(memory_id)</code> - Get a specific memory</li>
+            <li><code>await episemic.find_related(memory_id)</code> - Find related memories</li>
+            <li><code>await episemic.forget(memory_id)</code> - Delete a memory</li>
+            <li><code>await episemic.health()</code> - Check system health</li>
+        </ul>
+    </section>
+
+    <section id="internal-api" class="section">
+        <h2>⚙️ Internal API Documentation</h2>
+        <p>Advanced documentation for developers who want to understand or extend the internal architecture:</p>
+
+        <div class="api-grid">
+            <div class="api-card">
+                <h3>🔧 Configuration</h3>
+                <p>Internal configuration management system for databases and services.</p>
+                <a href="api/episemic_core.config.html">View Documentation</a>
+            </div>
+
+            <div class="api-card">
+                <h3>🏗️ Data Models</h3>
+                <p>Internal Pydantic models for memory objects, search queries, and system state.</p>
+                <a href="api/episemic_core.models.html">View Documentation</a>
+            </div>
+
+            <div class="api-card">
+                <h3>🎯 High-Level API</h3>
+                <p>The EpistemicAPI class that the simple interface uses internally.</p>
+                <a href="api/episemic_core.api.html">View Documentation</a>
+            </div>
+
+            <div class="api-card">
+                <h3>⚡ Hippocampus</h3>
+                <p>Fast vector storage using Qdrant and Redis for recent memories.</p>
+                <a href="api/episemic_core.hippocampus.hippocampus.html">View Documentation</a>
+            </div>
+
+            <div class="api-card">
+                <h3>🏛️ Cortex</h3>
+                <p>Long-term relational storage using PostgreSQL for persistent memories.</p>
+                <a href="api/episemic_core.cortex.cortex.html">View Documentation</a>
+            </div>
+
+            <div class="api-card">
+                <h3>🔄 Consolidation</h3>
+                <p>Memory consolidation engine that transfers memories from fast to persistent storage.</p>
+                <a href="api/episemic_core.consolidation.consolidation.html">View Documentation</a>
+            </div>
+
+            <div class="api-card">
+                <h3>🎯 Retrieval</h3>
+                <p>Multi-path retrieval engine using vector similarity, tags, and graph traversal.</p>
+                <a href="api/episemic_core.retrieval.retrieval.html">View Documentation</a>
+            </div>
+
+            <div class="api-card">
+                <h3>💻 CLI</h3>
+                <p>Command-line interface built with Typer and Rich for terminal usage.</p>
+                <a href="api/episemic_core.cli.main.html">View Documentation</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="architecture" class="section">
+        <h2>🏗️ Architecture Documentation</h2>
+        <ul>
+            <li><a href="../BLUEPRINT.md">🧭 System Blueprint</a> - Detailed architectural design and brain-inspired concepts</li>
+            <li><a href="../USAGE.md">📖 Usage Guide</a> - Comprehensive usage examples and configuration</li>
+            <li><a href="LIBRARY_USAGE.md">🔧 Advanced Library Usage</a> - Internal API usage for power users</li>
+        </ul>
+    </section>
+
+    <section id="examples" class="section">
+        <h2>💡 Examples & Guides</h2>
+        <ul>
+            <li><a href="../examples/simple_usage.py">🎯 Simple Usage Examples</a> - Basic usage patterns</li>
+            <li><a href="../examples/library_usage.py">⚙️ Advanced Library Examples</a> - Internal API examples</li>
+            <li><a href="../README.md">📋 README</a> - Project overview and quick start</li>
+        </ul>
+
+        <h3>🚀 Getting Started Checklist</h3>
+        <ol>
+            <li>Install dependencies: <code>poetry install</code></li>
+            <li>Set up databases (PostgreSQL, Qdrant, Redis)</li>
+            <li>Try the simple API: <code>from episemic_core import Episemic</code></li>
+            <li>Store your first memory: <code>await episemic.remember("Hello world!")</code></li>
+            <li>Search for it: <code>await episemic.recall("hello")</code></li>
+        </ol>
+    </section>
+
+    <footer style="text-align: center; margin-top: 40px; padding: 20px; color: #666; border-top: 1px solid #eee;">
+        <p>Generated with ❤️ using pydoc | Episemic Core v0.1.0</p>
+        <p>🧠 Brain-inspired memory system for AI agents</p>
+    </footer>
+</body>
+</html>
