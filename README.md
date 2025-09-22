@@ -1,208 +1,113 @@
 # Episemic Core 🧠
 
-**Episemic Core** is the heart of the **Episemic** AI memory system — a brain-inspired platform that enables AI agents to **encode, store, consolidate, and retrieve memory** in a way similar to human cognition. Episemic combines **episodic and semantic memory**, **replay-based consolidation**, and **associative retrieval** to create intelligent, context-aware agents.
+**Episemic Core** is a brain-inspired memory system for AI agents that enables intelligent **encoding, storage, consolidation, and retrieval** of information. Inspired by human cognition, Episemic combines **episodic and semantic memory**, **replay-based consolidation**, and **associative retrieval** to create context-aware AI systems.
+
+[![PyPI version](https://badge.fury.io/py/episemic-core.svg)](https://badge.fury.io/py/episemic-core)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
 
 ## 🚀 Features
 
-- **Brain-Inspired Memory Architecture**
+- **🧠 Brain-Inspired Architecture**
   - Episodic Memory (Hippocampus-like): High-fidelity experiences
   - Semantic Memory (Cortex-like): Consolidated, structured knowledge
-- **Replay & Consolidation**
+- **🔄 Replay & Consolidation**
   - Prioritized experience sampling
   - Distillation from episodic → semantic memory
-- **Associative Retrieval**
-  - Pattern completion
-  - kNN-based search across memory stores
-  - Context merging for AI agent reasoning
-- **Modular & Extensible**
-  - Supports multiple AI agents and environments
-  - Easily extendable with new memory modules or adapters
+- **🎯 Associative Retrieval**
+  - Vector similarity search
+  - Tag-based filtering
+  - Graph-based contextual relationships
+- **⚡ Zero-Config Setup**
+  - Works out of the box with DuckDB
+  - No external dependencies required
+  - Scales to production with Qdrant + PostgreSQL
 
 ---
 
-## 🧩 System Architecture
+## 📦 Installation
 
-### Core Memory System
-```mermaid
-flowchart TB
-    subgraph Agent["🤖 AI Agent"]
-        A1["Perception / Input Encoder"]
-        A2["Controller / Policy"]
-    end
+### From PyPI (Recommended)
 
-    subgraph Brain["🧠 Episemic Memory System"]
-        subgraph Episodic["📌 Episodic Memory"]
-            E1["Raw Experience Traces"]
-            E2["Embeddings + Metadata"]
-            E3["Priority Scores"]
-        end
-
-        subgraph Replay["🔄 Replay & Consolidation"]
-            R1["Prioritized Sampling"]
-            R2["Summarization / Distillation"]
-            R3["Adapter / Fine-tune Updates"]
-        end
-
-        subgraph Semantic["📚 Semantic Memory"]
-            S1["Stable Knowledge"]
-            S2["Generalized Summaries"]
-            S3["Topic / Concept Clusters"]
-        end
-
-        subgraph Retrieval["🎯 Retrieval & Recall"]
-            Q1["kNN Search"]
-            Q2["Pattern Completion"]
-            Q3["Merged Context Output"]
-        end
-    end
-
-    Agent -->|Encoded Experience| Episodic
-    Episodic --> Replay
-    Replay --> Semantic
-    Agent -->|Query / Cue| Retrieval
-    Semantic --> Retrieval
-    Episodic --> Retrieval
-    Retrieval -->|Relevant Context| Agent
+```bash
+pip install episemic-core
 ```
 
-### CLI Application Architecture
-```mermaid
-graph TB
-    subgraph CLI["🖥️ Episemic CLI Application"]
-        CMD["`**episemic** command`"]
-        TYPER["`**Typer CLI Framework**`"]
-        RICH["`**Rich Console Output**`"]
-    end
+### From Test PyPI (Latest Development)
 
-    subgraph Core["🧠 Episemic Core Library"]
-        subgraph Models["📋 Data Models"]
-            M1["`**Memory**`"]
-            M2["`**SearchQuery**`"]
-            M3["`**SearchResult**`"]
-        end
-
-        subgraph Hippocampus["⚡ Hippocampus (Fast Storage)"]
-            H1["`**Qdrant Client**
-            Vector Storage`"]
-            H2["`**Redis Cache**
-            Session Storage`"]
-            H3["`**DuckDB (Default)**
-            Local Vector Storage`"]
-        end
-
-        subgraph Cortex["🏛️ Cortex (Long-term Storage)"]
-            C1["`**PostgreSQL**
-            Relational Data`"]
-            C2["`**Graph Links**
-            Memory Relations`"]
-        end
-
-        subgraph Consolidation["🔄 Consolidation Engine"]
-            CON1["`**Memory Transfer**
-            Hippocampus → Cortex`"]
-            CON2["`**Summarization**
-            Knowledge Distillation`"]
-        end
-
-        subgraph Retrieval["🎯 Retrieval Engine"]
-            R1["`**Vector Search**
-            Semantic Similarity`"]
-            R2["`**Tag Search**
-            Metadata Filtering`"]
-            R3["`**Graph Traversal**
-            Contextual Relations`"]
-        end
-    end
-
-    subgraph Storage["💾 Storage Layer"]
-        QDRANT["`**Qdrant**
-        Vector Database`"]
-        POSTGRES["`**PostgreSQL**
-        Relational Database`"]
-        REDIS["`**Redis**
-        Cache & Sessions`"]
-        DUCKDB["`**DuckDB (Default)**
-        Local Database`"]
-    end
-
-    CMD --> TYPER
-    TYPER --> Core
-    Core --> RICH
-
-    Hippocampus --> QDRANT
-    Hippocampus --> REDIS
-    Hippocampus --> DUCKDB
-    Cortex --> POSTGRES
-
-    Consolidation --> Hippocampus
-    Consolidation --> Cortex
-
-    Retrieval --> Hippocampus
-    Retrieval --> Cortex
-
-    classDef cli fill:#e1f5fe,stroke:#01579b,stroke-width:2px
-    classDef core fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
-    classDef storage fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
-
-    class CLI,CMD,TYPER,RICH cli
-    class Core,Models,Hippocampus,Cortex,Consolidation,Retrieval core
-    class Storage,QDRANT,POSTGRES,REDIS storage
+```bash
+pip install --index-url https://test.pypi.org/simple/ episemic-core
 ```
+
+### Requirements
+
+- **Python 3.11 or higher**
+- **No external databases required** (uses DuckDB by default)
 
 ---
 
 ## 🚀 Quick Start
 
-### Installation
-
-```bash
-# Clone the repository
-git clone <repository-url>
-cd episemic
-
-# Set up virtual environment and install dependencies
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-pip install poetry
-poetry install
-```
-
-### Storage Options
-
-**Episemic** now supports two storage modes:
-
-1. **🦆 DuckDB (Default)** - Local, zero-dependency storage
-   - **No setup required** - works out of the box
-   - **Perfect for development** and testing
-   - **Local file storage** with in-memory fallback
-   - **Built-in vector search** using sentence transformers
-
-2. **⚡ Qdrant + PostgreSQL** - Production-ready distributed storage
-   - **High performance** vector search with Qdrant
-   - **Rich relational features** with PostgreSQL
-   - **Horizontal scaling** support
-   - **Production deployment** ready
-
-By default, Episemic uses **DuckDB** which requires no external services. Simply install and start using:
+### Simple Python API
 
 ```python
+import asyncio
 from episemic_core import Episemic
 
-# Works immediately - no setup needed!
-async with Episemic() as episemic:
-    memory = await episemic.remember("Hello world!")
-    results = await episemic.recall("world")
+async def main():
+    # Create memory system (no setup required!)
+    async with Episemic() as episemic:
+        # Store a memory
+        memory = await episemic.remember(
+            "Machine learning models need training data",
+            title="ML Requirements",
+            tags=["ml", "training", "data"]
+        )
+
+        # Search for memories
+        results = await episemic.recall("training data")
+
+        # Get specific memory
+        retrieved = await episemic.get(memory.id)
+
+        print(f"Stored: {memory.title}")
+        print(f"Found {len(results)} related memories")
+
+# Run the example
+asyncio.run(main())
 ```
 
-### CLI Usage
+### Synchronous API (Non-async code)
+
+```python
+from episemic_core import EpistemicSync
+
+# Initialize memory system
+episemic = EpistemicSync()
+episemic.start()
+
+# Store memories
+memory = episemic.remember(
+    "Important information to remember",
+    title="Key Insight",
+    tags=["important", "work"]
+)
+
+# Search memories
+results = episemic.recall("important information")
+
+print(f"Found {len(results)} memories")
+```
+
+### Command Line Interface
 
 ```bash
-# Initialize the memory system
-episemic init
+# Install creates the 'episemic' command
+pip install episemic-core
 
-# Store a new memory
+# Store a memory
 episemic store "This is my first memory" --title "First Memory" --tags ai memory
 
 # Search for memories
@@ -211,9 +116,6 @@ episemic search "memory" --top-k 5 --tags ai
 # Retrieve a specific memory
 episemic get <memory-id>
 
-# Run memory consolidation
-episemic consolidate --auto
-
 # Check system health
 episemic health
 
@@ -221,186 +123,230 @@ episemic health
 episemic version
 ```
 
-### Library Usage
+---
 
-Episemic can also be used as a Python library with an incredibly simple API:
+## 💡 Key Features
+
+### 🎯 Simple API
+- **Just two main methods**: `remember()` to store, `recall()` to search
+- **Automatic optimization** for fast retrieval and long-term storage
+- **Rich metadata support** with tags, titles, and custom data
+
+### ⚡ Zero-Config Setup
+- **Works immediately** - no database setup required
+- **DuckDB backend** provides local, file-based storage
+- **Automatic fallback** to in-memory storage if needed
+
+### 🔍 Intelligent Search
+- **Vector similarity** using sentence transformers
+- **Tag-based filtering** for precise results
+- **Graph relationships** for contextual connections
+- **Hybrid search** combining multiple strategies
+
+### 🚀 Async & Sync Support
+- **Native async/await** for modern Python applications
+- **Synchronous wrapper** for traditional codebases
+- **Context manager support** for automatic resource cleanup
+
+---
+
+## 📚 Examples
+
+### Basic Usage
 
 ```python
-import asyncio
 from episemic_core import Episemic
 
-async def main():
-    # Initialize the memory system
+async def basic_example():
     async with Episemic() as episemic:
-        # Store a memory
-        memory = await episemic.remember(
-            "Machine learning models need training data",
-            title="ML Requirements",
-            tags=["ml", "training"]
+        # Store various types of information
+        await episemic.remember(
+            "Python is a versatile programming language",
+            title="About Python",
+            tags=["programming", "python"]
         )
 
-        # Search for memories
-        results = await episemic.recall("training data")
+        await episemic.remember(
+            "FastAPI is great for building APIs quickly",
+            title="FastAPI Benefits",
+            tags=["python", "api", "web"],
+            metadata={"framework": "FastAPI", "type": "web"}
+        )
 
-        # Get a specific memory
-        retrieved = await episemic.get(memory.id)
+        # Search with different strategies
+        python_results = await episemic.recall("programming language")
+        api_results = await episemic.recall("API", tags=["web"])
 
-        print(f"Stored: {memory.title}")
-        print(f"Found {len(results)} related memories")
-
-asyncio.run(main())
+        print(f"Found {len(python_results)} programming-related memories")
+        print(f"Found {len(api_results)} API-related memories")
 ```
 
-**For non-async code, use the sync version:**
+### Advanced Configuration
 
-```python
-from episemic_core import EpistemicSync
-
-episemic = EpistemicSync()
-episemic.start()
-
-# Store memories
-memory = episemic.remember("Important information", tags=["work"])
-
-# Search memories
-results = episemic.recall("important")
-
-print(f"Found {len(results)} memories")
-```
-
-**Key Features:**
-- 🎯 **Simple API** - Just `remember()` and `recall()` - that's it!
-- ⚡ **Smart Storage** - Automatically optimizes for fast retrieval and long-term storage
-- 🔍 **Intelligent Search** - Uses vector similarity, tags, and graph relationships
-- 🔧 **Easy Configuration** - Pass database settings as simple parameters
-- 🚀 **Async & Sync** - Works in both async and traditional Python code
-- 📊 **Rich Metadata** - Store additional data with any memory
-
-### Configuration Options
-
-#### DuckDB (Default - No Setup)
-```python
-from episemic_core import Episemic
-
-# Use default in-memory storage
-async with Episemic() as episemic:
-    await episemic.remember("Hello world!")
-
-# Or specify a local file
-async with Episemic() as episemic:
-    episemic._config.duckdb.db_path = "./my_memories.db"
-    await episemic.start()
-    await episemic.remember("Persistent memory!")
-```
-
-#### Qdrant + PostgreSQL (Production)
 ```python
 from episemic_core import Episemic, EpistemicConfig
 
-# Configure for production use
-config = EpistemicConfig()
-config.prefer_qdrant = True  # Use Qdrant when available
-config.qdrant.host = "your-qdrant-host"
-config.postgresql.host = "your-postgres-host"
-config.postgresql.database = "episemic_prod"
+# Custom configuration
+config = EpistemicConfig(
+    debug=True,
+    duckdb={"db_path": "./my_memories.db"}
+)
+
+async with Episemic(config=config) as episemic:
+    # Store with rich metadata
+    memory = await episemic.remember(
+        "Neural networks require careful hyperparameter tuning",
+        title="ML Best Practices",
+        tags=["ml", "neural-networks", "optimization"],
+        metadata={
+            "source": "research_paper.pdf",
+            "confidence": 0.95,
+            "author": "Dr. Smith"
+        }
+    )
+
+    # Find related memories
+    related = await episemic.find_related(memory.id, limit=5)
+    print(f"Found {len(related)} related memories")
+```
+
+### CLI Examples
+
+```bash
+# Store a note with tags
+episemic store "Remember to backup the database daily" \
+  --title "Backup Reminder" \
+  --tags maintenance backup database
+
+# Search with filters
+episemic search "backup" --tags maintenance --top-k 10
+
+# Search for recent memories
+episemic search "database" --limit 5
+
+# Get system information
+episemic health
+```
+
+---
+
+## ⚙️ Configuration
+
+### Storage Options
+
+**Episemic** supports two storage modes:
+
+#### 🦆 DuckDB (Default)
+- **Zero setup** - works immediately after installation
+- **Local file storage** with automatic creation
+- **Perfect for development**, prototypes, and small applications
+- **Built-in vector search** using sentence transformers
+
+```python
+# Uses DuckDB by default - no configuration needed
+async with Episemic() as episemic:
+    await episemic.remember("Hello world!")
+```
+
+#### ⚡ Production Setup (Qdrant + PostgreSQL)
+- **High performance** vector search with Qdrant
+- **Rich relational features** with PostgreSQL
+- **Horizontal scaling** support
+- **Production-ready** with high availability
+
+```python
+from episemic_core import Episemic, EpistemicConfig
+
+config = EpistemicConfig(
+    prefer_qdrant=True,
+    qdrant={"host": "your-qdrant-host", "port": 6333},
+    postgresql={"host": "your-postgres-host", "database": "episemic_prod"}
+)
 
 async with Episemic(config=config) as episemic:
     await episemic.remember("Production memory!")
 ```
 
-#### Environment Variables
+### Environment Variables
+
 ```bash
-# DuckDB configuration
-export DUCKDB_PATH="/path/to/memories.db"
+# DuckDB configuration (default)
+export DUCKDB_PATH="./memories.db"
 export DUCKDB_MODEL="all-MiniLM-L12-v2"
 
-# Qdrant configuration
+# Qdrant configuration (optional)
 export QDRANT_HOST="localhost"
 export QDRANT_PORT="6333"
 export EPISEMIC_PREFER_QDRANT="true"
 
-# PostgreSQL configuration
+# PostgreSQL configuration (optional)
 export POSTGRES_HOST="localhost"
 export POSTGRES_DB="episemic"
 export POSTGRES_USER="postgres"
 export POSTGRES_PASSWORD="your-password"
+
+# Debug mode
+export EPISEMIC_DEBUG="true"
 ```
 
-See [`examples/simple_usage.py`](examples/simple_usage.py) for more examples.
+---
 
-### Available Commands
+## 📖 Documentation
+
+- **[API Documentation](docs/index.html)** - Complete API reference
+- **[Examples](examples/)** - Working code examples
+- **[Contributing Guide](CONTRIBUTING.md)** - Development setup and guidelines
+
+---
+
+## 🛠️ CLI Commands
 
 | Command | Description | Example |
 |---------|-------------|---------|
-| `init` | Initialize the Episemic memory system | `episemic init --qdrant-host localhost` |
 | `store` | Store a new memory | `episemic store "Text content" --title "Title" --tags tag1 tag2` |
-| `search` | Search for memories | `episemic search "query" --top-k 10 --tags ai` |
+| `search`/`recall` | Search for memories | `episemic search "query" --top-k 10 --tags ai` |
 | `get` | Retrieve memory by ID | `episemic get abc123...` |
-| `consolidate` | Run memory consolidation | `episemic consolidate --auto` |
 | `health` | Check system health | `episemic health` |
 | `version` | Show version info | `episemic version` |
 
 ---
 
-## 🛠️ Development
+## 🔧 Development
 
-### Setup Development Environment
+Want to contribute or run from source? See our **[Contributing Guide](CONTRIBUTING.md)** for:
+
+- Development environment setup
+- Running tests and quality checks
+- Project structure and architecture
+- Contribution workflow
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+Episemic Core is inspired by research in cognitive science and neuroscience, particularly:
+- **Hippocampal-cortical memory systems**
+- **Replay-based memory consolidation**
+- **Associative memory networks**
+
+---
+
+## 📞 Support
+
+- **📋 Issues**: [GitHub Issues](https://github.com/episemic/episemic-core/issues)
+- **📖 Documentation**: [API Docs](docs/index.html)
+- **💬 Discussions**: [GitHub Discussions](https://github.com/episemic/episemic-core/discussions)
+
+---
+
+**Get started with intelligent memory for your AI agents today!**
 
 ```bash
-# Install with development dependencies
-make dev
-
-# Install pre-commit hooks
-make pre-commit
-
-# Run tests
-make test
-
-# Run linting
-make lint
-
-# Format code
-make format
-
-# Type checking
-make type-check
-
-# Run all checks
-make check
-```
-
-### Project Structure
-
-```
-episemic_core/
-├── __init__.py              # Package initialization & simple API
-├── simple.py                # User-friendly simple API
-├── api.py                   # High-level internal API
-├── config.py                # Configuration management
-├── models.py                # Pydantic data models
-├── hippocampus/            # Fast memory storage
-│   ├── __init__.py
-│   ├── hippocampus.py      # Qdrant + Redis implementation
-│   └── duckdb_hippocampus.py # DuckDB fallback implementation
-├── cortex/                 # Long-term memory (PostgreSQL)
-│   ├── __init__.py
-│   └── cortex.py
-├── consolidation/          # Memory consolidation engine
-│   ├── __init__.py
-│   └── consolidation.py
-├── retrieval/              # Multi-path retrieval system
-│   ├── __init__.py
-│   └── retrieval.py
-└── cli/                    # Typer CLI interface
-    ├── __init__.py
-    └── main.py
-
-tests/                      # Test suite
-├── test_simple_api.py      # Simple API tests
-├── test_duckdb_fallback.py # DuckDB fallback tests
-└── ...
-
-docs/                       # Generated documentation
-├── index.html              # Documentation portal
-└── api/                    # pydoc-generated docs
+pip install episemic-core
 ```
