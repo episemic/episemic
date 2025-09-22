@@ -7,7 +7,7 @@ from ..models import Memory, SearchQuery, SearchResult
 
 
 class RetrievalEngine:
-    def __init__(self, hippocampus: Hippocampus, cortex: Cortex):
+    def __init__(self, hippocampus: Hippocampus, cortex: Cortex | None = None):
         self.hippocampus = hippocampus
         self.cortex = cortex
 
@@ -15,54 +15,97 @@ class RetrievalEngine:
         try:
             results = []
 
-            # Path 1: Vector similarity search in hippocampus (fast)
+            # Path 1: Search in hippocampus (DuckDB or Qdrant)
             if hasattr(query, 'embedding') and query.embedding:
+                # Vector search with embeddings
                 hippocampus_results = await self.hippocampus.vector_search(
                     query_vector=query.embedding,
                     top_k=query.top_k,
-                    filters=self._build_qdrant_filters(query.filters)
+                    filters=self._build_search_filters(query.filters)
+                )
+            else:
+                # Fallback to text-based search in DuckDB
+                hippocampus_results = await self.hippocampus.vector_search(
+                    query_vector=[],  # Empty vector for text search
+                    top_k=query.top_k,
+                    filters=self._build_search_filters(query.filters)
                 )
 
-                for result in hippocampus_results:
-                    search_result = SearchResult(
-                        memory=result["memory"],
-                        score=result["score"],
-                        provenance={"source": "hippocampus", "method": "vector_similarity"},
-                        retrieval_path=["hippocampus", "vector_search"]
+            # Convert hippocampus results to SearchResult objects
+            for result in hippocampus_results:
+                try:
+                    # Handle different result formats from different hippocampus implementations
+                    if isinstance(result, dict):
+                        if "memory" in result:
+                            memory = result["memory"]
+                            score = result.get("score", result.get("similarity", 1.0))
+                        else:
+                            # DuckDB format - convert dict to Memory object
+                            from ..models import Memory
+                            content = result["content"]
+                            memory = Memory(
+                                id=result["id"],
+                                text=content,
+                                summary=content[:200] + "..." if len(content) > 200 else content,
+                                title=result.get("title", ""),
+                                source=result.get("source", "hippocampus"),
+                                tags=result.get("tags", []),
+                                metadata=result.get("metadata", {})
+                            )
+                            score = result.get("similarity", 1.0)
+
+                        search_result = SearchResult(
+                            memory=memory,
+                            score=score,
+                            provenance={"source": "hippocampus", "method": "vector_similarity"},
+                            retrieval_path=["hippocampus", "vector_search"]
+                        )
+                        results.append(search_result)
+                except Exception as e:
+                    print(f"Error processing hippocampus result: {e}")
+                    continue
+
+            # Path 2: Tag-based search in cortex (semantic) - only if cortex available
+            if self.cortex and query.filters.get("tags"):
+                try:
+                    cortex_results = await self.cortex.search_by_tags(
+                        tags=query.filters["tags"],
+                        limit=query.top_k
                     )
-                    results.append(search_result)
 
-            # Path 2: Tag-based search in cortex (semantic)
-            if query.filters.get("tags"):
-                cortex_results = await self.cortex.search_by_tags(
-                    tags=query.filters["tags"],
-                    limit=query.top_k
-                )
+                    for memory in cortex_results:
+                        search_result = SearchResult(
+                            memory=memory,
+                            score=self._calculate_tag_relevance_score(memory, query.filters["tags"]),
+                            provenance={"source": "cortex", "method": "tag_search"},
+                            retrieval_path=["cortex", "tag_search"]
+                        )
+                        results.append(search_result)
+                except Exception as e:
+                    print(f"Error in cortex search: {e}")
 
-                for memory in cortex_results:
-                    search_result = SearchResult(
-                        memory=memory,
-                        score=self._calculate_tag_relevance_score(memory, query.filters["tags"]),
-                        provenance={"source": "cortex", "method": "tag_search"},
-                        retrieval_path=["cortex", "tag_search"]
+            # Path 3: Graph traversal for contextual memories - only if cortex available
+            if self.cortex and query.filters.get("context_memory_id"):
+                try:
+                    context_results = await self._search_by_context(
+                        query.filters["context_memory_id"],
+                        query.top_k
                     )
-                    results.append(search_result)
-
-            # Path 3: Graph traversal for contextual memories
-            if query.filters.get("context_memory_id"):
-                context_results = await self._search_by_context(
-                    query.filters["context_memory_id"],
-                    query.top_k
-                )
-                results.extend(context_results)
+                    results.extend(context_results)
+                except Exception as e:
+                    print(f"Error in context search: {e}")
 
             # Deduplicate and rank results
             results = self._deduplicate_results(results)
             results = self._rank_results(results, query)
 
-            # Update access counts for retrieved memories
-            for result in results[:query.top_k]:
-                await self.cortex.increment_access_count(result.memory.id)
+            # Update access counts for retrieved memories - only if cortex available
+            if self.cortex:
+                for result in results[:query.top_k]:
+                    try:
+                        await self.cortex.increment_access_count(result.memory.id)
+                    except Exception:
+                        pass  # Ignore access count update errors
 
             return results[:query.top_k]
 
@@ -74,14 +117,16 @@ class RetrievalEngine:
         # Try hippocampus first (faster)
         memory = await self.hippocampus.retrieve_memory(memory_id)
         if memory:
-            await self.cortex.increment_access_count(memory_id)
+            if self.cortex:
+                await self.cortex.increment_access_count(memory_id)
             return memory
 
-        # Fallback to cortex
-        memory = await self.cortex.retrieve_memory(memory_id)
-        if memory:
-            await self.cortex.increment_access_count(memory_id)
-            return memory
+        # Fallback to cortex if available
+        if self.cortex:
+            memory = await self.cortex.retrieve_memory(memory_id)
+            if memory:
+                await self.cortex.increment_access_count(memory_id)
+                return memory
 
         return None
 
@@ -94,37 +139,76 @@ class RetrievalEngine:
 
             results = []
 
-            # Find memories with shared tags
+            # Find memories with shared tags using hippocampus (DuckDB search)
             if base_memory.tags:
-                tag_matches = await self.cortex.search_by_tags(
-                    tags=base_memory.tags,
-                    limit=max_related * 2  # Get more to filter out the original
+                # Use hippocampus to find memories with similar tags
+                hippocampus_results = await self.hippocampus.vector_search(
+                    query_vector=[],  # No vector search, just tag-based
+                    top_k=max_related * 2,  # Get more to filter out the original
+                    filters={"tags": base_memory.tags}
                 )
 
-                for memory in tag_matches:
-                    if memory.id != memory_id:  # Exclude the original memory
-                        score = self._calculate_tag_overlap_score(base_memory.tags, memory.tags)
-                        result = SearchResult(
-                            memory=memory,
-                            score=score,
-                            provenance={"source": "cortex", "method": "tag_overlap"},
-                            retrieval_path=["cortex", "related_search", "tag_overlap"]
-                        )
-                        results.append(result)
+                for result in hippocampus_results:
+                    try:
+                        if result["id"] != memory_id:  # Exclude the original memory
+                            from ..models import Memory
+                            content = result["content"]
+                            memory = Memory(
+                                id=result["id"],
+                                text=content,
+                                summary=content[:200] + "..." if len(content) > 200 else content,
+                                title=result.get("title", ""),
+                                source=result.get("source", "hippocampus"),
+                                tags=result.get("tags", []),
+                                metadata=result.get("metadata", {})
+                            )
 
-            # Get graph-connected memories
-            graph_data = await self.cortex.get_memory_graph(memory_id, depth=2)
-            for node in graph_data["nodes"]:
-                if node["id"] != memory_id:
-                    retrieved_memory = await self.cortex.retrieve_memory(node["id"])
-                    if retrieved_memory:
-                        result = SearchResult(
-                            memory=retrieved_memory,
-                            score=0.8,  # High score for directly linked memories
-                            provenance={"source": "cortex", "method": "graph_traversal"},
-                            retrieval_path=["cortex", "related_search", "graph_traversal"]
-                        )
-                        results.append(result)
+                            score = self._calculate_tag_overlap_score(base_memory.tags, memory.tags)
+                            search_result = SearchResult(
+                                memory=memory,
+                                score=score,
+                                provenance={"source": "hippocampus", "method": "tag_overlap"},
+                                retrieval_path=["hippocampus", "related_search", "tag_overlap"]
+                            )
+                            results.append(search_result)
+                    except Exception as e:
+                        print(f"Error processing related memory result: {e}")
+                        continue
+
+            # If cortex is available, also search there
+            if self.cortex and base_memory.tags:
+                try:
+                    tag_matches = await self.cortex.search_by_tags(
+                        tags=base_memory.tags,
+                        limit=max_related * 2
+                    )
+
+                    for memory in tag_matches:
+                        if memory.id != memory_id:
+                            score = self._calculate_tag_overlap_score(base_memory.tags, memory.tags)
+                            result = SearchResult(
+                                memory=memory,
+                                score=score,
+                                provenance={"source": "cortex", "method": "tag_overlap"},
+                                retrieval_path=["cortex", "related_search", "tag_overlap"]
+                            )
+                            results.append(result)
+
+                    # Get graph-connected memories
+                    graph_data = await self.cortex.get_memory_graph(memory_id, depth=2)
+                    for node in graph_data["nodes"]:
+                        if node["id"] != memory_id:
+                            retrieved_memory = await self.cortex.retrieve_memory(node["id"])
+                            if retrieved_memory:
+                                result = SearchResult(
+                                    memory=retrieved_memory,
+                                    score=0.8,  # High score for directly linked memories
+                                    provenance={"source": "cortex", "method": "graph_traversal"},
+                                    retrieval_path=["cortex", "related_search", "graph_traversal"]
+                                )
+                                results.append(result)
+                except Exception as e:
+                    print(f"Error in cortex related search: {e}")
 
             # Deduplicate and rank
             results = self._deduplicate_results(results)
@@ -159,7 +243,26 @@ class RetrievalEngine:
             print(f"Error in context search: {e}")
             return []
 
+    def _build_search_filters(self, filters: dict) -> dict | None:
+        """Build search filters compatible with both DuckDB and Qdrant backends."""
+        if not filters:
+            return None
+
+        search_filter = {}
+
+        if filters.get("tags"):
+            search_filter["tags"] = filters["tags"]
+
+        if filters.get("source"):
+            search_filter["source"] = filters["source"]
+
+        if filters.get("retention_policy"):
+            search_filter["retention_policy"] = filters["retention_policy"]
+
+        return search_filter if search_filter else None
+
     def _build_qdrant_filters(self, filters: dict) -> dict | None:
+        """Legacy method for Qdrant-specific filters."""
         if not filters:
             return None
 
@@ -215,7 +318,13 @@ class RetrievalEngine:
         return results
 
     def health_check(self) -> dict:
-        return {
-            "hippocampus_healthy": self.hippocampus.health_check(),
-            "cortex_healthy": self.cortex.health_check(),
+        health = {
+            "hippocampus_healthy": self.hippocampus.health_check() if hasattr(self.hippocampus, 'health_check') else True,
         }
+
+        if self.cortex:
+            health["cortex_healthy"] = self.cortex.health_check() if hasattr(self.cortex, 'health_check') else True
+        else:
+            health["cortex_healthy"] = None  # Not available
+
+        return health

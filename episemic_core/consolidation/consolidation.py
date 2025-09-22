@@ -2,7 +2,11 @@
 
 from datetime import datetime, timedelta
 
-from ..cortex import Cortex
+try:
+    from ..cortex import Cortex
+except ImportError:
+    Cortex = None
+
 from ..hippocampus import Hippocampus
 from ..models import ConsolidationJob, Memory, MemoryStatus, RetentionPolicy
 

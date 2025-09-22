@@ -2,12 +2,26 @@
 
 
 from .config import EpistemicConfig
-from .consolidation import ConsolidationEngine
-from .cortex import Cortex
-from .hippocampus import Hippocampus
 from .hippocampus.duckdb_hippocampus import DuckDBHippocampus
 from .models import Memory, SearchQuery, SearchResult
 from .retrieval import RetrievalEngine
+
+# Optional imports - these packages are only needed if specific backends are enabled
+try:
+    from .hippocampus import Hippocampus
+    QDRANT_AVAILABLE = True
+except ImportError:
+    Hippocampus = None
+    QDRANT_AVAILABLE = False
+
+try:
+    from .consolidation import ConsolidationEngine
+    from .cortex import Cortex
+    CORTEX_AVAILABLE = True
+except ImportError:
+    ConsolidationEngine = None
+    Cortex = None
+    CORTEX_AVAILABLE = False
 
 
 class EpistemicAPI:
@@ -57,9 +71,11 @@ class EpistemicAPI:
         Returns:
             True if initialization successful, False otherwise.
         """
-        try:
-            # Initialize components based on configuration
-            if self.config.enable_hippocampus:
+        initialization_success = True
+
+        # Initialize hippocampus (required for basic functionality)
+        if self.config.enable_hippocampus:
+            try:
                 # Try to determine which storage backend to use
                 use_duckdb = await self._should_use_duckdb()
 
@@ -69,7 +85,9 @@ class EpistemicAPI:
                         db_path=self.config.duckdb.db_path,
                         model_name=self.config.duckdb.model_name
                     )
-                else:
+                    if self.config.debug:
+                        print("✓ Using DuckDB for hippocampus storage")
+                elif QDRANT_AVAILABLE and Hippocampus is not None:
                     # Use Qdrant + Redis
                     self.hippocampus = Hippocampus(
                         qdrant_host=self.config.qdrant.host,
@@ -78,8 +96,24 @@ class EpistemicAPI:
                         redis_port=self.config.redis.port,
                         collection_name=self.config.qdrant.collection_name,
                     )
+                    if self.config.debug:
+                        print("✓ Using Qdrant + Redis for hippocampus storage")
+                else:
+                    # Fallback to DuckDB if Qdrant is not available
+                    self.hippocampus = DuckDBHippocampus(
+                        db_path=self.config.duckdb.db_path,
+                        model_name=self.config.duckdb.model_name
+                    )
+                    if self.config.debug:
+                        print("✓ Falling back to DuckDB (Qdrant dependencies unavailable)")
+            except Exception as e:
+                if self.config.debug:
+                    print(f"✗ Hippocampus initialization failed: {e}")
+                initialization_success = False
 
-            if self.config.enable_cortex:
+        # Initialize cortex (optional - may fail if PostgreSQL not available or dependencies missing)
+        if self.config.enable_cortex and CORTEX_AVAILABLE:
+            try:
                 self.cortex = Cortex(
                     db_host=self.config.postgresql.host,
                     db_port=self.config.postgresql.port,
@@ -87,8 +121,22 @@ class EpistemicAPI:
                     db_user=self.config.postgresql.user,
                     db_password=self.config.postgresql.password,
                 )
+                if self.config.debug:
+                    print("✓ Using PostgreSQL for cortex storage")
+            except Exception as e:
+                if self.config.debug:
+                    print(f"⚠ Cortex initialization failed (PostgreSQL unavailable): {e}")
+                    print("⚠ Continuing with hippocampus-only mode")
+                # Don't mark as failure - DuckDB-only mode is valid
+        elif self.config.enable_cortex and not CORTEX_AVAILABLE:
+            if self.config.debug:
+                print("⚠ Cortex dependencies not available (missing psycopg2)")
+                print("⚠ Continuing with hippocampus-only mode")
 
-            if self.config.enable_consolidation and self.hippocampus and self.cortex:
+        # Initialize consolidation engine (only if both hippocampus and cortex available)
+        if (self.config.enable_consolidation and self.hippocampus and self.cortex
+            and CORTEX_AVAILABLE and ConsolidationEngine is not None):
+            try:
                 self.consolidation_engine = ConsolidationEngine(
                     self.hippocampus,
                     self.cortex
@@ -96,19 +144,37 @@ class EpistemicAPI:
                 # Set consolidation parameters
                 self.consolidation_engine.consolidation_threshold_hours = self.config.consolidation.threshold_hours
                 self.consolidation_engine.consolidation_access_threshold = self.config.consolidation.access_threshold
+                if self.config.debug:
+                    print("✓ Consolidation engine initialized")
+            except Exception as e:
+                if self.config.debug:
+                    print(f"⚠ Consolidation engine initialization failed: {e}")
+        elif self.config.enable_consolidation and not CORTEX_AVAILABLE:
+            if self.config.debug:
+                print("⚠ Consolidation requires cortex dependencies - disabled")
 
-            if self.config.enable_retrieval and self.hippocampus and self.cortex:
+        # Initialize retrieval engine (works with just hippocampus if cortex unavailable)
+        if self.config.enable_retrieval and self.hippocampus:
+            try:
                 self.retrieval_engine = RetrievalEngine(
                     self.hippocampus,
-                    self.cortex
+                    self.cortex  # May be None, that's OK
                 )
+                if self.config.debug:
+                    print("✓ Retrieval engine initialized")
+            except Exception as e:
+                if self.config.debug:
+                    print(f"⚠ Retrieval engine initialization failed: {e}")
 
+        # Mark as initialized if we at least have hippocampus
+        if self.hippocampus:
             self._initialized = True
-            return True
-
-        except Exception as e:
             if self.config.debug:
-                print(f"Initialization failed: {e}")
+                print("✓ API initialization completed")
+            return True
+        else:
+            if self.config.debug:
+                print("✗ API initialization failed - no storage backend available")
             return False
 
     async def _should_use_duckdb(self) -> bool:
@@ -118,6 +184,10 @@ class EpistemicAPI:
         Returns:
             True if should use DuckDB, False if should use Qdrant.
         """
+        # If Qdrant dependencies are not available, always use DuckDB
+        if not QDRANT_AVAILABLE:
+            return True
+
         # If explicitly configured to use DuckDB fallback, use it
         if self.config.use_duckdb_fallback and not self.config.prefer_qdrant:
             return True
