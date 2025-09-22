@@ -68,6 +68,30 @@ package-test:
 package-prod:
 	./scripts/package.sh prod
 
+# Version management with bump2version
+bump-patch:
+	bump2version patch
+
+bump-minor:
+	bump2version minor
+
+bump-major:
+	bump2version major
+
+# Show current version
+version:
+	@echo "Current version: $$(grep 'current_version =' .bumpversion.cfg | cut -d'=' -f2 | xargs)"
+
+# Combined release workflows
+release-patch: bump-patch package-test
+	@echo "Patch release completed and uploaded to test PyPI"
+
+release-minor: bump-minor package-test
+	@echo "Minor release completed and uploaded to test PyPI"
+
+release-major: bump-major package-test
+	@echo "Major release completed and uploaded to test PyPI"
+
 # Publish to PyPI (requires authentication)
 publish:
 	poetry publish
