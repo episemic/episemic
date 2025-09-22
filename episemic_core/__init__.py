@@ -1,6 +1,6 @@
 """Episemic - Simple memory system for AI agents."""
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 __author__ = "Aditya Karnam"
 __email__ = "akarnam37@gmail.com"
 
