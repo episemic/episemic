@@ -272,7 +272,7 @@ async with Episemic(config=config) as episemic:
 ```bash
 # DuckDB configuration (default)
 export DUCKDB_PATH="./memories.db"
-export DUCKDB_MODEL="all-MiniLM-L12-v2"
+export DUCKDB_MODEL="all-MiniLM-L6-v2"
 
 # Qdrant configuration (optional)
 export QDRANT_HOST="localhost"

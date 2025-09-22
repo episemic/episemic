@@ -345,7 +345,7 @@ EPISEMIC_PREFER_QDRANT=true pytest tests/ -v   # Qdrant if available
 ```bash
 # DuckDB configuration (default)
 export DUCKDB_PATH="/tmp/test_memories.db"
-export DUCKDB_MODEL="all-MiniLM-L12-v2"
+export DUCKDB_MODEL="all-MiniLM-L6-v2"
 
 # Qdrant configuration (optional)
 export QDRANT_HOST="localhost"

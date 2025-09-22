@@ -261,7 +261,7 @@ async def test_config_environment_variables():
     """Test DuckDB configuration from environment variables."""
     # Set environment variables
     test_path = "/tmp/test_episemic.db"
-    test_model = "all-MiniLM-L12-v2"
+    test_model = "all-MiniLM-L6-v2"
 
     os.environ["DUCKDB_PATH"] = test_path
     os.environ["DUCKDB_MODEL"] = test_model
