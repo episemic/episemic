@@ -39,10 +39,15 @@ class DuckDBHippocampus:
 
         # Initialize model in thread executor to avoid blocking
         loop = asyncio.get_event_loop()
-        self.model = await loop.run_in_executor(
-            None,
-            lambda: SentenceTransformer(self.model_name)
-        )
+        try:
+            self.model = await loop.run_in_executor(
+                None,
+                lambda: SentenceTransformer(self.model_name)
+            )
+        except Exception as e:
+            print(f"Warning: Failed to load sentence transformer model '{self.model_name}': {e}")
+            print("Falling back to simple text-based storage without embeddings")
+            self.model = None
 
         # Initialize database
         self.conn = duckdb.connect(self.db_path)
@@ -74,12 +79,17 @@ class DuckDBHippocampus:
         try:
             await self._ensure_initialized()
 
-            # Generate embedding
-            loop = asyncio.get_event_loop()
-            embedding = await loop.run_in_executor(
-                None,
-                lambda: self.model.encode(memory.text).tolist()
-            )
+            # Generate embedding if model is available
+            embedding = None
+            if self.model:
+                loop = asyncio.get_event_loop()
+                embedding = await loop.run_in_executor(
+                    None,
+                    lambda: self.model.encode(memory.text).tolist()
+                )
+            else:
+                # No embedding model available, use empty array
+                embedding = []
 
             # Convert metadata to JSON string
             metadata_json = json.dumps(memory.metadata) if memory.metadata else None
@@ -158,8 +168,19 @@ class DuckDBHippocampus:
 
             if filters:
                 if "tags" in filters:
-                    where_clause += " AND ? = ANY(tags)"
-                    params.append(filters["tags"])
+                    # Handle tag filtering for DuckDB - check if any of the query tags are in the memory tags
+                    tag_filter = filters["tags"]
+                    if isinstance(tag_filter, list):
+                        # If multiple tags, check if any match
+                        tag_conditions = []
+                        for tag in tag_filter:
+                            tag_conditions.append("? = ANY(tags)")
+                            params.append(tag)
+                        where_clause += " AND (" + " OR ".join(tag_conditions) + ")"
+                    else:
+                        # Single tag
+                        where_clause += " AND ? = ANY(tags)"
+                        params.append(tag_filter)
                 if "source" in filters:
                     where_clause += " AND source = ?"
                     params.append(filters["source"])

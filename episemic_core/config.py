@@ -16,7 +16,7 @@ class QdrantConfig(BaseModel):
 class DuckDBConfig(BaseModel):
     """DuckDB local database configuration."""
     db_path: str | None = None  # None for in-memory, or path to file
-    model_name: str = "all-MiniLM-L6-v2"  # Sentence transformer model
+    model_name: str = "all-MiniLM-L12-v2"  # Sentence transformer model
 
 
 class PostgreSQLConfig(BaseModel):
@@ -56,10 +56,10 @@ class EpistemicConfig(BaseModel):
     use_duckdb_fallback: bool = True  # Use DuckDB by default
     prefer_qdrant: bool = False  # Set to True to prefer Qdrant when available
 
-    # Global settings
+    # Global settings - optimized for DuckDB-only usage by default
     enable_hippocampus: bool = True
-    enable_cortex: bool = True
-    enable_consolidation: bool = True
+    enable_cortex: bool = False  # Disable by default (requires PostgreSQL)
+    enable_consolidation: bool = False  # Disable by default (requires cortex)
     enable_retrieval: bool = True
 
     # Development settings
