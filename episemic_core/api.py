@@ -2,12 +2,18 @@
 
 
 from .config import EpistemicConfig
-from .hippocampus import Hippocampus
 from .hippocampus.duckdb_hippocampus import DuckDBHippocampus
 from .models import Memory, SearchQuery, SearchResult
 from .retrieval import RetrievalEngine
 
-# Optional imports - these packages are only needed if cortex is enabled
+# Optional imports - these packages are only needed if specific backends are enabled
+try:
+    from .hippocampus import Hippocampus
+    QDRANT_AVAILABLE = True
+except ImportError:
+    Hippocampus = None
+    QDRANT_AVAILABLE = False
+
 try:
     from .consolidation import ConsolidationEngine
     from .cortex import Cortex
@@ -81,7 +87,7 @@ class EpistemicAPI:
                     )
                     if self.config.debug:
                         print("✓ Using DuckDB for hippocampus storage")
-                else:
+                elif QDRANT_AVAILABLE and Hippocampus is not None:
                     # Use Qdrant + Redis
                     self.hippocampus = Hippocampus(
                         qdrant_host=self.config.qdrant.host,
@@ -92,6 +98,14 @@ class EpistemicAPI:
                     )
                     if self.config.debug:
                         print("✓ Using Qdrant + Redis for hippocampus storage")
+                else:
+                    # Fallback to DuckDB if Qdrant is not available
+                    self.hippocampus = DuckDBHippocampus(
+                        db_path=self.config.duckdb.db_path,
+                        model_name=self.config.duckdb.model_name
+                    )
+                    if self.config.debug:
+                        print("✓ Falling back to DuckDB (Qdrant dependencies unavailable)")
             except Exception as e:
                 if self.config.debug:
                     print(f"✗ Hippocampus initialization failed: {e}")
@@ -170,6 +184,10 @@ class EpistemicAPI:
         Returns:
             True if should use DuckDB, False if should use Qdrant.
         """
+        # If Qdrant dependencies are not available, always use DuckDB
+        if not QDRANT_AVAILABLE:
+            return True
+
         # If explicitly configured to use DuckDB fallback, use it
         if self.config.use_duckdb_fallback and not self.config.prefer_qdrant:
             return True

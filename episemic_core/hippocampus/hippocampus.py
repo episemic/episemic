@@ -1,9 +1,17 @@
 """Hippocampus implementation - Fast, writable, vector-indexed store for recent memories."""
 
-
-import redis
-from qdrant_client import QdrantClient
-from qdrant_client.models import Distance, PointStruct, VectorParams
+try:
+    import redis
+    from qdrant_client import QdrantClient
+    from qdrant_client.models import Distance, PointStruct, VectorParams
+    QDRANT_AVAILABLE = True
+except ImportError:
+    redis = None
+    QdrantClient = None
+    Distance = None
+    PointStruct = None
+    VectorParams = None
+    QDRANT_AVAILABLE = False
 
 from ..models import Memory, MemoryStatus
 
