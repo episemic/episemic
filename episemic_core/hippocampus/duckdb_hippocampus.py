@@ -42,7 +42,7 @@ class DuckDBHippocampus:
         try:
             self.model = await loop.run_in_executor(
                 None,
-                lambda: SentenceTransformer(self.model_name)
+                lambda: SentenceTransformer(self.model_name, token=False)
             )
         except Exception as e:
             print(f"Warning: Failed to load sentence transformer model '{self.model_name}': {e}")
