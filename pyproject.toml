@@ -1,6 +1,6 @@
 [project]
 name = "episemic-core"
-version = "0.1.5"
+version = "0.1.6"
 description = "A brain-inspired memory system for AI agents"
 authors = [
     {name = "Aditya Karnam", email = "akarnam37@gmail.com"}
