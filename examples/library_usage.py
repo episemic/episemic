@@ -7,13 +7,9 @@ This file demonstrates various ways to use Episemic Core programmatically.
 import asyncio
 from typing import List
 
-from episemic_core import (
-    EpistemicAPI,
-    EpistemicConfig,
-    create_config,
-    create_config_from_env,
-    create_memory_system,
-)
+from episemic_core import Episemic, create_memory_system
+from episemic_core.api import EpistemicAPI
+from episemic_core.config import EpistemicConfig
 
 
 async def basic_usage_example():
@@ -79,19 +75,12 @@ async def custom_configuration_example():
     """Using custom configuration."""
     print("\n=== Custom Configuration Example ===")
 
-    # Method 1: Using helper function
-    config = create_config(
-        enable_hippocampus=True,
-        enable_cortex=True,
-        debug=True
-    )
-
-    # Method 2: Using configuration class
+    # Using configuration class
     config = EpistemicConfig(
-        qdrant={"host": "localhost", "port": 6333},
-        postgresql={"host": "localhost", "database": "my_episemic_db"},
         debug=True
     )
+    # Note: For this example, we'll use DuckDB-only mode
+    # which doesn't require external services
 
     api = EpistemicAPI(config)
     await api.initialize()
@@ -107,7 +96,7 @@ async def environment_config_example():
 
     # This will read from environment variables like:
     # QDRANT_HOST, POSTGRES_HOST, POSTGRES_PASSWORD, etc.
-    config = create_config_from_env()
+    config = EpistemicConfig.from_env()
 
     api = EpistemicAPI(config)
     # Note: This might fail if environment vars aren't set
