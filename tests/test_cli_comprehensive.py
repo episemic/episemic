@@ -5,8 +5,8 @@ from unittest.mock import patch, MagicMock, AsyncMock
 from typer.testing import CliRunner
 from datetime import datetime
 
-from episemic_core.cli.main import app
-from episemic_core.models import Memory, SearchResult
+from episemic.cli.main import app
+from episemic.models import Memory, SearchResult
 
 
 @pytest.fixture
@@ -18,7 +18,7 @@ def cli_runner():
 @pytest.fixture
 def mock_memory_system():
     """Mock the entire memory system."""
-    with patch('episemic_core.cli.main.get_memory_system') as mock_get:
+    with patch('episemic.cli.main.get_memory_system') as mock_get:
         mock_hippocampus = MagicMock()
         mock_cortex = MagicMock()
         mock_consolidation = MagicMock()
@@ -73,10 +73,10 @@ def test_help_command(cli_runner):
 
 def test_init_command_success(cli_runner):
     """Test successful init command."""
-    with patch('episemic_core.cli.main.Hippocampus') as mock_hippo, \
-         patch('episemic_core.cli.main.Cortex') as mock_cortex, \
-         patch('episemic_core.cli.main.ConsolidationEngine') as mock_consol, \
-         patch('episemic_core.cli.main.RetrievalEngine') as mock_retrieval:
+    with patch('episemic.cli.main.Hippocampus') as mock_hippo, \
+         patch('episemic.cli.main.Cortex') as mock_cortex, \
+         patch('episemic.cli.main.ConsolidationEngine') as mock_consol, \
+         patch('episemic.cli.main.RetrievalEngine') as mock_retrieval:
 
         result = cli_runner.invoke(app, ["init"])
 
@@ -91,10 +91,10 @@ def test_init_command_success(cli_runner):
 
 def test_init_command_with_custom_params(cli_runner):
     """Test init command with custom parameters."""
-    with patch('episemic_core.cli.main.Hippocampus') as mock_hippo, \
-         patch('episemic_core.cli.main.Cortex') as mock_cortex, \
-         patch('episemic_core.cli.main.ConsolidationEngine'), \
-         patch('episemic_core.cli.main.RetrievalEngine'):
+    with patch('episemic.cli.main.Hippocampus') as mock_hippo, \
+         patch('episemic.cli.main.Cortex') as mock_cortex, \
+         patch('episemic.cli.main.ConsolidationEngine'), \
+         patch('episemic.cli.main.RetrievalEngine'):
 
         result = cli_runner.invoke(app, [
             "init",
@@ -112,7 +112,7 @@ def test_init_command_with_custom_params(cli_runner):
 
 def test_init_command_failure(cli_runner):
     """Test init command failure."""
-    with patch('episemic_core.cli.main.Hippocampus', side_effect=Exception("Init failed")):
+    with patch('episemic.cli.main.Hippocampus', side_effect=Exception("Init failed")):
         result = cli_runner.invoke(app, ["init"])
 
         assert result.exit_code == 1
@@ -470,19 +470,19 @@ def test_health_command_exception(cli_runner, mock_memory_system):
 
 def test_get_memory_system_initialization():
     """Test get_memory_system function initializes components."""
-    with patch('episemic_core.cli.main.Hippocampus') as mock_hippo, \
-         patch('episemic_core.cli.main.Cortex') as mock_cortex, \
-         patch('episemic_core.cli.main.ConsolidationEngine') as mock_consol, \
-         patch('episemic_core.cli.main.RetrievalEngine') as mock_retrieval:
+    with patch('episemic.cli.main.Hippocampus') as mock_hippo, \
+         patch('episemic.cli.main.Cortex') as mock_cortex, \
+         patch('episemic.cli.main.ConsolidationEngine') as mock_consol, \
+         patch('episemic.cli.main.RetrievalEngine') as mock_retrieval:
 
         # Clear global instances
-        import episemic_core.cli.main as cli_main
+        import episemic.cli.main as cli_main
         cli_main.hippocampus = None
         cli_main.cortex = None
         cli_main.consolidation_engine = None
         cli_main.retrieval_engine = None
 
-        from episemic_core.cli.main import get_memory_system
+        from episemic.cli.main import get_memory_system
         hippo, cortex, consol, retrieval = get_memory_system()
 
         # Verify components were created
@@ -494,19 +494,19 @@ def test_get_memory_system_initialization():
 
 def test_get_memory_system_reuse_existing():
     """Test get_memory_system reuses existing components."""
-    with patch('episemic_core.cli.main.Hippocampus') as mock_hippo, \
-         patch('episemic_core.cli.main.Cortex') as mock_cortex, \
-         patch('episemic_core.cli.main.ConsolidationEngine') as mock_consol, \
-         patch('episemic_core.cli.main.RetrievalEngine') as mock_retrieval:
+    with patch('episemic.cli.main.Hippocampus') as mock_hippo, \
+         patch('episemic.cli.main.Cortex') as mock_cortex, \
+         patch('episemic.cli.main.ConsolidationEngine') as mock_consol, \
+         patch('episemic.cli.main.RetrievalEngine') as mock_retrieval:
 
         # Set global instances
-        import episemic_core.cli.main as cli_main
+        import episemic.cli.main as cli_main
         cli_main.hippocampus = "existing_hippo"
         cli_main.cortex = "existing_cortex"
         cli_main.consolidation_engine = "existing_consol"
         cli_main.retrieval_engine = "existing_retrieval"
 
-        from episemic_core.cli.main import get_memory_system
+        from episemic.cli.main import get_memory_system
         hippo, cortex, consol, retrieval = get_memory_system()
 
         # Verify existing components were returned
@@ -650,8 +650,8 @@ def test_memory_display_formatting_in_get(cli_runner, mock_memory_system):
 
 def test_main_entry_point():
     """Test main entry point."""
-    with patch('episemic_core.cli.main.app') as mock_app:
-        from episemic_core.cli.main import __name__ as module_name
+    with patch('episemic.cli.main.app') as mock_app:
+        from episemic.cli.main import __name__ as module_name
 
         # Simulate running as main module
         if module_name == "__main__":

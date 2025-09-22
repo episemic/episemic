@@ -2,7 +2,7 @@
 
 **Episemic Core** is a brain-inspired memory system for AI agents that enables intelligent **encoding, storage, consolidation, and retrieval** of information. Inspired by human cognition, Episemic combines **episodic and semantic memory**, **replay-based consolidation**, and **associative retrieval** to create context-aware AI systems.
 
-[![PyPI version](https://badge.fury.io/py/episemic-core.svg)](https://badge.fury.io/py/episemic-core)
+[![PyPI version](https://badge.fury.io/py/episemic.svg)](https://badge.fury.io/py/episemic)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -32,13 +32,13 @@
 ### From PyPI (Recommended)
 
 ```bash
-pip install episemic-core
+pip install episemic
 ```
 
 ### From Test PyPI (Latest Development)
 
 ```bash
-pip install --index-url https://test.pypi.org/simple/ episemic-core
+pip install --index-url https://test.pypi.org/simple/ episemic
 ```
 
 ### Requirements
@@ -105,7 +105,7 @@ print(f"Found {len(results)} memories")
 
 ```bash
 # Install creates the 'episemic' command
-pip install episemic-core
+pip install episemic
 
 # Store a memory
 episemic store "This is my first memory" --title "First Memory" --tags ai memory
@@ -339,14 +339,14 @@ Episemic Core is inspired by research in cognitive science and neuroscience, par
 
 ## 📞 Support
 
-- **📋 Issues**: [GitHub Issues](https://github.com/episemic/episemic-core/issues)
+- **📋 Issues**: [GitHub Issues](https://github.com/episemic/episemic/issues)
 - **📖 Documentation**: [API Docs](docs/index.html)
-- **💬 Discussions**: [GitHub Discussions](https://github.com/episemic/episemic-core/discussions)
+- **💬 Discussions**: [GitHub Discussions](https://github.com/episemic/episemic/discussions)
 
 ---
 
 **Get started with intelligent memory for your AI agents today!**
 
 ```bash
-pip install episemic-core
+pip install episemic
 ```

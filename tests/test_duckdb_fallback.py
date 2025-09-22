@@ -8,14 +8,14 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from episemic_core.config import EpistemicConfig
-from episemic_core.hippocampus.duckdb_hippocampus import DuckDBHippocampus
-from episemic_core.models import Memory
-from episemic_core.simple import Episemic
+from episemic.config import EpistemicConfig
+from episemic.hippocampus.duckdb_hippocampus import DuckDBHippocampus
+from episemic.models import Memory
+from episemic.simple import Episemic
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_duckdb_hippocampus_basic_operations(mock_transformer):
     """Test basic DuckDB hippocampus operations."""
     # Mock the sentence transformer
@@ -85,7 +85,7 @@ async def test_duckdb_hippocampus_basic_operations(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_simple_api_with_duckdb_fallback(mock_transformer):
     """Test simple API automatically using DuckDB fallback."""
     # Mock the sentence transformer
@@ -148,7 +148,7 @@ async def test_simple_api_with_duckdb_fallback(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_duckdb_with_in_memory_db(mock_transformer):
     """Test DuckDB with in-memory database."""
     # Mock the sentence transformer
@@ -180,7 +180,7 @@ async def test_duckdb_with_in_memory_db(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_duckdb_vector_search_with_filters(mock_transformer):
     """Test DuckDB vector search with various filters."""
     # Mock the sentence transformer

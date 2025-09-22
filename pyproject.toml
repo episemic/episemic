@@ -1,5 +1,5 @@
 [project]
-name = "episemic-core"
+name = "episemic"
 version = "0.1.9"
 description = "A brain-inspired memory system for AI agents"
 authors = [
@@ -32,13 +32,13 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/episemic/episemic-core"
-Repository = "https://github.com/episemic/episemic-core"
-"Bug Tracker" = "https://github.com/episemic/episemic-core/issues"
+Homepage = "https://github.com/episemic/episemic"
+Repository = "https://github.com/episemic/episemic"
+"Bug Tracker" = "https://github.com/episemic/episemic/issues"
 Documentation = "https://episemic.readthedocs.io"
 
 [project.scripts]
-episemic = "episemic_core.cli.main:app"
+episemic = "episemic.cli.main:app"
 
 
 [build-system]

@@ -5,14 +5,14 @@ from unittest.mock import MagicMock, patch, Mock
 from datetime import datetime
 import json
 
-from episemic_core.cortex.cortex import Cortex
-from episemic_core.models import Memory, MemoryLink, LinkType, MemoryStatus, RetentionPolicy
+from episemic.cortex.cortex import Cortex
+from episemic.models import Memory, MemoryLink, LinkType, MemoryStatus, RetentionPolicy
 
 
 @pytest.fixture
 def mock_psycopg2():
     """Mock psycopg2 and its connection/cursor objects."""
-    with patch('episemic_core.cortex.cortex.psycopg2') as mock_pg:
+    with patch('episemic.cortex.cortex.psycopg2') as mock_pg:
         # Mock connection and cursor
         mock_conn = MagicMock()
         mock_cursor = MagicMock()

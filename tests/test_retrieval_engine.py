@@ -4,8 +4,8 @@ import pytest
 from unittest.mock import MagicMock, AsyncMock, patch
 from datetime import datetime
 
-from episemic_core.retrieval.retrieval import RetrievalEngine
-from episemic_core.models import Memory, SearchQuery, SearchResult
+from episemic.retrieval.retrieval import RetrievalEngine
+from episemic.models import Memory, SearchQuery, SearchResult
 
 
 @pytest.fixture

@@ -42,22 +42,22 @@ def main():
     # List of modules to document
     modules = [
         # User-facing API
-        "episemic_core",
-        "episemic_core.simple",
+        "episemic",
+        "episemic.simple",
 
         # Internal API
-        "episemic_core.api",
-        "episemic_core.config",
-        "episemic_core.models",
+        "episemic.api",
+        "episemic.config",
+        "episemic.models",
 
         # Core components
-        "episemic_core.hippocampus.hippocampus",
-        "episemic_core.cortex.cortex",
-        "episemic_core.consolidation.consolidation",
-        "episemic_core.retrieval.retrieval",
+        "episemic.hippocampus.hippocampus",
+        "episemic.cortex.cortex",
+        "episemic.consolidation.consolidation",
+        "episemic.retrieval.retrieval",
 
         # CLI
-        "episemic_core.cli.main",
+        "episemic.cli.main",
     ]
 
     # Generate documentation for each module

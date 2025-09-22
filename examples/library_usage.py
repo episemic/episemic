@@ -7,9 +7,9 @@ This file demonstrates various ways to use Episemic Core programmatically.
 import asyncio
 from typing import List
 
-from episemic_core import Episemic, create_memory_system
-from episemic_core.api import EpistemicAPI
-from episemic_core.config import EpistemicConfig
+from episemic import Episemic, create_memory_system
+from episemic.api import EpistemicAPI
+from episemic.config import EpistemicConfig
 
 
 async def basic_usage_example():

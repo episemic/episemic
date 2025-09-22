@@ -3,8 +3,8 @@
 import pytest
 
 # Import the internal API for testing (not exposed to users)
-from episemic_core.api import EpistemicAPI, create_config
-from episemic_core.config import EpistemicConfig
+from episemic.api import EpistemicAPI, create_config
+from episemic.config import EpistemicConfig
 
 
 def test_config_creation():

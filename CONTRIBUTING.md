@@ -14,8 +14,8 @@ Thank you for your interest in contributing to Episemic Core! This guide will he
 
 ```bash
 # Clone the repository
-git clone https://github.com/episemic/episemic-core.git
-cd episemic-core
+git clone https://github.com/episemic/episemic.git
+cd episemic
 
 # Set up virtual environment and install dependencies
 python -m venv .venv
