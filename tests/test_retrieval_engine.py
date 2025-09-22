@@ -86,7 +86,7 @@ async def test_search_with_vector_similarity(retrieval_engine, mock_hippocampus,
     mock_hippocampus.vector_search.assert_called_once_with(
         query_vector=sample_search_query.embedding,
         top_k=sample_search_query.top_k,
-        filters={"tags": {"any": ["test"]}, "source": "test"}
+        filters={"tags": ["test"], "source": "test"}
     )
 
     # Verify results

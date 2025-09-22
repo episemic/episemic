@@ -262,8 +262,8 @@ def test_api_configuration_defaults():
     assert config.use_duckdb_fallback is True
     assert config.prefer_qdrant is False
     assert config.enable_hippocampus is True
-    assert config.enable_cortex is True
-    assert config.enable_consolidation is True
+    assert config.enable_cortex is False  # Disabled by default
+    assert config.enable_consolidation is False  # Disabled by default
     assert config.enable_retrieval is True
 
     # Test DuckDB config defaults

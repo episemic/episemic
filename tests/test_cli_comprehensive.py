@@ -55,7 +55,7 @@ def test_version_command(cli_runner):
     result = cli_runner.invoke(app, ["version"])
 
     assert result.exit_code == 0
-    assert "Episemic Core v0.1.0" in result.stdout
+    assert "Episemic Core v1.0.1" in result.stdout
 
 
 def test_help_command(cli_runner):

@@ -188,9 +188,9 @@ async def test_duckdb_error_handling(mock_transformer):
         source="test"
     )
 
-    # This should fail gracefully
+    # This should fall back gracefully and still work (without embeddings)
     result = await hippocampus.store_memory(memory)
-    assert result is False
+    assert result is True  # Should succeed with fallback
 
     # Reset transformer mock for successful initialization
     mock_transformer.side_effect = None

@@ -134,8 +134,8 @@ def test_episemic_config_defaults():
 
     # Test global settings
     assert config.enable_hippocampus is True
-    assert config.enable_cortex is True
-    assert config.enable_consolidation is True
+    assert config.enable_cortex is False  # Disabled by default
+    assert config.enable_consolidation is False  # Disabled by default
     assert config.enable_retrieval is True
 
     # Test development settings

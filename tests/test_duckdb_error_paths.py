@@ -257,7 +257,7 @@ async def test_duckdb_with_different_model_names(mock_transformer):
     await hippocampus._ensure_initialized()
 
     # Should use the custom model name
-    mock_transformer.assert_called_with("custom-model-name")
+    mock_transformer.assert_called_with("custom-model-name", token=False)
 
     # Test embedding generation
     embedding = await hippocampus.get_embedding("test text")

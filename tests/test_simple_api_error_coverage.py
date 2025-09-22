@@ -182,11 +182,11 @@ async def test_simple_api_health_check_variations(mock_transformer):
             "enable_consolidation": False,
             "enable_retrieval": False,
         },
-        # All services disabled
+        # Minimal services (keep hippocampus enabled)
         {
             "use_duckdb_fallback": True,
             "prefer_qdrant": False,
-            "enable_hippocampus": False,
+            "enable_hippocampus": True,  # Keep enabled for minimum functionality
             "enable_cortex": False,
             "enable_consolidation": False,
             "enable_retrieval": False,

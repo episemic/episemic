@@ -95,23 +95,24 @@ async def test_api_initialization_with_disabled_services():
     )
 
     api = EpistemicAPI(config)
-    # This should succeed even without external services
-    await api.initialize()
+    # With all services disabled including hippocampus, initialization should fail
+    result = await api.initialize()
 
-    # With all services disabled, initialization should work
-    # but components should be None
+    # With all services disabled, initialization should fail
+    # because at least hippocampus is required
+    assert result is False
     assert api.hippocampus is None
     assert api.cortex is None
     assert api.consolidation_engine is None
     assert api.retrieval_engine is None
-    assert api._initialized is True
+    assert api._initialized is False
 
 
 @pytest.mark.asyncio
 async def test_api_context_manager():
-    """Test API as async context manager."""
+    """Test API as async context manager with minimal config."""
     config = EpistemicConfig(
-        enable_hippocampus=False,
+        enable_hippocampus=True,  # Keep hippocampus enabled for minimum functionality
         enable_cortex=False,
         enable_consolidation=False,
         enable_retrieval=False
