@@ -162,8 +162,13 @@ class DuckDBHippocampus:
         try:
             await self._ensure_initialized()
 
+            # If no embeddings are available, fallback to basic text search
+            if not self.model or not query_vector:
+                print(f"DEBUG: Falling back to text search - model: {self.model is not None}, query_vector: {len(query_vector) if query_vector else 0}")
+                return await self._fallback_text_search(query_vector, top_k, filters)
+
             # Build filter conditions
-            where_clause = "WHERE is_quarantined = FALSE"
+            where_clause = "WHERE is_quarantined = FALSE AND len(embedding) > 0"
             params = []
 
             if filters:
@@ -185,12 +190,107 @@ class DuckDBHippocampus:
                     where_clause += " AND source = ?"
                     params.append(filters["source"])
 
-            # Perform similarity search using dot product (simplified)
-            # For now, we'll use a basic approach since DuckDB vector functions vary by version
+            # Get all memories with embeddings and calculate similarity in Python
+            query = f"""
+                SELECT id, content, title, source, tags, metadata,
+                       created_at, access_count, last_accessed, embedding
+                FROM memories
+                {where_clause}
+            """
+
+            all_results = self.conn.execute(query, params).fetchall()
+
+            # Calculate cosine similarity in Python for each result
+            scored_results = []
+            for row in all_results:
+                embedding = row[9]  # embedding column
+                if embedding and len(embedding) > 0:
+                    similarity = self._calculate_cosine_similarity(query_vector, embedding)
+                else:
+                    similarity = 0.0
+
+                scored_results.append({
+                    "id": row[0],
+                    "content": row[1],
+                    "title": row[2],
+                    "source": row[3],
+                    "tags": row[4] or [],
+                    "metadata": json.loads(row[5]) if row[5] else {},
+                    "created_at": row[6],
+                    "access_count": row[7],
+                    "last_accessed": row[8],
+                    "similarity": similarity
+                })
+
+            # Sort by similarity and return top_k
+            scored_results.sort(key=lambda x: x["similarity"], reverse=True)
+            return scored_results[:top_k]
+        except Exception as e:
+            print(f"Error in vector search: {e}")
+            return await self._fallback_text_search(query_vector, top_k, filters)
+
+    def _calculate_cosine_similarity(self, vec1: list[float], vec2: list[float]) -> float:
+        """Calculate cosine similarity between two vectors."""
+        try:
+            import math
+
+            if not vec1 or not vec2 or len(vec1) != len(vec2):
+                return 0.0
+
+            # Calculate dot product
+            dot_product = sum(a * b for a, b in zip(vec1, vec2))
+
+            # Calculate magnitudes
+            magnitude1 = math.sqrt(sum(a * a for a in vec1))
+            magnitude2 = math.sqrt(sum(b * b for b in vec2))
+
+            # Avoid division by zero
+            if magnitude1 == 0.0 or magnitude2 == 0.0:
+                return 0.0
+
+            # Calculate cosine similarity
+            similarity = dot_product / (magnitude1 * magnitude2)
+
+            # Clamp to [0, 1] range for consistency
+            return max(0.0, min(1.0, similarity))
+        except Exception:
+            return 0.0
+
+    async def _fallback_text_search(
+        self,
+        query_vector: list[float],
+        top_k: int = 10,
+        filters: dict | None = None
+    ) -> list[dict]:
+        """Fallback text-based search when embeddings are not available."""
+        try:
+            await self._ensure_initialized()
+
+            # Build filter conditions
+            where_clause = "WHERE is_quarantined = FALSE"
+            params = []
+
+            if filters:
+                if "tags" in filters:
+                    tag_filter = filters["tags"]
+                    if isinstance(tag_filter, list):
+                        tag_conditions = []
+                        for tag in tag_filter:
+                            tag_conditions.append("? = ANY(tags)")
+                            params.append(tag)
+                        where_clause += " AND (" + " OR ".join(tag_conditions) + ")"
+                    else:
+                        where_clause += " AND ? = ANY(tags)"
+                        params.append(tag_filter)
+                if "source" in filters:
+                    where_clause += " AND source = ?"
+                    params.append(filters["source"])
+
+            # Simple text-based ordering (fallback when no embeddings)
             query = f"""
                 SELECT id, content, title, source, tags, metadata,
                        created_at, access_count, last_accessed,
-                       1.0 AS similarity
+                       0.5 AS similarity
                 FROM memories
                 {where_clause}
                 ORDER BY created_at DESC
@@ -216,7 +316,7 @@ class DuckDBHippocampus:
                 for row in results
             ]
         except Exception as e:
-            print(f"Error in vector search: {e}")
+            print(f"Error in fallback text search: {e}")
             return []
 
     async def mark_quarantined(self, memory_id: str) -> bool:

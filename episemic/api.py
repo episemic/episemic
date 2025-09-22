@@ -336,9 +336,15 @@ class EpistemicAPI:
             include_quarantined=include_quarantined,
         )
 
-        # Add embedding if provided
+        # Generate embedding for the query if not provided
         if embedding:
             search_query.embedding = embedding
+        elif self.hippocampus and hasattr(self.hippocampus, 'get_embedding'):
+            try:
+                search_query.embedding = await self.hippocampus.get_embedding(query)
+            except Exception as e:
+                if self.config.debug:
+                    print(f"Failed to generate embedding for query: {e}")
 
         return await self.retrieval_engine.search(search_query)
 
