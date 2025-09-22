@@ -1,6 +1,6 @@
 # Packaging Guide for Episemic-Core
 
-This guide explains how to package and upload the episemic-core library to PyPI.
+This guide explains how to package and upload the episemic library to PyPI.
 
 ## Prerequisites
 
@@ -50,7 +50,7 @@ make package-prod
 ./scripts/upload-test.sh
 
 # 3. Test installation from test PyPI
-pip install --index-url https://test.pypi.org/simple/ episemic-core
+pip install --index-url https://test.pypi.org/simple/ episemic
 
 # 4. If everything works, upload to production PyPI
 ./scripts/upload.sh
@@ -77,7 +77,7 @@ pip install --index-url https://test.pypi.org/simple/ episemic-core
 
 5. **Test Installation**:
    ```bash
-   pip install --index-url https://test.pypi.org/simple/ episemic-core
+   pip install --index-url https://test.pypi.org/simple/ episemic
    ```
 
 6. **Upload to Production PyPI**:

@@ -2,12 +2,12 @@
 
 import pytest
 
-from episemic_core import Episemic, EpistemicSync, Memory, SearchResult
+from episemic import Episemic, EpistemicSync, Memory, SearchResult
 
 
 def test_simple_imports():
     """Test that the simple API imports correctly."""
-    from episemic_core import Episemic, EpistemicSync, Memory, SearchResult, create_memory_system
+    from episemic import Episemic, EpistemicSync, Memory, SearchResult, create_memory_system
 
     # Should be able to create instances
     episemic = Episemic()
@@ -79,7 +79,7 @@ def test_sync_episemic():
 
 def test_memory_wrapper():
     """Test Memory wrapper class."""
-    from episemic_core.models import Memory as InternalMemory
+    from episemic.models import Memory as InternalMemory
 
     # Create a mock internal memory
     internal = InternalMemory(
@@ -107,7 +107,7 @@ def test_memory_wrapper():
 
 def test_search_result_wrapper():
     """Test SearchResult wrapper class."""
-    from episemic_core.models import Memory as InternalMemory, SearchResult as InternalSearchResult
+    from episemic.models import Memory as InternalMemory, SearchResult as InternalSearchResult
 
     # Create mock internal objects
     internal_memory = InternalMemory(
@@ -139,7 +139,7 @@ def test_search_result_wrapper():
 @pytest.mark.asyncio
 async def test_create_memory_system_function():
     """Test the create_memory_system convenience function."""
-    from episemic_core import create_memory_system
+    from episemic import create_memory_system
 
     episemic = await create_memory_system(debug=True)
     assert isinstance(episemic, Episemic)

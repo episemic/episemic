@@ -8,13 +8,13 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from episemic_core.config import EpistemicConfig, DuckDBConfig
-from episemic_core.hippocampus.duckdb_hippocampus import DuckDBHippocampus
-from episemic_core.models import Memory
+from episemic.config import EpistemicConfig, DuckDBConfig
+from episemic.hippocampus.duckdb_hippocampus import DuckDBHippocampus
+from episemic.models import Memory
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_duckdb_initialization_and_health(mock_transformer):
     """Test DuckDB initialization and health check."""
     # Mock the sentence transformer
@@ -45,7 +45,7 @@ async def test_duckdb_initialization_and_health(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_duckdb_memory_operations(mock_transformer):
     """Test comprehensive memory operations."""
     # Mock the sentence transformer
@@ -119,7 +119,7 @@ async def test_duckdb_memory_operations(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_duckdb_vector_search_comprehensive(mock_transformer):
     """Test comprehensive vector search functionality."""
     # Mock the sentence transformer
@@ -172,7 +172,7 @@ async def test_duckdb_vector_search_comprehensive(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_duckdb_error_handling(mock_transformer):
     """Test error handling in DuckDB operations."""
     # Mock the sentence transformer to raise an error
@@ -215,7 +215,7 @@ async def test_duckdb_error_handling(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_duckdb_close_operation(mock_transformer):
     """Test DuckDB close operation."""
     # Mock the sentence transformer
@@ -256,7 +256,7 @@ def test_duckdb_config_integration():
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_duckdb_file_persistence(mock_transformer):
     """Test file persistence across sessions."""
     # Mock the sentence transformer
@@ -307,7 +307,7 @@ async def test_duckdb_file_persistence(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_duckdb_multiple_memories_search(mock_transformer):
     """Test search with multiple memories and various scenarios."""
     # Mock the sentence transformer with different embeddings

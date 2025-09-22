@@ -6,12 +6,12 @@ from unittest.mock import MagicMock, patch, AsyncMock
 
 import pytest
 
-from episemic_core.config import EpistemicConfig
-from episemic_core.simple import Episemic, EpistemicSync
+from episemic.config import EpistemicConfig
+from episemic.simple import Episemic, EpistemicSync
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_simple_api_start_failure_handling(mock_transformer):
     """Test simple API start failure handling."""
     # Mock the sentence transformer
@@ -55,7 +55,7 @@ def test_simple_api_sync_event_loop_edge_cases():
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_simple_api_forget_functionality(mock_transformer):
     """Test forget functionality in simple API."""
     # Mock the sentence transformer
@@ -84,7 +84,7 @@ async def test_simple_api_forget_functionality(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_simple_api_find_related_functionality(mock_transformer):
     """Test find_related functionality in simple API."""
     # Mock the sentence transformer
@@ -141,7 +141,7 @@ async def test_simple_api_not_started_edge_cases():
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_simple_api_consolidation_edge_cases(mock_transformer):
     """Test consolidation edge cases in simple API."""
     # Mock the sentence transformer
@@ -164,7 +164,7 @@ async def test_simple_api_consolidation_edge_cases(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_simple_api_health_check_variations(mock_transformer):
     """Test health check variations."""
     # Mock the sentence transformer
@@ -201,7 +201,7 @@ async def test_simple_api_health_check_variations(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_simple_api_memory_retrieval_error_handling(mock_transformer):
     """Test memory retrieval error handling."""
     # Mock the sentence transformer
@@ -230,7 +230,7 @@ async def test_simple_api_memory_retrieval_error_handling(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_simple_api_config_kwargs_parsing(mock_transformer):
     """Test config kwargs parsing edge cases."""
     # Test with mixed kwargs
@@ -250,7 +250,7 @@ async def test_simple_api_config_kwargs_parsing(mock_transformer):
 
 def test_simple_api_sync_wrapper_comprehensive():
     """Test comprehensive sync wrapper functionality."""
-    with patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer'):
+    with patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer'):
         config = EpistemicConfig()
         config.use_duckdb_fallback = True
         config.prefer_qdrant = False

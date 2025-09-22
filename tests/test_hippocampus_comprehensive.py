@@ -5,14 +5,14 @@ from unittest.mock import MagicMock, patch, Mock
 from datetime import datetime
 import json
 
-from episemic_core.hippocampus.hippocampus import Hippocampus
-from episemic_core.models import Memory, MemoryStatus, RetentionPolicy
+from episemic.hippocampus.hippocampus import Hippocampus
+from episemic.models import Memory, MemoryStatus, RetentionPolicy
 
 
 @pytest.fixture
 def mock_qdrant():
     """Mock QdrantClient and its methods."""
-    with patch('episemic_core.hippocampus.hippocampus.QdrantClient') as mock_client_class:
+    with patch('episemic.hippocampus.hippocampus.QdrantClient') as mock_client_class:
         mock_client = MagicMock()
         mock_client_class.return_value = mock_client
 
@@ -27,7 +27,7 @@ def mock_qdrant():
 @pytest.fixture
 def mock_redis():
     """Mock Redis client and its methods."""
-    with patch('episemic_core.hippocampus.hippocampus.redis') as mock_redis_module:
+    with patch('episemic.hippocampus.hippocampus.redis') as mock_redis_module:
         mock_redis_client = MagicMock()
         mock_redis_module.Redis.return_value = mock_redis_client
 

@@ -16,7 +16,7 @@ class QdrantConfig(BaseModel):
 class DuckDBConfig(BaseModel):
     """DuckDB local database configuration."""
     db_path: str | None = None  # None for in-memory, or path to file
-    model_name: str = "all-MiniLM-L12-v2"  # Sentence transformer model
+    model_name: str = "all-MiniLM-L6-v2"  # Sentence transformer model
 
 
 class PostgreSQLConfig(BaseModel):

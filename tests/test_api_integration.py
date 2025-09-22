@@ -6,13 +6,13 @@ from unittest.mock import MagicMock, patch, AsyncMock
 
 import pytest
 
-from episemic_core.api import EpistemicAPI
-from episemic_core.config import EpistemicConfig
-from episemic_core.models import Memory, SearchQuery
+from episemic.api import EpistemicAPI
+from episemic.config import EpistemicConfig
+from episemic.models import Memory, SearchQuery
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_api_duckdb_backend_selection(mock_transformer):
     """Test API automatically selecting DuckDB backend."""
     # Mock the sentence transformer
@@ -84,7 +84,7 @@ async def test_api_qdrant_preference_with_availability(mock_qdrant_client):
 
 @pytest.mark.asyncio
 @patch('qdrant_client.QdrantClient')
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_api_qdrant_fallback_to_duckdb(mock_transformer, mock_qdrant_client):
     """Test API falling back to DuckDB when Qdrant is unavailable."""
     # Mock the sentence transformer
@@ -108,7 +108,7 @@ async def test_api_qdrant_fallback_to_duckdb(mock_transformer, mock_qdrant_clien
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_api_fallback_search_functionality(mock_transformer):
     """Test API fallback search when retrieval engine is disabled."""
     # Mock the sentence transformer
@@ -152,7 +152,7 @@ async def test_api_initialization_failure_handling():
     # Mock hippocampus to fail initialization
     with patch.object(api, 'hippocampus', None):
         with patch.object(api, '_should_use_duckdb', return_value=True):
-            with patch('episemic_core.api.DuckDBHippocampus') as mock_duckdb:
+            with patch('episemic.api.DuckDBHippocampus') as mock_duckdb:
                 mock_duckdb.side_effect = Exception("Initialization failed")
 
                 success = await api.initialize()
@@ -161,7 +161,7 @@ async def test_api_initialization_failure_handling():
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_api_memory_operations_comprehensive(mock_transformer):
     """Test comprehensive memory operations through API."""
     # Mock the sentence transformer
@@ -209,7 +209,7 @@ async def test_api_memory_operations_comprehensive(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_api_context_manager(mock_transformer):
     """Test API context manager functionality."""
     # Mock the sentence transformer
@@ -272,7 +272,7 @@ def test_api_configuration_defaults():
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_api_search_with_fallback_error_handling(mock_transformer):
     """Test API search fallback with error handling."""
     # Mock the sentence transformer

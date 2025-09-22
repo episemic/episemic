@@ -7,13 +7,13 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from episemic_core import create_memory_system
-from episemic_core.config import EpistemicConfig
-from episemic_core.simple import Episemic, EpistemicSync, Memory, SearchResult
+from episemic import create_memory_system
+from episemic.config import EpistemicConfig
+from episemic.simple import Episemic, EpistemicSync, Memory, SearchResult
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_simple_api_comprehensive_workflow(mock_transformer):
     """Test comprehensive workflow with simple API."""
     # Mock the sentence transformer
@@ -70,7 +70,7 @@ async def test_simple_api_comprehensive_workflow(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_simple_api_error_scenarios(mock_transformer):
     """Test simple API error handling scenarios."""
     # Mock the sentence transformer
@@ -116,7 +116,7 @@ async def test_simple_api_error_scenarios(mock_transformer):
 
 def test_simple_api_sync_wrapper():
     """Test synchronous wrapper functionality."""
-    with patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer'):
+    with patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer'):
         mock_model = MagicMock()
         mock_model.encode.return_value.tolist.return_value = [0.3] * 384
 
@@ -193,7 +193,7 @@ async def test_simple_api_configuration_variations():
 
 def test_memory_wrapper_properties():
     """Test Memory wrapper class properties."""
-    from episemic_core.models import Memory as InternalMemory
+    from episemic.models import Memory as InternalMemory
 
     internal_memory = InternalMemory(
         id="test-id",
@@ -226,7 +226,7 @@ def test_memory_wrapper_properties():
 
 def test_search_result_wrapper():
     """Test SearchResult wrapper class."""
-    from episemic_core.models import Memory as InternalMemory, SearchResult as InternalSearchResult
+    from episemic.models import Memory as InternalMemory, SearchResult as InternalSearchResult
 
     internal_memory = InternalMemory(
         id="result-id",
@@ -259,7 +259,7 @@ def test_search_result_wrapper():
 @pytest.mark.asyncio
 async def test_create_memory_system_function():
     """Test create_memory_system convenience function."""
-    with patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer'):
+    with patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer'):
         mock_model = MagicMock()
         mock_model.encode.return_value.tolist.return_value = [0.4] * 384
 
@@ -270,7 +270,7 @@ async def test_create_memory_system_function():
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_simple_api_memory_retrieval_fallback(mock_transformer):
     """Test memory retrieval with fallback logic."""
     # Mock the sentence transformer
@@ -299,7 +299,7 @@ async def test_simple_api_memory_retrieval_fallback(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_simple_api_consolidation_operations(mock_transformer):
     """Test consolidation operations through simple API."""
     # Mock the sentence transformer
@@ -340,7 +340,7 @@ def test_simple_api_event_loop_handling():
 
 
 @pytest.mark.asyncio
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 async def test_simple_api_with_file_persistence(mock_transformer):
     """Test simple API with file-based persistence."""
     # Mock the sentence transformer

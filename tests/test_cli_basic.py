@@ -7,10 +7,10 @@ from unittest.mock import patch, MagicMock
 import pytest
 from typer.testing import CliRunner
 
-from episemic_core.cli.main import app
+from episemic.cli.main import app
 
 
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 def test_cli_version_command(mock_transformer):
     """Test CLI version command."""
     runner = CliRunner()
@@ -19,7 +19,7 @@ def test_cli_version_command(mock_transformer):
     assert "Episemic Core" in result.stdout
 
 
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 def test_cli_health_command(mock_transformer):
     """Test CLI health command."""
     # Mock the sentence transformer
@@ -45,7 +45,7 @@ def test_cli_help():
     assert "get" in result.stdout
 
 
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 def test_cli_store_command(mock_transformer):
     """Test CLI store command."""
     # Mock the sentence transformer
@@ -70,7 +70,7 @@ def test_cli_store_command(mock_transformer):
     assert ("Error storing memory" in result.output or "Connection refused" in result.output)
 
 
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 def test_cli_search_command(mock_transformer):
     """Test CLI search command."""
     # Mock the sentence transformer
@@ -92,7 +92,7 @@ def test_cli_search_command(mock_transformer):
     assert ("Error searching" in search_result.output or "Connection refused" in search_result.output)
 
 
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 def test_cli_init_command(mock_transformer):
     """Test CLI init command."""
     # Mock the sentence transformer
@@ -108,7 +108,7 @@ def test_cli_init_command(mock_transformer):
     assert ("Failed to initialize" in result.output or "Connection refused" in result.output)
 
 
-@patch('episemic_core.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
 def test_cli_consolidate_command(mock_transformer):
     """Test CLI consolidate command."""
     # Mock the sentence transformer

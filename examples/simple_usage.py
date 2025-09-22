@@ -7,7 +7,7 @@ This shows the super clean, easy-to-use API.
 import asyncio
 
 # Import the simple API
-from episemic_core import Episemic, EpistemicSync, create_memory_system
+from episemic import Episemic, EpistemicSync, create_memory_system
 
 
 async def basic_example():

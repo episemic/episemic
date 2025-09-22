@@ -4,8 +4,8 @@ import pytest
 from unittest.mock import MagicMock, AsyncMock, patch
 from datetime import datetime, timedelta
 
-from episemic_core.consolidation.consolidation import ConsolidationEngine
-from episemic_core.models import Memory, ConsolidationJob, MemoryStatus, RetentionPolicy
+from episemic.consolidation.consolidation import ConsolidationEngine
+from episemic.models import Memory, ConsolidationJob, MemoryStatus, RetentionPolicy
 
 
 @pytest.fixture

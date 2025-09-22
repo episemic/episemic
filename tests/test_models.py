@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from episemic_core.models import LinkType, Memory, MemoryLink
+from episemic.models import LinkType, Memory, MemoryLink
 
 
 def test_memory_creation():
