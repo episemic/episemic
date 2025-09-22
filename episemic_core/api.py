@@ -2,12 +2,20 @@
 
 
 from .config import EpistemicConfig
-from .consolidation import ConsolidationEngine
-from .cortex import Cortex
 from .hippocampus import Hippocampus
 from .hippocampus.duckdb_hippocampus import DuckDBHippocampus
 from .models import Memory, SearchQuery, SearchResult
 from .retrieval import RetrievalEngine
+
+# Optional imports - these packages are only needed if cortex is enabled
+try:
+    from .consolidation import ConsolidationEngine
+    from .cortex import Cortex
+    CORTEX_AVAILABLE = True
+except ImportError:
+    ConsolidationEngine = None
+    Cortex = None
+    CORTEX_AVAILABLE = False
 
 
 class EpistemicAPI:
@@ -89,8 +97,8 @@ class EpistemicAPI:
                     print(f"✗ Hippocampus initialization failed: {e}")
                 initialization_success = False
 
-        # Initialize cortex (optional - may fail if PostgreSQL not available)
-        if self.config.enable_cortex:
+        # Initialize cortex (optional - may fail if PostgreSQL not available or dependencies missing)
+        if self.config.enable_cortex and CORTEX_AVAILABLE:
             try:
                 self.cortex = Cortex(
                     db_host=self.config.postgresql.host,
@@ -106,9 +114,14 @@ class EpistemicAPI:
                     print(f"⚠ Cortex initialization failed (PostgreSQL unavailable): {e}")
                     print("⚠ Continuing with hippocampus-only mode")
                 # Don't mark as failure - DuckDB-only mode is valid
+        elif self.config.enable_cortex and not CORTEX_AVAILABLE:
+            if self.config.debug:
+                print("⚠ Cortex dependencies not available (missing psycopg2)")
+                print("⚠ Continuing with hippocampus-only mode")
 
         # Initialize consolidation engine (only if both hippocampus and cortex available)
-        if self.config.enable_consolidation and self.hippocampus and self.cortex:
+        if (self.config.enable_consolidation and self.hippocampus and self.cortex
+            and CORTEX_AVAILABLE and ConsolidationEngine is not None):
             try:
                 self.consolidation_engine = ConsolidationEngine(
                     self.hippocampus,
@@ -122,6 +135,9 @@ class EpistemicAPI:
             except Exception as e:
                 if self.config.debug:
                     print(f"⚠ Consolidation engine initialization failed: {e}")
+        elif self.config.enable_consolidation and not CORTEX_AVAILABLE:
+            if self.config.debug:
+                print("⚠ Consolidation requires cortex dependencies - disabled")
 
         # Initialize retrieval engine (works with just hippocampus if cortex unavailable)
         if self.config.enable_retrieval and self.hippocampus:
