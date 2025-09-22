@@ -1,0 +1,32 @@
+# Include README and license files
+include README.md
+include LICENSE
+
+# Include documentation
+recursive-include docs *.md *.html *.css *.js
+recursive-include docs/api *.html
+
+# Include examples
+recursive-include examples *.py
+
+# Include scripts
+recursive-include scripts *.sh
+
+# Include configuration files
+include pyproject.toml
+include Makefile
+include .gitignore
+
+# Exclude development and cache files
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+recursive-exclude * *.so
+recursive-exclude * .DS_Store
+exclude .env*
+exclude .coverage
+exclude .pytest_cache
+exclude .mypy_cache
+exclude .ruff_cache
+recursive-exclude tests *
+exclude tox.ini
+exclude .pre-commit-config.yaml

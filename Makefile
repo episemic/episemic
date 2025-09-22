@@ -56,6 +56,18 @@ docs-view:
 	@echo "Opening documentation in browser..."
 	@python -c "import webbrowser; webbrowser.open('file://$(PWD)/docs/index.html')"
 
+# Package for distribution
+package-build:
+	./scripts/build.sh
+
+# Upload to test PyPI
+package-test:
+	./scripts/package.sh test
+
+# Upload to production PyPI
+package-prod:
+	./scripts/package.sh prod
+
 # Publish to PyPI (requires authentication)
 publish:
 	poetry publish

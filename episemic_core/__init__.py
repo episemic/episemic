@@ -1,8 +1,8 @@
 """Episemic - Simple memory system for AI agents."""
 
 __version__ = "0.1.0"
-__author__ = "Your Name"
-__email__ = "your.email@example.com"
+__author__ = "Aditya Karnam"
+__email__ = "akarnam37@gmail.com"
 
 # Simple, user-friendly API
 from .simple import Episemic, EpistemicSync, Memory, SearchResult, create_memory_system

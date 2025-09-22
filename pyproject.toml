@@ -3,10 +3,29 @@ name = "episemic-core"
 version = "0.1.0"
 description = "A brain-inspired memory system for AI agents"
 authors = [
-    {name = "Your Name",email = "your.email@example.com"}
+    {name = "Aditya Karnam", email = "akarnam37@gmail.com"}
 ]
 readme = "README.md"
-requires-python = "^3.11"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+keywords = ["ai", "memory", "agents", "brain-inspired", "vector-database"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+Homepage = "https://github.com/episemic/episemic-core"
+Repository = "https://github.com/episemic/episemic-core"
+"Bug Tracker" = "https://github.com/episemic/episemic-core/issues"
+Documentation = "https://episemic.readthedocs.io"
+
 dependencies = [
     "typer (>=0.18.0,<0.19.0)",
     "rich (>=14.1.0,<15.0.0)",
@@ -37,6 +56,10 @@ dev = [
     "ruff (>=0.13.1,<0.14.0)",
     "pre-commit (>=4.3.0,<5.0.0)",
     "pytest-asyncio (>=1.2.0,<2.0.0)"
+]
+build = [
+    "build (>=1.0.0,<2.0.0)",
+    "twine (>=6.0.0,<7.0.0)"
 ]
 
 [tool.poetry.group.dev.dependencies]
