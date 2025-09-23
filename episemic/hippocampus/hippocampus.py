@@ -162,6 +162,43 @@ class Hippocampus:
 
         return memory.verify_integrity()
 
+    async def get_all_memory_ids(self) -> list[str]:
+        """Get all memory IDs from active memories."""
+        try:
+            # Get all points from the collection
+            points = self.qdrant_client.scroll(
+                collection_name=self.collection_name,
+                limit=10000  # Adjust based on expected memory count
+            )[0]
+
+            memory_ids = []
+            for point in points:
+                # Check if memory exists in Redis and is not quarantined
+                memory_key = f"memory:{point.id}"
+                if self.redis_client.exists(memory_key):
+                    memory_data = self.redis_client.hgetall(memory_key)
+                    if memory_data.get("status") != "quarantined":
+                        memory_ids.append(str(point.id))
+
+            return memory_ids
+        except Exception:
+            return []
+
+    async def remove_memory(self, memory_id: str) -> bool:
+        """Remove a memory completely from the hippocampus."""
+        try:
+            # Remove from Qdrant
+            self.qdrant_client.delete(
+                collection_name=self.collection_name,
+                points_selector=[memory_id]
+            )
+
+            # Remove from Redis
+            self.redis_client.delete(f"memory:{memory_id}")
+            return True
+        except Exception:
+            return False
+
     def health_check(self) -> dict[str, bool]:
         return {
             "qdrant_connected": self._check_qdrant_connection(),
