@@ -19,7 +19,7 @@ poetry run pre-commit install
 ```bash
 make test                  # Run all tests
 pytest tests/test_simple_api.py -v  # Run specific test file
-pytest tests/ -v --cov=episemic_core  # Run with coverage
+pytest tests/ -v --cov=episemic  # Run with coverage
 pytest -k "test_memory_creation" -v   # Run specific test by name
 
 # Test with specific storage backend
@@ -44,7 +44,7 @@ poetry run episemic        # Alternative CLI execution
 ### Version Management
 ```bash
 make version               # Show current version
-make bump-patch            # Bump patch version (0.1.1 → 0.1.2)
+make bump-patch            # Bump patch version (1.0.2 → 1.0.3)
 make release-patch         # Bump version and upload to test PyPI
 ```
 
@@ -57,13 +57,13 @@ make package-prod          # Build and upload to production PyPI
 
 ## Architecture Overview
 
-Episemic Core is a brain-inspired memory system with modular architecture supporting dual storage backends.
+Episemic is a brain-inspired memory system with modular architecture supporting dual storage backends.
 
 ### Core Components
 
 **Two-Layer Memory System (Brain-Inspired)**:
-- **Hippocampus** (`episemic_core/hippocampus/`): Fast, episodic memory for recent experiences
-- **Cortex** (`episemic_core/cortex/`): Long-term semantic memory for consolidated knowledge
+- **Hippocampus** (`episemic/hippocampus/`): Fast, episodic memory for recent experiences
+- **Cortex** (`episemic/cortex/`): Long-term semantic memory for consolidated knowledge
 
 **Storage Backend Architecture**:
 - **DuckDB Backend** (Default): Zero-config local storage with built-in vector search
@@ -71,15 +71,15 @@ Episemic Core is a brain-inspired memory system with modular architecture suppor
 - **Automatic Fallback**: DuckDB used when Qdrant/PostgreSQL unavailable
 
 **Processing Engines**:
-- **Consolidation Engine** (`episemic_core/consolidation/`): Transfers memories from hippocampus to cortex
-- **Retrieval Engine** (`episemic_core/retrieval/`): Multi-strategy search across both memory stores
+- **Consolidation Engine** (`episemic/consolidation/`): Transfers memories from hippocampus to cortex
+- **Retrieval Engine** (`episemic/retrieval/`): Multi-strategy search across both memory stores
 
 ### API Layers
 
 **Three-Tier API Design**:
-1. **Simple API** (`episemic_core/simple.py`): User-friendly `Episemic` and `EpistemicSync` classes
-2. **Core API** (`episemic_core/api.py`): `EpistemicAPI` for library integration
-3. **CLI Interface** (`episemic_core/cli/`): Typer-based command-line tools
+1. **Simple API** (`episemic/simple.py`): User-friendly `Episemic` and `EpistemicSync` classes
+2. **Core API** (`episemic/api.py`): `EpistemicAPI` for library integration
+3. **CLI Interface** (`episemic/cli/`): Typer-based command-line tools
 
 **Key API Pattern**:
 - `simple.py` wraps `api.py` for ease of use
@@ -88,7 +88,7 @@ Episemic Core is a brain-inspired memory system with modular architecture suppor
 
 ### Configuration System
 
-**Hierarchical Configuration** (`episemic_core/config.py`):
+**Hierarchical Configuration** (`episemic/config.py`):
 - Pydantic-based configuration with defaults
 - Environment variable support
 - Per-component configs: `QdrantConfig`, `DuckDBConfig`, `PostgreSQLConfig`, etc.
@@ -132,7 +132,7 @@ Environment variables follow naming convention:
 
 ## Package Structure
 
-**Core Library** (`episemic_core/`):
+**Core Library** (`episemic/`):
 - `__init__.py`: Exports simple API classes
 - `simple.py`: User-friendly async/sync interfaces
 - `api.py`: Internal API for component orchestration
