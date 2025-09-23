@@ -1,6 +1,6 @@
-# Contributing to Episemic Core 🧠
+# Contributing to Episemic 🧠
 
-Thank you for your interest in contributing to Episemic Core! This guide will help you set up your development environment and understand our development workflow.
+Thank you for your interest in contributing to Episemic! This guide will help you set up your development environment and understand our development workflow.
 
 ## 🚀 Quick Development Setup
 
@@ -46,7 +46,7 @@ poetry run pre-commit install
 make test
 
 # Run tests with coverage
-pytest tests/ -v --cov=episemic_core
+pytest tests/ -v --cov=episemic
 
 # Run specific test file
 pytest tests/test_simple_api.py -v
@@ -79,7 +79,7 @@ make check
 - **Built-in vector search** using sentence transformers
 
 ```python
-from episemic_core import Episemic
+from episemic import Episemic
 
 # Works immediately - no setup needed!
 async with Episemic() as episemic:
@@ -105,7 +105,7 @@ export EPISEMIC_PREFER_QDRANT=true
 ## 📁 Project Structure
 
 ```
-episemic_core/
+episemic/
 ├── __init__.py              # Package initialization & simple API
 ├── simple.py                # User-friendly simple API
 ├── api.py                   # High-level internal API
@@ -129,8 +129,20 @@ episemic_core/
     └── main.py
 
 tests/                      # Test suite
-├── test_simple_api.py      # Simple API tests
-├── test_duckdb_fallback.py # DuckDB fallback tests
+├── test_simple_api.py               # Simple API tests
+├── test_simple_api_comprehensive.py # Comprehensive simple API tests
+├── test_api_integration.py          # API integration tests
+├── test_library_api.py              # Library API tests
+├── test_duckdb_fallback.py          # DuckDB fallback tests
+├── test_duckdb_comprehensive.py     # Comprehensive DuckDB tests
+├── test_hippocampus_comprehensive.py # Hippocampus tests
+├── test_cortex_comprehensive.py     # Cortex tests
+├── test_consolidation_engine.py     # Consolidation engine tests
+├── test_retrieval_engine.py         # Retrieval engine tests
+├── test_cli_basic.py               # Basic CLI tests
+├── test_cli_comprehensive.py       # Comprehensive CLI tests
+├── test_config_comprehensive.py    # Configuration tests
+├── test_models.py                  # Data model tests
 └── ...
 
 docs/                       # Generated documentation
@@ -146,47 +158,63 @@ scripts/                    # Packaging and build scripts
 
 ## 🧩 System Architecture
 
-### Core Memory System
+### Episemic Memory Architecture
 ```mermaid
 flowchart TB
-    subgraph Agent["🤖 AI Agent"]
-        A1["Perception / Input Encoder"]
-        A2["Controller / Policy"]
+    subgraph User["👤 User Application"]
+        U1["AI Agent / Application"]
+        U2["Direct API Usage"]
+        U3["CLI Interface"]
     end
 
-    subgraph Brain["🧠 Episemic Memory System"]
-        subgraph Episodic["📌 Episodic Memory"]
-            E1["Raw Experience Traces"]
-            E2["Embeddings + Metadata"]
-            E3["Priority Scores"]
+    subgraph Simple["🎯 Simple API Layer"]
+        S1["`**Episemic** (Async)`"]
+        S2["`**EpistemicSync** (Sync)`"]
+        S3["`**Memory** Objects`"]
+    end
+
+    subgraph Core["🔧 Core API Layer"]
+        C1["`**EpistemicAPI**`"]
+        C2["`**Backend Detection**`"]
+        C3["`**Component Orchestration**`"]
+    end
+
+    subgraph Memory["🧠 Memory System"]
+        subgraph Hippocampus["⚡ Hippocampus (Fast Memory)"]
+            H1["`**Qdrant + Redis**\n(Production)`"]
+            H2["`**DuckDB**\n(Development)`"]
         end
 
-        subgraph Replay["🔄 Replay & Consolidation"]
-            R1["Prioritized Sampling"]
-            R2["Summarization / Distillation"]
-            R3["Adapter / Fine-tune Updates"]
+        subgraph Cortex["🏛️ Cortex (Long-term Memory)"]
+            CT1["`**PostgreSQL**\n(Relational Store)`"]
         end
 
-        subgraph Semantic["📚 Semantic Memory"]
-            S1["Stable Knowledge"]
-            S2["Generalized Summaries"]
-            S3["Topic / Concept Clusters"]
+        subgraph Consolidation["🔄 Consolidation"]
+            CN1["`**Memory Transfer**`"]
+            CN2["`**Background Processing**`"]
         end
 
-        subgraph Retrieval["🎯 Retrieval & Recall"]
-            Q1["kNN Search"]
-            Q2["Pattern Completion"]
-            Q3["Merged Context Output"]
+        subgraph Retrieval["🎯 Retrieval"]
+            R1["`**Vector Search**`"]
+            R2["`**Tag Filtering**`"]
+            R3["`**Hybrid Results**`"]
         end
     end
 
-    Agent -->|Encoded Experience| Episodic
-    Episodic --> Replay
-    Replay --> Semantic
-    Agent -->|Query / Cue| Retrieval
-    Semantic --> Retrieval
-    Episodic --> Retrieval
-    Retrieval -->|Relevant Context| Agent
+    User --> Simple
+    Simple --> Core
+    Core --> Memory
+
+    Core --> Hippocampus
+    Core --> Cortex
+    Core --> Consolidation
+    Core --> Retrieval
+
+    Consolidation -.->|Transfer| Hippocampus
+    Consolidation -.->|Archive| Cortex
+
+    Retrieval -.->|Query| Hippocampus
+    Retrieval -.->|Query| Cortex
 ```
 
 ### CLI Application Architecture
@@ -198,20 +226,20 @@ graph TB
         RICH["`**Rich Console Output**`"]
     end
 
-    subgraph Core["🧠 Episemic Core Library"]
+    subgraph Core["🧠 Episemic Library"]
         subgraph Models["📋 Data Models"]
             M1["`**Memory**`"]
-            M2["`**SearchQuery**`"]
-            M3["`**SearchResult**`"]
+            M2["`**SearchResult**`"]
+            M3["`**Config Models**`"]
         end
 
         subgraph Hippocampus["⚡ Hippocampus (Fast Storage)"]
-            H1["`**Qdrant Client**
-            Vector Storage`"]
-            H2["`**Redis Cache**
-            Session Storage`"]
-            H3["`**DuckDB (Default)**
-            Local Vector Storage`"]
+            H1["`**Qdrant + Redis**
+            Production Backend`"]
+            H2["`**DuckDB (Default)**
+            Local Development Backend`"]
+            H3["`**Automatic Fallback**
+            Backend Selection`"]
         end
 
         subgraph Cortex["🏛️ Cortex (Long-term Storage)"]
@@ -246,7 +274,7 @@ graph TB
         REDIS["`**Redis**
         Cache & Sessions`"]
         DUCKDB["`**DuckDB (Default)**
-        Local Database`"]
+        All-in-One Local Storage`"]
     end
 
     CMD --> TYPER
@@ -304,9 +332,9 @@ graph TB
 | Command | Description |
 |---------|-------------|
 | `make version` | Show current version |
-| `make bump-patch` | Bump patch version (0.1.1 → 0.1.2) |
-| `make bump-minor` | Bump minor version (0.1.2 → 0.2.0) |
-| `make bump-major` | Bump major version (0.1.2 → 1.0.0) |
+| `make bump-patch` | Bump patch version (1.0.2 → 1.0.3) |
+| `make bump-minor` | Bump minor version (1.0.2 → 1.1.0) |
+| `make bump-major` | Bump major version (1.0.2 → 2.0.0) |
 | `make release-patch` | Bump patch version and upload to test PyPI |
 | `make release-minor` | Bump minor version and upload to test PyPI |
 | `make release-major` | Bump major version and upload to test PyPI |
@@ -408,4 +436,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Thanks
 
-Thank you for contributing to Episemic Core! Your contributions help make AI memory systems more accessible and powerful.
+Thank you for contributing to Episemic! Your contributions help make AI memory systems more accessible and powerful.
