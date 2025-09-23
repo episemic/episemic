@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Episemic Core Documentation</title>
+    <title>Episemic Documentation</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
@@ -143,7 +143,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>🧠 Episemic Core</h1>
+        <h1>🧠 Episemic</h1>
         <p>Brain-inspired memory system for AI agents</p>
         <div class="badges">
             <span class="badge">Python 3.11+</span>
@@ -175,7 +175,7 @@
 
         <div class="code-snippet">
 import asyncio
-from episemic_core import Episemic
+from episemic import Episemic
 
 async def main():
     async with Episemic() as episemic:
@@ -195,7 +195,7 @@ asyncio.run(main())
 
         <p><strong>For non-async code:</strong></p>
         <div class="code-snippet">
-from episemic_core import EpistemicSync
+from episemic import EpistemicSync
 
 episemic = EpistemicSync()
 episemic.start()
@@ -213,25 +213,25 @@ results = episemic.recall("important")
             <div class="api-card">
                 <h3>🧠 Episemic (Main Class)</h3>
                 <p>The main async interface for storing and retrieving memories. Use this for modern async Python code.</p>
-                <a href="api/episemic_core.simple.html#Episemic">View Documentation</a>
+                <a href="api/episemic.simple.html#Episemic">View Documentation</a>
             </div>
 
             <div class="api-card">
                 <h3>🔄 EpistemicSync</h3>
                 <p>Synchronous wrapper for traditional Python code that doesn't use async/await.</p>
-                <a href="api/episemic_core.simple.html#EpistemicSync">View Documentation</a>
+                <a href="api/episemic.simple.html#EpistemicSync">View Documentation</a>
             </div>
 
             <div class="api-card">
                 <h3>💭 Memory</h3>
                 <p>Simple memory object with properties like .text, .title, .tags, .created_at, and .metadata.</p>
-                <a href="api/episemic_core.simple.html#Memory">View Documentation</a>
+                <a href="api/episemic.simple.html#Memory">View Documentation</a>
             </div>
 
             <div class="api-card">
                 <h3>🔍 SearchResult</h3>
                 <p>Search result containing a Memory object and relevance score (0.0 to 1.0).</p>
-                <a href="api/episemic_core.simple.html#SearchResult">View Documentation</a>
+                <a href="api/episemic.simple.html#SearchResult">View Documentation</a>
             </div>
         </div>
 
@@ -254,49 +254,49 @@ results = episemic.recall("important")
             <div class="api-card">
                 <h3>🔧 Configuration</h3>
                 <p>Internal configuration management system for databases and services.</p>
-                <a href="api/episemic_core.config.html">View Documentation</a>
+                <a href="api/episemic.config.html">View Documentation</a>
             </div>
 
             <div class="api-card">
                 <h3>🏗️ Data Models</h3>
                 <p>Internal Pydantic models for memory objects, search queries, and system state.</p>
-                <a href="api/episemic_core.models.html">View Documentation</a>
+                <a href="api/episemic.models.html">View Documentation</a>
             </div>
 
             <div class="api-card">
                 <h3>🎯 High-Level API</h3>
                 <p>The EpistemicAPI class that the simple interface uses internally.</p>
-                <a href="api/episemic_core.api.html">View Documentation</a>
+                <a href="api/episemic.api.html">View Documentation</a>
             </div>
 
             <div class="api-card">
                 <h3>⚡ Hippocampus</h3>
                 <p>Fast vector storage using Qdrant and Redis for recent memories.</p>
-                <a href="api/episemic_core.hippocampus.hippocampus.html">View Documentation</a>
+                <a href="api/episemic.hippocampus.hippocampus.html">View Documentation</a>
             </div>
 
             <div class="api-card">
                 <h3>🏛️ Cortex</h3>
                 <p>Long-term relational storage using PostgreSQL for persistent memories.</p>
-                <a href="api/episemic_core.cortex.cortex.html">View Documentation</a>
+                <a href="api/episemic.cortex.cortex.html">View Documentation</a>
             </div>
 
             <div class="api-card">
                 <h3>🔄 Consolidation</h3>
                 <p>Memory consolidation engine that transfers memories from fast to persistent storage.</p>
-                <a href="api/episemic_core.consolidation.consolidation.html">View Documentation</a>
+                <a href="api/episemic.consolidation.consolidation.html">View Documentation</a>
             </div>
 
             <div class="api-card">
                 <h3>🎯 Retrieval</h3>
                 <p>Multi-path retrieval engine using vector similarity, tags, and graph traversal.</p>
-                <a href="api/episemic_core.retrieval.retrieval.html">View Documentation</a>
+                <a href="api/episemic.retrieval.retrieval.html">View Documentation</a>
             </div>
 
             <div class="api-card">
                 <h3>💻 CLI</h3>
                 <p>Command-line interface built with Typer and Rich for terminal usage.</p>
-                <a href="api/episemic_core.cli.main.html">View Documentation</a>
+                <a href="api/episemic.cli.main.html">View Documentation</a>
             </div>
         </div>
     </section>
@@ -322,14 +322,14 @@ results = episemic.recall("important")
         <ol>
             <li>Install dependencies: <code>poetry install</code></li>
             <li>Set up databases (PostgreSQL, Qdrant, Redis)</li>
-            <li>Try the simple API: <code>from episemic_core import Episemic</code></li>
+            <li>Try the simple API: <code>from episemic import Episemic</code></li>
             <li>Store your first memory: <code>await episemic.remember("Hello world!")</code></li>
             <li>Search for it: <code>await episemic.recall("hello")</code></li>
         </ol>
     </section>
 
     <footer style="text-align: center; margin-top: 40px; padding: 20px; color: #666; border-top: 1px solid #eee;">
-        <p>Generated with ❤️ using pydoc | Episemic Core v0.1.0</p>
+        <p>Generated with ❤️ using pydoc | Episemic v1.0.2</p>
         <p>🧠 Brain-inspired memory system for AI agents</p>
     </footer>
 </body>

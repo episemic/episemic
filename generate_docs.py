@@ -26,12 +26,12 @@ def run_command(cmd):
 
 def main():
     """Generate all documentation."""
-    print("🧠 Generating Episemic Core Documentation")
+    print("🧠 Generating Episemic Documentation")
     print("=" * 50)
 
     # Ensure we're in the right directory
-    if not Path("episemic_core").exists():
-        print("❌ Error: episemic_core directory not found")
+    if not Path("episemic").exists():
+        print("❌ Error: episemic directory not found")
         print("Please run this script from the project root directory")
         sys.exit(1)
 

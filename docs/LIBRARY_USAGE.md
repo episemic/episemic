@@ -1,6 +1,6 @@
-# Using Episemic Core as a Python Library
+# Using Episemic as a Python Library
 
-Episemic Core can be used both as a CLI tool and as a Python library. This guide shows you how to integrate it into your Python applications.
+Episemic can be used both as a CLI tool and as a Python library. This guide shows you how to integrate it into your Python applications.
 
 ## Quick Start
 
@@ -8,7 +8,7 @@ Episemic Core can be used both as a CLI tool and as a Python library. This guide
 
 ```python
 import asyncio
-from episemic_core import EpistemicAPI
+from episemic import EpistemicAPI
 
 async def main():
     # Initialize the memory system
@@ -37,7 +37,7 @@ asyncio.run(main())
 
 ```python
 import asyncio
-from episemic_core import EpistemicAPI
+from episemic import EpistemicAPI
 
 async def main():
     async with EpistemicAPI() as api:
@@ -64,7 +64,7 @@ By default, Episemic Core expects:
 ### Custom Configuration
 
 ```python
-from episemic_core import EpistemicAPI, EpistemicConfig
+from episemic import EpistemicAPI, EpistemicConfig
 
 # Method 1: Using configuration object
 config = EpistemicConfig(
@@ -81,7 +81,7 @@ await api.initialize()
 ### Environment Variables
 
 ```python
-from episemic_core import create_config_from_env, EpistemicAPI
+from episemic import create_config_from_env, EpistemicAPI
 
 # Set environment variables:
 # QDRANT_HOST=my-qdrant-host
@@ -97,7 +97,7 @@ await api.initialize()
 ### Configuration Options
 
 ```python
-from episemic_core import EpistemicConfig
+from episemic import EpistemicConfig
 
 config = EpistemicConfig(
     # Database connections
@@ -286,7 +286,7 @@ results = await api.search(
 ## Error Handling
 
 ```python
-from episemic_core import EpistemicAPI
+from episemic import EpistemicAPI
 
 async def robust_usage():
     api = EpistemicAPI()
@@ -356,4 +356,4 @@ See the [`examples/library_usage.py`](../examples/library_usage.py) file for com
 
 - Check out the [CLI documentation](../README.md#cli-usage) for command-line usage
 - Review the [architecture documentation](../BLUEPRINT.md) for system internals
-- Explore the [API source code](../episemic_core/api.py) for detailed implementation
+- Explore the [API source code](../episemic/api.py) for detailed implementation

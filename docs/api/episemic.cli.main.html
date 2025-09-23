@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Python: module episemic.cli.main</title>
+</head><body>
+
+<table class="heading">
+<tr class="heading-text decor">
+<td class="title">&nbsp;<br><strong class="title"><a href="episemic.html" class="white">episemic</a>.<a href="episemic.cli.html" class="white">cli</a>.main</strong></td>
+<td class="extra"><a href=".">index</a><br><a href="file:/Users/adityakarnam/Projects/episemic/episemic/cli/main.py">/Users/adityakarnam/Projects/episemic/episemic/cli/main.py</a></td></tr></table>
+    <p><span class="code">Main&nbsp;CLI&nbsp;application&nbsp;for&nbsp;Episemic&nbsp;Core.</span></p>
+<p>
+<table class="section">
+<tr class="decor pkg-content-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Modules</strong></td></tr>
+    
+<tr><td class="decor pkg-content-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><table><tr><td class="multicolumn"><a href="asyncio.html">asyncio</a><br>
+</td><td class="multicolumn"><a href="typer.html">typer</a><br>
+</td><td class="multicolumn"></td><td class="multicolumn"></td></tr></table></td></tr></table><p>
+<table class="section">
+<tr class="decor functions-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Functions</strong></td></tr>
+    
+<tr><td class="decor functions-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><dl><dt><a name="-consolidate"><strong>consolidate</strong></a>(memory_id: str | None = &lt;typer.models.OptionInfo object at 0x1286d8d10&gt;, auto: bool = &lt;typer.models.OptionInfo object at 0x1286d8d90&gt;)</dt><dd><span class="code">Consolidate&nbsp;memories&nbsp;from&nbsp;hippocampus&nbsp;to&nbsp;cortex.</span></dd></dl>
+ <dl><dt><a name="-get"><strong>get</strong></a>(memory_id: str = &lt;typer.models.ArgumentInfo object at 0x1286d8c50&gt;)</dt><dd><span class="code">Retrieve&nbsp;a&nbsp;specific&nbsp;memory&nbsp;by&nbsp;ID.</span></dd></dl>
+ <dl><dt><a name="-get_memory_system"><strong>get_memory_system</strong></a>()</dt></dl>
+ <dl><dt><a name="-health"><strong>health</strong></a>()</dt><dd><span class="code">Check&nbsp;the&nbsp;health&nbsp;status&nbsp;of&nbsp;all&nbsp;system&nbsp;components.</span></dd></dl>
+ <dl><dt><a name="-init"><strong>init</strong></a>(qdrant_host: str = &lt;typer.models.OptionInfo object at 0x11e66b950&gt;, qdrant_port: int = &lt;typer.models.OptionInfo object at 0x128694f10&gt;, postgres_host: str = &lt;typer.models.OptionInfo object at 0x128694e90&gt;, postgres_port: int = &lt;typer.models.OptionInfo object at 0x128694ed0&gt;, postgres_db: str = &lt;typer.models.OptionInfo object at 0x128695010&gt;)</dt><dd><span class="code">Initialize&nbsp;the&nbsp;Episemic&nbsp;memory&nbsp;system.</span></dd></dl>
+ <dl><dt><a name="-search"><strong>search</strong></a>(query: str = &lt;typer.models.ArgumentInfo object at 0x1286d8a90&gt;, top_k: int = &lt;typer.models.OptionInfo object at 0x1286d8b10&gt;, tags: list[str] = &lt;typer.models.OptionInfo object at 0x1286d8b90&gt;)</dt><dd><span class="code">Search&nbsp;for&nbsp;memories.</span></dd></dl>
+ <dl><dt><a name="-store"><strong>store</strong></a>(text: str = &lt;typer.models.ArgumentInfo object at 0x118dec990&gt;, title: str = &lt;typer.models.OptionInfo object at 0x128695f90&gt;, source: str = &lt;typer.models.OptionInfo object at 0x1286950d0&gt;, tags: list[str] = &lt;typer.models.OptionInfo object at 0x1286983d0&gt;)</dt><dd><span class="code">Store&nbsp;a&nbsp;new&nbsp;memory&nbsp;in&nbsp;the&nbsp;system.</span></dd></dl>
+ <dl><dt><a name="-version"><strong>version</strong></a>()</dt><dd><span class="code">Show&nbsp;version&nbsp;information.</span></dd></dl>
+</td></tr></table><p>
+<table class="section">
+<tr class="decor data-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Data</strong></td></tr>
+    
+<tr><td class="decor data-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><strong>app</strong> = &lt;typer.main.Typer object&gt;<br>
+<strong>console</strong> = &lt;console width=80 None&gt;<br>
+<strong>consolidation_engine</strong> = None<br>
+<strong>cortex</strong> = None<br>
+<strong>hippocampus</strong> = None<br>
+<strong>retrieval_engine</strong> = None</td></tr></table>
+</body></html>

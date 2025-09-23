@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Python: package episemic_core</title>
+<title>Python: package episemic</title>
 </head><body>
 
 <table class="heading">
 <tr class="heading-text decor">
-<td class="title">&nbsp;<br><strong class="title">episemic_core</strong> (version 0.1.0)</td>
-<td class="extra"><a href=".">index</a><br><a href="file:/Users/adityakarnam/Projects/episemic/episemic_core/__init__.py">/Users/adityakarnam/Projects/episemic/episemic_core/__init__.py</a></td></tr></table>
+<td class="title">&nbsp;<br><strong class="title">episemic</strong> (version 1.0.2)</td>
+<td class="extra"><a href=".">index</a><br><a href="file:/Users/adityakarnam/Projects/episemic/episemic/__init__.py">/Users/adityakarnam/Projects/episemic/episemic/__init__.py</a></td></tr></table>
     <p><span class="code"><a href="#Episemic">Episemic</a>&nbsp;-&nbsp;Simple&nbsp;memory&nbsp;system&nbsp;for&nbsp;AI&nbsp;agents.</span></p>
 <p>
 <table class="section">
@@ -16,15 +16,15 @@
 <td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Package Contents</strong></td></tr>
     
 <tr><td class="decor pkg-content-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
-<td class="singlecolumn"><table><tr><td class="multicolumn"><a href="episemic_core.api.html">api</a><br>
-<a href="episemic_core.cli.html"><strong>cli</strong>&nbsp;(package)</a><br>
-<a href="episemic_core.config.html">config</a><br>
-</td><td class="multicolumn"><a href="episemic_core.consolidation.html"><strong>consolidation</strong>&nbsp;(package)</a><br>
-<a href="episemic_core.cortex.html"><strong>cortex</strong>&nbsp;(package)</a><br>
-<a href="episemic_core.hippocampus.html"><strong>hippocampus</strong>&nbsp;(package)</a><br>
-</td><td class="multicolumn"><a href="episemic_core.models.html">models</a><br>
-<a href="episemic_core.retrieval.html"><strong>retrieval</strong>&nbsp;(package)</a><br>
-<a href="episemic_core.simple.html">simple</a><br>
+<td class="singlecolumn"><table><tr><td class="multicolumn"><a href="episemic.api.html">api</a><br>
+<a href="episemic.cli.html"><strong>cli</strong>&nbsp;(package)</a><br>
+<a href="episemic.config.html">config</a><br>
+</td><td class="multicolumn"><a href="episemic.consolidation.html"><strong>consolidation</strong>&nbsp;(package)</a><br>
+<a href="episemic.cortex.html"><strong>cortex</strong>&nbsp;(package)</a><br>
+<a href="episemic.hippocampus.html"><strong>hippocampus</strong>&nbsp;(package)</a><br>
+</td><td class="multicolumn"><a href="episemic.models.html">models</a><br>
+<a href="episemic.retrieval.html"><strong>retrieval</strong>&nbsp;(package)</a><br>
+<a href="episemic.simple.html">simple</a><br>
 </td><td class="multicolumn"></td></tr></table></td></tr></table><p>
 <table class="section">
 <tr class="decor index-decor heading-text">
@@ -35,10 +35,10 @@
 <dt class="heading-text"><a href="builtins.html#object">builtins.object</a>
 </dt><dd>
 <dl>
-<dt class="heading-text"><a href="episemic_core.simple.html#Episemic">episemic_core.simple.Episemic</a>
-</dt><dt class="heading-text"><a href="episemic_core.simple.html#EpistemicSync">episemic_core.simple.EpistemicSync</a>
-</dt><dt class="heading-text"><a href="episemic_core.simple.html#Memory">episemic_core.simple.Memory</a>
-</dt><dt class="heading-text"><a href="episemic_core.simple.html#SearchResult">episemic_core.simple.SearchResult</a>
+<dt class="heading-text"><a href="episemic.simple.html#Episemic">episemic.simple.Episemic</a>
+</dt><dt class="heading-text"><a href="episemic.simple.html#EpistemicSync">episemic.simple.EpistemicSync</a>
+</dt><dt class="heading-text"><a href="episemic.simple.html#Memory">episemic.simple.Memory</a>
+</dt><dt class="heading-text"><a href="episemic.simple.html#SearchResult">episemic.simple.SearchResult</a>
 </dt></dl>
 </dd>
 </dl>
@@ -48,7 +48,7 @@
 <td class="section-title" colspan=3>&nbsp;<br><a name="Episemic">class <strong>Episemic</strong></a>(<a href="builtins.html#object">builtins.object</a>)</td></tr>
     
 <tr><td class="decor title-decor" rowspan=2><span class="code">&nbsp;&nbsp;&nbsp;</span></td>
-<td class="decor title-decor" colspan=2><span class="code"><a href="#Episemic">Episemic</a>(**config_kwargs)<br>
+<td class="decor title-decor" colspan=2><span class="code"><a href="#Episemic">Episemic</a>(config:&nbsp;episemic.config.EpistemicConfig&nbsp;|&nbsp;None&nbsp;=&nbsp;None,&nbsp;**config_kwargs)<br>
 &nbsp;<br>
 Simple&nbsp;memory&nbsp;system&nbsp;for&nbsp;AI&nbsp;agents.<br>
 &nbsp;<br>
@@ -71,9 +71,10 @@ Example:<br>
 
 <dl><dt>async <a name="Episemic-__aexit__"><strong>__aexit__</strong></a>(self, exc_type, exc_val, exc_tb)</dt><dd><span class="code">Async&nbsp;context&nbsp;manager&nbsp;exit.</span></dd></dl>
 
-<dl><dt><a name="Episemic-__init__"><strong>__init__</strong></a>(self, **config_kwargs)</dt><dd><span class="code">Initialize&nbsp;<a href="#Episemic">Episemic</a>&nbsp;memory&nbsp;system.<br>
+<dl><dt><a name="Episemic-__init__"><strong>__init__</strong></a>(self, config: episemic.config.EpistemicConfig | None = None, **config_kwargs)</dt><dd><span class="code">Initialize&nbsp;<a href="#Episemic">Episemic</a>&nbsp;memory&nbsp;system.<br>
 &nbsp;<br>
 Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;config:&nbsp;EpistemicConfig&nbsp;<a href="builtins.html#object">object</a>.&nbsp;If&nbsp;provided,&nbsp;config_kwargs&nbsp;are&nbsp;ignored.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;**config_kwargs:&nbsp;Configuration&nbsp;options&nbsp;such&nbsp;as:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;qdrant_host:&nbsp;Qdrant&nbsp;server&nbsp;host&nbsp;(default:&nbsp;"localhost")<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;qdrant_port:&nbsp;Qdrant&nbsp;server&nbsp;port&nbsp;(default:&nbsp;6333)<br>
@@ -90,7 +91,7 @@ Args:<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;Number&nbsp;of&nbsp;memories&nbsp;processed.</span></dd></dl>
 
-<dl><dt>async <a name="Episemic-find_related"><strong>find_related</strong></a>(self, memory_id: str, limit: int = 5) -&gt; list[episemic_core.simple.SearchResult]</dt><dd><span class="code">Find&nbsp;memories&nbsp;related&nbsp;to&nbsp;a&nbsp;specific&nbsp;memory.<br>
+<dl><dt>async <a name="Episemic-find_related"><strong>find_related</strong></a>(self, memory_id: str, limit: int = 5) -&gt; list[episemic.simple.SearchResult]</dt><dd><span class="code">Find&nbsp;memories&nbsp;related&nbsp;to&nbsp;a&nbsp;specific&nbsp;memory.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;memory_id:&nbsp;The&nbsp;reference&nbsp;memory&nbsp;ID<br>
@@ -107,7 +108,7 @@ Args:<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;True&nbsp;if&nbsp;successful,&nbsp;False&nbsp;otherwise.</span></dd></dl>
 
-<dl><dt>async <a name="Episemic-get"><strong>get</strong></a>(self, memory_id: str) -&gt; episemic_core.simple.Memory | None</dt><dd><span class="code">Get&nbsp;a&nbsp;specific&nbsp;memory&nbsp;by&nbsp;ID.<br>
+<dl><dt>async <a name="Episemic-get"><strong>get</strong></a>(self, memory_id: str) -&gt; episemic.simple.Memory | None</dt><dd><span class="code">Get&nbsp;a&nbsp;specific&nbsp;memory&nbsp;by&nbsp;ID.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;memory_id:&nbsp;The&nbsp;memory&nbsp;identifier<br>
@@ -120,7 +121,7 @@ Returns:<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;True&nbsp;if&nbsp;all&nbsp;components&nbsp;are&nbsp;working,&nbsp;False&nbsp;otherwise.</span></dd></dl>
 
-<dl><dt>async <a name="Episemic-recall"><strong>recall</strong></a>(self, query: str, limit: int = 10, tags: list[str] | None = None) -&gt; list[episemic_core.simple.SearchResult]</dt><dd><span class="code">Search&nbsp;for&nbsp;memories.<br>
+<dl><dt>async <a name="Episemic-recall"><strong>recall</strong></a>(self, query: str, limit: int = 10, tags: list[str] | None = None) -&gt; list[episemic.simple.SearchResult]</dt><dd><span class="code">Search&nbsp;for&nbsp;memories.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;query:&nbsp;What&nbsp;to&nbsp;search&nbsp;for<br>
@@ -130,7 +131,7 @@ Args:<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;List&nbsp;of&nbsp;search&nbsp;results&nbsp;with&nbsp;relevance&nbsp;scores.</span></dd></dl>
 
-<dl><dt>async <a name="Episemic-remember"><strong>remember</strong></a>(self, text: str, title: str | None = None, tags: list[str] | None = None, metadata: dict | None = None) -&gt; episemic_core.simple.Memory | None</dt><dd><span class="code">Store&nbsp;a&nbsp;new&nbsp;memory.<br>
+<dl><dt>async <a name="Episemic-remember"><strong>remember</strong></a>(self, text: str, title: str | None = None, tags: list[str] | None = None, metadata: dict | None = None) -&gt; episemic.simple.Memory | None</dt><dd><span class="code">Store&nbsp;a&nbsp;new&nbsp;memory.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;text:&nbsp;The&nbsp;content&nbsp;to&nbsp;remember<br>
@@ -160,7 +161,7 @@ Data descriptors defined here:<br>
 <td class="section-title" colspan=3>&nbsp;<br><a name="EpistemicSync">class <strong>EpistemicSync</strong></a>(<a href="builtins.html#object">builtins.object</a>)</td></tr>
     
 <tr><td class="decor title-decor" rowspan=2><span class="code">&nbsp;&nbsp;&nbsp;</span></td>
-<td class="decor title-decor" colspan=2><span class="code"><a href="#EpistemicSync">EpistemicSync</a>(**config_kwargs)<br>
+<td class="decor title-decor" colspan=2><span class="code"><a href="#EpistemicSync">EpistemicSync</a>(config:&nbsp;episemic.config.EpistemicConfig&nbsp;|&nbsp;None&nbsp;=&nbsp;None,&nbsp;**config_kwargs)<br>
 &nbsp;<br>
 Synchronous&nbsp;wrapper&nbsp;for&nbsp;<a href="#Episemic">Episemic</a>&nbsp;(for&nbsp;non-async&nbsp;code).<br>
 &nbsp;<br>
@@ -171,21 +172,21 @@ Example:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;results&nbsp;=&nbsp;episemic.<a href="#EpistemicSync-recall">recall</a>("important")<br>&nbsp;</span></td></tr>
 <tr><td>&nbsp;</td>
 <td class="singlecolumn">Methods defined here:<br>
-<dl><dt><a name="EpistemicSync-__init__"><strong>__init__</strong></a>(self, **config_kwargs)</dt><dd><span class="code">Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</span></dd></dl>
+<dl><dt><a name="EpistemicSync-__init__"><strong>__init__</strong></a>(self, config: episemic.config.EpistemicConfig | None = None, **config_kwargs)</dt><dd><span class="code">Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</span></dd></dl>
 
 <dl><dt><a name="EpistemicSync-consolidate"><strong>consolidate</strong></a>(self) -&gt; int</dt><dd><span class="code">Run&nbsp;memory&nbsp;consolidation.</span></dd></dl>
 
-<dl><dt><a name="EpistemicSync-find_related"><strong>find_related</strong></a>(self, memory_id: str, limit: int = 5) -&gt; list[episemic_core.simple.SearchResult]</dt><dd><span class="code">Find&nbsp;related&nbsp;memories.</span></dd></dl>
+<dl><dt><a name="EpistemicSync-find_related"><strong>find_related</strong></a>(self, memory_id: str, limit: int = 5) -&gt; list[episemic.simple.SearchResult]</dt><dd><span class="code">Find&nbsp;related&nbsp;memories.</span></dd></dl>
 
 <dl><dt><a name="EpistemicSync-forget"><strong>forget</strong></a>(self, memory_id: str) -&gt; bool</dt><dd><span class="code">Remove&nbsp;a&nbsp;memory.</span></dd></dl>
 
-<dl><dt><a name="EpistemicSync-get"><strong>get</strong></a>(self, memory_id: str) -&gt; episemic_core.simple.Memory | None</dt><dd><span class="code">Get&nbsp;a&nbsp;specific&nbsp;memory.</span></dd></dl>
+<dl><dt><a name="EpistemicSync-get"><strong>get</strong></a>(self, memory_id: str) -&gt; episemic.simple.Memory | None</dt><dd><span class="code">Get&nbsp;a&nbsp;specific&nbsp;memory.</span></dd></dl>
 
 <dl><dt><a name="EpistemicSync-health"><strong>health</strong></a>(self) -&gt; bool</dt><dd><span class="code">Check&nbsp;system&nbsp;health.</span></dd></dl>
 
-<dl><dt><a name="EpistemicSync-recall"><strong>recall</strong></a>(self, query: str, limit: int = 10, tags: list[str] | None = None) -&gt; list[episemic_core.simple.SearchResult]</dt><dd><span class="code">Search&nbsp;for&nbsp;memories.</span></dd></dl>
+<dl><dt><a name="EpistemicSync-recall"><strong>recall</strong></a>(self, query: str, limit: int = 10, tags: list[str] | None = None) -&gt; list[episemic.simple.SearchResult]</dt><dd><span class="code">Search&nbsp;for&nbsp;memories.</span></dd></dl>
 
-<dl><dt><a name="EpistemicSync-remember"><strong>remember</strong></a>(self, text: str, title: str | None = None, tags: list[str] | None = None, metadata: dict | None = None) -&gt; episemic_core.simple.Memory | None</dt><dd><span class="code">Store&nbsp;a&nbsp;new&nbsp;memory.</span></dd></dl>
+<dl><dt><a name="EpistemicSync-remember"><strong>remember</strong></a>(self, text: str, title: str | None = None, tags: list[str] | None = None, metadata: dict | None = None) -&gt; episemic.simple.Memory | None</dt><dd><span class="code">Store&nbsp;a&nbsp;new&nbsp;memory.</span></dd></dl>
 
 <dl><dt><a name="EpistemicSync-start"><strong>start</strong></a>(self) -&gt; bool</dt><dd><span class="code">Start&nbsp;the&nbsp;memory&nbsp;system.</span></dd></dl>
 
@@ -271,7 +272,7 @@ Data descriptors defined here:<br>
 <td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Functions</strong></td></tr>
     
 <tr><td class="decor functions-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
-<td class="singlecolumn"><dl><dt>async <a name="-create_memory_system"><strong>create_memory_system</strong></a>(**config_kwargs) -&gt; episemic_core.simple.Episemic</dt><dd><span class="code">Create&nbsp;and&nbsp;start&nbsp;a&nbsp;memory&nbsp;system&nbsp;in&nbsp;one&nbsp;call.<br>
+<td class="singlecolumn"><dl><dt>async <a name="-create_memory_system"><strong>create_memory_system</strong></a>(**config_kwargs) -&gt; episemic.simple.Episemic</dt><dd><span class="code">Create&nbsp;and&nbsp;start&nbsp;a&nbsp;memory&nbsp;system&nbsp;in&nbsp;one&nbsp;call.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;**config_kwargs:&nbsp;Configuration&nbsp;options<br>
@@ -285,11 +286,11 @@ Returns:<br>
     
 <tr><td class="decor data-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
 <td class="singlecolumn"><strong>__all__</strong> = ['Episemic', 'EpistemicSync', 'Memory', 'SearchResult', 'create_memory_system']<br>
-<strong>__email__</strong> = 'your.email@example.com'</td></tr></table><p>
+<strong>__email__</strong> = 'akarnam37@gmail.com'</td></tr></table><p>
 <table class="section">
 <tr class="decor author-decor heading-text">
 <td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Author</strong></td></tr>
     
 <tr><td class="decor author-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
-<td class="singlecolumn">Your&nbsp;Name</td></tr></table>
+<td class="singlecolumn">Aditya&nbsp;Karnam</td></tr></table>
 </body></html>

@@ -1,6 +1,6 @@
-# 📚 Episemic Core Documentation
+# 📚 Episemic Documentation
 
-Welcome to the Episemic Core documentation! This directory contains comprehensive API documentation generated using Python's `pydoc` tool.
+Welcome to the Episemic documentation! This directory contains comprehensive API documentation generated using Python's `pydoc` tool.
 
 ## 🌐 Main Documentation
 
@@ -11,22 +11,22 @@ Welcome to the Episemic Core documentation! This directory contains comprehensiv
 ## 📋 Quick Navigation
 
 ### 👤 For Users (Simple API)
-- [🧠 Episemic Class](api/episemic_core.simple.html#Episemic) - Main async interface
-- [🔄 EpistemicSync Class](api/episemic_core.simple.html#EpistemicSync) - Sync interface
-- [💭 Memory Object](api/episemic_core.simple.html#Memory) - Memory data structure
-- [🔍 SearchResult](api/episemic_core.simple.html#SearchResult) - Search results
+- [🧠 Episemic Class](api/episemic.simple.html#Episemic) - Main async interface
+- [🔄 EpistemicSync Class](api/episemic.simple.html#EpistemicSync) - Sync interface
+- [💭 Memory Object](api/episemic.simple.html#Memory) - Memory data structure
+- [🔍 SearchResult](api/episemic.simple.html#SearchResult) - Search results
 
 ### ⚙️ For Developers (Internal API)
-- [🔧 Configuration System](api/episemic_core.config.html) - Database and service config
-- [🏗️ Data Models](api/episemic_core.models.html) - Internal Pydantic models
-- [🎯 High-Level API](api/episemic_core.api.html) - EpistemicAPI class
-- [💻 CLI Interface](api/episemic_core.cli.main.html) - Command-line tools
+- [🔧 Configuration System](api/episemic.config.html) - Database and service config
+- [🏗️ Data Models](api/episemic.models.html) - Internal Pydantic models
+- [🎯 High-Level API](api/episemic.api.html) - EpistemicAPI class
+- [💻 CLI Interface](api/episemic.cli.main.html) - Command-line tools
 
 ### 🧠 Core Components (Brain Architecture)
-- [⚡ Hippocampus](api/episemic_core.hippocampus.hippocampus.html) - Fast vector storage
-- [🏛️ Cortex](api/episemic_core.cortex.cortex.html) - Long-term relational storage
-- [🔄 Consolidation](api/episemic_core.consolidation.consolidation.html) - Memory transfer engine
-- [🎯 Retrieval](api/episemic_core.retrieval.retrieval.html) - Multi-path search system
+- [⚡ Hippocampus](api/episemic.hippocampus.hippocampus.html) - Fast vector storage
+- [🏛️ Cortex](api/episemic.cortex.cortex.html) - Long-term relational storage
+- [🔄 Consolidation](api/episemic.consolidation.consolidation.html) - Memory transfer engine
+- [🎯 Retrieval](api/episemic.retrieval.retrieval.html) - Multi-path search system
 
 ## 🚀 Quick Start
 
