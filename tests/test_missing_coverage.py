@@ -11,7 +11,7 @@ from episemic.models import Memory
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_hippocampus_embedding_error_fallback(mock_transformer):
     """Test DuckDB hippocampus fallback when embedding generation fails."""
     from episemic.hippocampus.duckdb_hippocampus import DuckDBHippocampus
@@ -21,12 +21,7 @@ async def test_duckdb_hippocampus_embedding_error_fallback(mock_transformer):
 
     hippocampus = DuckDBHippocampus(db_path=None)
 
-    memory = Memory(
-        title="Test Memory",
-        text="Test content",
-        summary="Test summary",
-        source="test"
-    )
+    memory = Memory(title="Test Memory", text="Test content", summary="Test summary", source="test")
 
     # This should trigger the embedding error fallback (line 92)
     result = await hippocampus.store_memory(memory)
@@ -34,7 +29,7 @@ async def test_duckdb_hippocampus_embedding_error_fallback(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_various_error_paths(mock_transformer):
     """Test various error paths in DuckDB hippocampus."""
     from episemic.hippocampus.duckdb_hippocampus import DuckDBHippocampus
@@ -95,6 +90,7 @@ async def test_retrieval_engine_error_paths():
     mock_hippocampus.vector_search.return_value = []
 
     from episemic.models import SearchQuery
+
     query = SearchQuery(query="test", top_k=5)
 
     results = await engine.search(query)
@@ -118,9 +114,7 @@ async def test_simple_api_error_paths():
 
     # Test remember with metadata that triggers JSON serialization
     memory = await episemic.remember(
-        "Test content",
-        title="Test",
-        metadata={"complex": {"nested": "data"}}
+        "Test content", title="Test", metadata={"complex": {"nested": "data"}}
     )
     assert memory is not None
 
@@ -145,10 +139,7 @@ async def test_config_edge_cases():
 
     # Test config creation with various parameters
     config = EpistemicConfig(
-        debug=True,
-        enable_cortex=True,
-        enable_consolidation=True,
-        enable_retrieval=True
+        debug=True, enable_cortex=True, enable_consolidation=True, enable_retrieval=True
     )
 
     assert config.debug is True
@@ -156,7 +147,7 @@ async def test_config_edge_cases():
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_file_operations(mock_transformer):
     """Test DuckDB file-based operations."""
     from episemic.hippocampus.duckdb_hippocampus import DuckDBHippocampus
@@ -176,10 +167,7 @@ async def test_duckdb_file_operations(mock_transformer):
         await hippocampus._ensure_initialized()
 
         memory = Memory(
-            title="File Test",
-            text="File content",
-            summary="File summary",
-            source="test"
+            title="File Test", text="File content", summary="File summary", source="test"
         )
 
         result = await hippocampus.store_memory(memory)
@@ -207,7 +195,7 @@ async def test_models_edge_cases():
         summary="Complete summary",
         source="test",
         tags=["tag1", "tag2"],
-        metadata={"key": "value"}
+        metadata={"key": "value"},
     )
 
     # Test memory methods
@@ -224,10 +212,6 @@ async def test_models_edge_cases():
     assert memory.access_count == original_count + 1
 
     # Test memory link
-    link = MemoryLink(
-        target_id="target-123",
-        type=LinkType.CITES,
-        weight=0.8
-    )
+    link = MemoryLink(target_id="target-123", type=LinkType.CITES, weight=0.8)
     assert link.target_id == "target-123"
     assert link.type == LinkType.CITES

@@ -25,11 +25,7 @@ def test_episemic_initialization():
     assert episemic._started is False
 
     # Custom config
-    episemic = Episemic(
-        debug=True,
-        postgres_host="custom-host",
-        qdrant_port=9999
-    )
+    episemic = Episemic(debug=True, postgres_host="custom-host", qdrant_port=9999)
     assert episemic._config.debug is True
     assert episemic._config.postgresql.host == "custom-host"
     assert episemic._config.qdrant.port == 9999
@@ -87,7 +83,7 @@ def test_memory_wrapper():
         text="This is test content",
         summary="Test summary",
         source="test",
-        tags=["test", "memory"]
+        tags=["test", "memory"],
     )
 
     # Wrap it
@@ -115,13 +111,10 @@ def test_search_result_wrapper():
         text="Found content",
         summary="Found summary",
         source="test",
-        tags=["found"]
+        tags=["found"],
     )
 
-    internal_result = InternalSearchResult(
-        memory=internal_memory,
-        score=0.85
-    )
+    internal_result = InternalSearchResult(memory=internal_memory, score=0.85)
 
     # Wrap it
     result = SearchResult(internal_result)

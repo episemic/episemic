@@ -15,7 +15,7 @@ from episemic.simple import Episemic
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_hippocampus_basic_operations(mock_transformer):
     """Test basic DuckDB hippocampus operations."""
     # Mock the sentence transformer
@@ -39,7 +39,7 @@ async def test_duckdb_hippocampus_basic_operations(mock_transformer):
             summary="This is a test memory for DuckDB storage",
             source="test",
             tags=["test", "duckdb"],
-            metadata={"test": True}
+            metadata={"test": True},
         )
 
         # Test storing memory
@@ -85,7 +85,7 @@ async def test_duckdb_hippocampus_basic_operations(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_simple_api_with_duckdb_fallback(mock_transformer):
     """Test simple API automatically using DuckDB fallback."""
     # Mock the sentence transformer
@@ -114,7 +114,7 @@ async def test_simple_api_with_duckdb_fallback(mock_transformer):
             memory = await episemic.remember(
                 "DuckDB makes local storage easy",
                 title="DuckDB Benefits",
-                tags=["database", "local"]
+                tags=["database", "local"],
             )
             assert memory is not None
             assert "DuckDB" in memory.text
@@ -148,7 +148,7 @@ async def test_simple_api_with_duckdb_fallback(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_with_in_memory_db(mock_transformer):
     """Test DuckDB with in-memory database."""
     # Mock the sentence transformer
@@ -164,7 +164,7 @@ async def test_duckdb_with_in_memory_db(mock_transformer):
         text="This memory is stored in-memory using DuckDB",
         summary="This memory is stored in-memory using DuckDB",
         source="test",
-        tags=["memory", "in-memory"]
+        tags=["memory", "in-memory"],
     )
 
     # Test basic operations
@@ -180,7 +180,7 @@ async def test_duckdb_with_in_memory_db(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_vector_search_with_filters(mock_transformer):
     """Test DuckDB vector search with various filters."""
     # Mock the sentence transformer
@@ -203,22 +203,22 @@ async def test_duckdb_vector_search_with_filters(mock_transformer):
                 text="Python is a versatile programming language",
                 summary="Python is a versatile programming language",
                 source="book",
-                tags=["python", "programming"]
+                tags=["python", "programming"],
             ),
             Memory(
                 title="Database Design",
                 text="Database design is crucial for application performance",
                 summary="Database design is crucial for application performance",
                 source="article",
-                tags=["database", "design"]
+                tags=["database", "design"],
             ),
             Memory(
                 title="Python Database",
                 text="Python has excellent database connectivity options",
                 summary="Python has excellent database connectivity options",
                 source="tutorial",
-                tags=["python", "database"]
-            )
+                tags=["python", "database"],
+            ),
         ]
 
         # Store all memories
@@ -227,11 +227,7 @@ async def test_duckdb_vector_search_with_filters(mock_transformer):
 
         # Test search with tag filter
         embedding = await hippocampus.get_embedding("python programming")
-        results = await hippocampus.vector_search(
-            embedding,
-            top_k=5,
-            filters={"tags": "python"}
-        )
+        results = await hippocampus.vector_search(embedding, top_k=5, filters={"tags": "python"})
 
         # Should find memories tagged with "python"
         assert len(results) >= 2
@@ -239,11 +235,7 @@ async def test_duckdb_vector_search_with_filters(mock_transformer):
             assert "python" in result["tags"]
 
         # Test search with source filter
-        results = await hippocampus.vector_search(
-            embedding,
-            top_k=5,
-            filters={"source": "book"}
-        )
+        results = await hippocampus.vector_search(embedding, top_k=5, filters={"source": "book"})
 
         # Should find only book source
         assert len(results) >= 1

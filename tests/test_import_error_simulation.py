@@ -48,12 +48,12 @@ async def test_force_qdrant_preference_unavailable():
     # Even if QDRANT_AVAILABLE is True, we can test the preference logic
     config = EpistemicConfig(
         prefer_qdrant=True,  # Force Qdrant preference
-        debug=True
+        debug=True,
     )
     api = EpistemicAPI(config)
 
     # Mock the availability check
-    with patch.object(api, '_should_use_duckdb', return_value=False):
+    with patch.object(api, "_should_use_duckdb", return_value=False):
         # This should attempt Qdrant path but may fall back
         result = await api.initialize()
         assert isinstance(result, bool)
@@ -63,8 +63,10 @@ def test_consolidation_imports():
     """Test that consolidation imports work correctly."""
     # Import consolidation module to test import paths
     import episemic.consolidation as cons_module
+
     assert cons_module is not None
 
     # Test that ConsolidationEngine is available
     from episemic.consolidation import ConsolidationEngine
+
     assert ConsolidationEngine is not None

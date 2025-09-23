@@ -10,7 +10,7 @@ from typer.testing import CliRunner
 from episemic.cli.main import app
 
 
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 def test_cli_version_command(mock_transformer):
     """Test CLI version command."""
     runner = CliRunner()
@@ -19,7 +19,7 @@ def test_cli_version_command(mock_transformer):
     assert "Episemic Core" in result.stdout
 
 
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 def test_cli_health_command(mock_transformer):
     """Test CLI health command."""
     # Mock the sentence transformer
@@ -45,7 +45,7 @@ def test_cli_help():
     assert "get" in result.stdout
 
 
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 def test_cli_store_command(mock_transformer):
     """Test CLI store command."""
     # Mock the sentence transformer
@@ -56,21 +56,28 @@ def test_cli_store_command(mock_transformer):
     runner = CliRunner()
 
     # Test basic store command
-    result = runner.invoke(app, [
-        "store",
-        "Test memory content",
-        "--title", "Test Title",
-        "--source", "cli_test",
-        "--tags", "test",
-        "--tags", "cli"
-    ])
+    result = runner.invoke(
+        app,
+        [
+            "store",
+            "Test memory content",
+            "--title",
+            "Test Title",
+            "--source",
+            "cli_test",
+            "--tags",
+            "test",
+            "--tags",
+            "cli",
+        ],
+    )
 
     # CLI will fail without external services available (expected behavior)
     assert result.exit_code == 1  # Application exits with 1 on error
-    assert ("Error storing memory" in result.output or "Connection refused" in result.output)
+    assert "Error storing memory" in result.output or "Connection refused" in result.output
 
 
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 def test_cli_search_command(mock_transformer):
     """Test CLI search command."""
     # Mock the sentence transformer
@@ -81,18 +88,14 @@ def test_cli_search_command(mock_transformer):
     runner = CliRunner()
 
     # Test search command (will fail without services, which is expected)
-    search_result = runner.invoke(app, [
-        "search",
-        "search test",
-        "--top-k", "5"
-    ])
+    search_result = runner.invoke(app, ["search", "search test", "--top-k", "5"])
 
     # Search will fail without external services available (expected behavior)
     assert search_result.exit_code == 1
-    assert ("Error searching" in search_result.output or "Connection refused" in search_result.output)
+    assert "Error searching" in search_result.output or "Connection refused" in search_result.output
 
 
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 def test_cli_init_command(mock_transformer):
     """Test CLI init command."""
     # Mock the sentence transformer
@@ -105,10 +108,10 @@ def test_cli_init_command(mock_transformer):
 
     # Init will fail without external services available (expected behavior)
     assert result.exit_code == 1
-    assert ("Failed to initialize" in result.output or "Connection refused" in result.output)
+    assert "Failed to initialize" in result.output or "Connection refused" in result.output
 
 
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 def test_cli_consolidate_command(mock_transformer):
     """Test CLI consolidate command."""
     # Mock the sentence transformer

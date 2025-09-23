@@ -14,7 +14,7 @@ from episemic.models import Memory
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_initialization_and_health(mock_transformer):
     """Test DuckDB initialization and health check."""
     # Mock the sentence transformer
@@ -45,7 +45,7 @@ async def test_duckdb_initialization_and_health(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_memory_operations(mock_transformer):
     """Test comprehensive memory operations."""
     # Mock the sentence transformer
@@ -71,7 +71,7 @@ async def test_duckdb_memory_operations(mock_transformer):
             summary="This is a comprehensive test memory",
             source="test",
             tags=["test", "comprehensive"],
-            metadata={"importance": "high", "category": "testing"}
+            metadata={"importance": "high", "category": "testing"},
         )
 
         # Store memory
@@ -119,7 +119,7 @@ async def test_duckdb_memory_operations(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_vector_search_comprehensive(mock_transformer):
     """Test comprehensive vector search functionality."""
     # Mock the sentence transformer
@@ -138,7 +138,7 @@ async def test_duckdb_vector_search_comprehensive(mock_transformer):
             summary=f"Content for memory number {i}",
             source=f"source_{i % 2}",  # Alternate sources
             tags=[f"tag_{i}", "common"] if i % 2 == 0 else [f"tag_{i}"],
-            metadata={"index": i, "even": i % 2 == 0}
+            metadata={"index": i, "even": i % 2 == 0},
         )
         memories.append(memory)
         await hippocampus.store_memory(memory)
@@ -149,18 +149,14 @@ async def test_duckdb_vector_search_comprehensive(mock_transformer):
     assert len(results) == 3
 
     # Test search with tag filter
-    results = await hippocampus.vector_search(
-        embedding, top_k=10, filters={"tags": "common"}
-    )
+    results = await hippocampus.vector_search(embedding, top_k=10, filters={"tags": "common"})
     # Should find memories with "common" tag (even indices: 0, 2, 4)
     assert len(results) == 3
     for result in results:
         assert "common" in result["tags"]
 
     # Test search with source filter
-    results = await hippocampus.vector_search(
-        embedding, top_k=10, filters={"source": "source_0"}
-    )
+    results = await hippocampus.vector_search(embedding, top_k=10, filters={"source": "source_0"})
     # Should find memories with source_0 (even indices: 0, 2, 4)
     assert len(results) == 3
     for result in results:
@@ -172,7 +168,7 @@ async def test_duckdb_vector_search_comprehensive(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_error_handling(mock_transformer):
     """Test error handling in DuckDB operations."""
     # Mock the sentence transformer to raise an error
@@ -182,10 +178,7 @@ async def test_duckdb_error_handling(mock_transformer):
 
     # Test store memory with model error
     memory = Memory(
-        title="Error Test",
-        text="This should fail",
-        summary="This should fail",
-        source="test"
+        title="Error Test", text="This should fail", summary="This should fail", source="test"
     )
 
     # This should fall back gracefully and still work (without embeddings)
@@ -206,7 +199,7 @@ async def test_duckdb_error_handling(mock_transformer):
     assert result is True
 
     # Test error in vector search
-    with patch.object(hippocampus2, 'conn') as mock_conn:
+    with patch.object(hippocampus2, "conn") as mock_conn:
         mock_conn.execute.side_effect = Exception("Database error")
 
         embedding = await hippocampus2.get_embedding("test")
@@ -215,7 +208,7 @@ async def test_duckdb_error_handling(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_close_operation(mock_transformer):
     """Test DuckDB close operation."""
     # Mock the sentence transformer
@@ -230,7 +223,7 @@ async def test_duckdb_close_operation(mock_transformer):
     hippocampus.close()
 
     # After close, should not have conn attribute
-    assert not hasattr(hippocampus, 'conn') or hippocampus.conn is None
+    assert not hasattr(hippocampus, "conn") or hippocampus.conn is None
 
 
 def test_duckdb_config_integration():
@@ -241,10 +234,7 @@ def test_duckdb_config_integration():
     assert config.model_name == "all-MiniLM-L6-v2"
 
     # Test custom config
-    config = DuckDBConfig(
-        db_path="/tmp/test.db",
-        model_name="custom-model"
-    )
+    config = DuckDBConfig(db_path="/tmp/test.db", model_name="custom-model")
     assert config.db_path == "/tmp/test.db"
     assert config.model_name == "custom-model"
 
@@ -256,7 +246,7 @@ def test_duckdb_config_integration():
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_file_persistence(mock_transformer):
     """Test file persistence across sessions."""
     # Mock the sentence transformer
@@ -277,7 +267,7 @@ async def test_duckdb_file_persistence(mock_transformer):
             text="This memory should persist across sessions",
             summary="This memory should persist across sessions",
             source="persistence_test",
-            tags=["persistent"]
+            tags=["persistent"],
         )
 
         result = await hippocampus1.store_memory(memory)
@@ -307,7 +297,7 @@ async def test_duckdb_file_persistence(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_multiple_memories_search(mock_transformer):
     """Test search with multiple memories and various scenarios."""
     # Mock the sentence transformer with different embeddings
@@ -329,21 +319,19 @@ async def test_duckdb_multiple_memories_search(mock_transformer):
 
     # Store diverse memories
     memories_data = [
-        ("Python Programming", "Python is a versatile programming language", ["python", "programming"]),
+        (
+            "Python Programming",
+            "Python is a versatile programming language",
+            ["python", "programming"],
+        ),
         ("JavaScript Basics", "JavaScript runs in browsers and servers", ["javascript", "web"]),
         ("Database Design", "Database design is crucial for applications", ["database", "design"]),
         ("Machine Learning", "ML algorithms learn from data", ["ml", "ai"]),
-        ("Web Development", "Building web applications with modern tools", ["web", "development"])
+        ("Web Development", "Building web applications with modern tools", ["web", "development"]),
     ]
 
     for title, text, tags in memories_data:
-        memory = Memory(
-            title=title,
-            text=text,
-            summary=text,
-            source="knowledge_base",
-            tags=tags
-        )
+        memory = Memory(title=title, text=text, summary=text, source="knowledge_base", tags=tags)
         await hippocampus.store_memory(memory)
 
     # Test search for Python-related content

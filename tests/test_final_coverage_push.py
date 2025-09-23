@@ -17,7 +17,7 @@ async def test_api_qdrant_preference_paths():
     # Test with Qdrant preference enabled but Qdrant not available
     config = EpistemicConfig(
         prefer_qdrant=True,  # This should trigger Qdrant path but fall back to DuckDB
-        debug=True
+        debug=True,
     )
     api = EpistemicAPI(config)
 
@@ -34,7 +34,7 @@ async def test_api_cortex_initialization_paths():
     # Test with cortex enabled to trigger initialization attempt
     config = EpistemicConfig(
         enable_cortex=True,  # This should trigger cortex initialization (lines 116-129)
-        debug=True
+        debug=True,
     )
     api = EpistemicAPI(config)
 
@@ -49,7 +49,7 @@ async def test_api_consolidation_initialization():
 
     config = EpistemicConfig(
         enable_consolidation=True,  # Trigger consolidation initialization (lines 139-151)
-        debug=True
+        debug=True,
     )
     api = EpistemicAPI(config)
 
@@ -64,7 +64,7 @@ async def test_api_retrieval_initialization():
 
     config = EpistemicConfig(
         enable_retrieval=True,  # Trigger retrieval initialization (lines 153-167)
-        debug=True
+        debug=True,
     )
     api = EpistemicAPI(config)
 
@@ -95,11 +95,7 @@ async def test_api_health_check_variations():
     """Test health check with different configurations."""
     from episemic.api import EpistemicAPI
 
-    config = EpistemicConfig(
-        enable_cortex=True,
-        enable_consolidation=True,
-        enable_retrieval=True
-    )
+    config = EpistemicConfig(enable_cortex=True, enable_consolidation=True, enable_retrieval=True)
     api = EpistemicAPI(config)
     await api.initialize()
 
@@ -109,7 +105,7 @@ async def test_api_health_check_variations():
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_error_fallback_paths(mock_transformer):
     """Test DuckDB error fallback paths."""
     from episemic.hippocampus.duckdb_hippocampus import DuckDBHippocampus
@@ -123,7 +119,7 @@ async def test_duckdb_error_fallback_paths(mock_transformer):
         title="Fallback Test",
         text="This should trigger fallback",
         summary="Fallback summary",
-        source="test"
+        source="test",
     )
 
     # This should trigger the embedding error fallback
@@ -132,7 +128,7 @@ async def test_duckdb_error_fallback_paths(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_text_search_fallback(mock_transformer):
     """Test DuckDB text search fallback paths."""
     from episemic.hippocampus.duckdb_hippocampus import DuckDBHippocampus
@@ -151,7 +147,7 @@ async def test_duckdb_text_search_fallback(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_quarantine_and_integrity(mock_transformer):
     """Test DuckDB quarantine and integrity methods."""
     from episemic.hippocampus.duckdb_hippocampus import DuckDBHippocampus
@@ -166,10 +162,7 @@ async def test_duckdb_quarantine_and_integrity(mock_transformer):
 
     # Store a memory first
     memory = Memory(
-        title="Quarantine Test",
-        text="Test content",
-        summary="Test summary",
-        source="test"
+        title="Quarantine Test", text="Test content", summary="Test summary", source="test"
     )
     await hippocampus.store_memory(memory)
 
@@ -274,12 +267,10 @@ async def test_config_from_environment():
     from episemic.config import EpistemicConfig
 
     # Test from_env method
-    with patch.dict(os.environ, {
-        'EPISEMIC_DEBUG': 'true',
-        'QDRANT_HOST': 'test-host',
-        'POSTGRES_DB': 'test-db'
-    }):
+    with patch.dict(
+        os.environ, {"EPISEMIC_DEBUG": "true", "QDRANT_HOST": "test-host", "POSTGRES_DB": "test-db"}
+    ):
         config = EpistemicConfig.from_env()
         assert config.debug is True
-        assert config.qdrant.host == 'test-host'
-        assert config.postgresql.database == 'test-db'
+        assert config.qdrant.host == "test-host"
+        assert config.postgresql.database == "test-db"

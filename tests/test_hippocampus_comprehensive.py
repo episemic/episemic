@@ -12,7 +12,7 @@ from episemic.models import Memory, MemoryStatus, RetentionPolicy
 @pytest.fixture
 def mock_qdrant():
     """Mock QdrantClient and its methods."""
-    with patch('episemic.hippocampus.hippocampus.QdrantClient') as mock_client_class:
+    with patch("episemic.hippocampus.hippocampus.QdrantClient") as mock_client_class:
         mock_client = MagicMock()
         mock_client_class.return_value = mock_client
 
@@ -27,7 +27,7 @@ def mock_qdrant():
 @pytest.fixture
 def mock_redis():
     """Mock Redis client and its methods."""
-    with patch('episemic.hippocampus.hippocampus.redis') as mock_redis_module:
+    with patch("episemic.hippocampus.hippocampus.redis") as mock_redis_module:
         mock_redis_client = MagicMock()
         mock_redis_module.Redis.return_value = mock_redis_client
 
@@ -48,7 +48,7 @@ def hippocampus(mock_qdrant, mock_redis):
         qdrant_port=6333,
         redis_host="test_redis",
         redis_port=6379,
-        collection_name="test_memories"
+        collection_name="test_memories",
     )
 
 
@@ -65,7 +65,7 @@ def sample_memory():
         metadata={"category": "test"},
         embedding_v1=[0.1] * 768,  # Required for hippocampus
         status=MemoryStatus.ACTIVE,
-        retention_policy=RetentionPolicy.DEFAULT
+        retention_policy=RetentionPolicy.DEFAULT,
     )
 
 
@@ -76,7 +76,7 @@ def test_hippocampus_initialization(mock_qdrant, mock_redis):
         qdrant_port=6333,
         redis_host="localhost",
         redis_port=6379,
-        collection_name="episodic_memories"
+        collection_name="episodic_memories",
     )
 
     assert hippocampus.qdrant_client == mock_qdrant
@@ -94,7 +94,7 @@ def test_hippocampus_initialization_custom_params(mock_qdrant, mock_redis):
         qdrant_port=9999,
         redis_host="custom-redis",
         redis_port=8888,
-        collection_name="custom_memories"
+        collection_name="custom_memories",
     )
 
     assert hippocampus.collection_name == "custom_memories"
@@ -138,8 +138,8 @@ async def test_store_memory_success(hippocampus, mock_qdrant, mock_redis, sample
     # Verify Qdrant upsert was called
     mock_qdrant.upsert.assert_called_once()
     call_args = mock_qdrant.upsert.call_args
-    assert call_args[1]['collection_name'] == "test_memories"
-    assert len(call_args[1]['points']) == 1
+    assert call_args[1]["collection_name"] == "test_memories"
+    assert len(call_args[1]["points"]) == 1
 
     # Verify Redis cache was set
     mock_redis.setex.assert_called_once()
@@ -156,15 +156,17 @@ async def test_store_memory_no_embedding(hippocampus, mock_qdrant, mock_redis):
         title="No Embedding Memory",
         text="No embedding content",
         summary="No embedding summary",
-        source="test"
+        source="test",
         # No embedding_v1
     )
 
-    with patch('builtins.print') as mock_print:
+    with patch("builtins.print") as mock_print:
         result = await hippocampus.store_memory(memory_no_embedding)
 
     assert result is False
-    mock_print.assert_called_with("Error storing memory in Hippocampus: Memory must have embedding_v1 to store in Hippocampus")
+    mock_print.assert_called_with(
+        "Error storing memory in Hippocampus: Memory must have embedding_v1 to store in Hippocampus"
+    )
 
     # Verify Qdrant and Redis were not called
     mock_qdrant.upsert.assert_not_called()
@@ -176,7 +178,7 @@ async def test_store_memory_qdrant_error(hippocampus, mock_qdrant, mock_redis, s
     """Test memory storage with Qdrant error."""
     mock_qdrant.upsert.side_effect = Exception("Qdrant error")
 
-    with patch('builtins.print') as mock_print:
+    with patch("builtins.print") as mock_print:
         result = await hippocampus.store_memory(sample_memory)
 
     assert result is False
@@ -218,7 +220,7 @@ async def test_retrieve_memory_from_qdrant(hippocampus, mock_qdrant, mock_redis,
         "created_at": datetime.utcnow().isoformat(),
         "retention_policy": "default",
         "status": "active",
-        "hash": "test-hash"
+        "hash": "test-hash",
     }
     mock_qdrant.retrieve.return_value = [mock_point]
 
@@ -229,10 +231,7 @@ async def test_retrieve_memory_from_qdrant(hippocampus, mock_qdrant, mock_redis,
     assert result.text == "This is a test memory"
 
     # Verify Qdrant was called
-    mock_qdrant.retrieve.assert_called_with(
-        collection_name="test_memories",
-        ids=["test-memory-id"]
-    )
+    mock_qdrant.retrieve.assert_called_with(collection_name="test_memories", ids=["test-memory-id"])
 
     # Verify Redis cache was updated
     mock_redis.setex.assert_called()
@@ -261,7 +260,7 @@ async def test_retrieve_memory_qdrant_error(hippocampus, mock_qdrant, mock_redis
     # Mock Qdrant error
     mock_qdrant.retrieve.side_effect = Exception("Qdrant error")
 
-    with patch('builtins.print') as mock_print:
+    with patch("builtins.print") as mock_print:
         result = await hippocampus.retrieve_memory("error-memory")
 
     assert result is None
@@ -285,7 +284,7 @@ async def test_vector_search_success(hippocampus, mock_qdrant):
         "created_at": datetime.utcnow().isoformat(),
         "retention_policy": "default",
         "status": "active",
-        "hash": "hash1"
+        "hash": "hash1",
     }
 
     mock_point2 = MagicMock()
@@ -301,16 +300,14 @@ async def test_vector_search_success(hippocampus, mock_qdrant):
         "created_at": datetime.utcnow().isoformat(),
         "retention_policy": "default",
         "status": "active",
-        "hash": "hash2"
+        "hash": "hash2",
     }
 
     mock_qdrant.search.return_value = [mock_point1, mock_point2]
 
     query_vector = [0.5] * 768
     results = await hippocampus.vector_search(
-        query_vector=query_vector,
-        top_k=10,
-        filters={"tags": ["search"]}
+        query_vector=query_vector, top_k=10, filters={"tags": ["search"]}
     )
 
     assert len(results) == 2
@@ -324,7 +321,7 @@ async def test_vector_search_success(hippocampus, mock_qdrant):
         collection_name="test_memories",
         query_vector=query_vector,
         limit=10,
-        query_filter={"tags": ["search"]}
+        query_filter={"tags": ["search"]},
     )
 
 
@@ -333,10 +330,7 @@ async def test_vector_search_empty_results(hippocampus, mock_qdrant):
     """Test vector search with no results."""
     mock_qdrant.search.return_value = []
 
-    results = await hippocampus.vector_search(
-        query_vector=[0.5] * 768,
-        top_k=5
-    )
+    results = await hippocampus.vector_search(query_vector=[0.5] * 768, top_k=5)
 
     assert len(results) == 0
 
@@ -346,11 +340,8 @@ async def test_vector_search_error(hippocampus, mock_qdrant):
     """Test vector search with error."""
     mock_qdrant.search.side_effect = Exception("Search error")
 
-    with patch('builtins.print') as mock_print:
-        results = await hippocampus.vector_search(
-            query_vector=[0.5] * 768,
-            top_k=5
-        )
+    with patch("builtins.print") as mock_print:
+        results = await hippocampus.vector_search(query_vector=[0.5] * 768, top_k=5)
 
     assert results == []
     mock_print.assert_called_with("Error in vector search: Search error")
@@ -367,7 +358,7 @@ async def test_mark_quarantined_success(hippocampus, mock_qdrant, mock_redis):
     mock_qdrant.set_payload.assert_called_with(
         collection_name="test_memories",
         payload={"status": "quarantined"},
-        points=["test-memory-id"]
+        points=["test-memory-id"],
     )
 
     # Verify Redis cache invalidation
@@ -379,7 +370,7 @@ async def test_mark_quarantined_error(hippocampus, mock_qdrant, mock_redis):
     """Test memory quarantine with error."""
     mock_qdrant.set_payload.side_effect = Exception("Quarantine error")
 
-    with patch('builtins.print') as mock_print:
+    with patch("builtins.print") as mock_print:
         result = await hippocampus.mark_quarantined("error-memory")
 
     assert result is False
@@ -393,7 +384,7 @@ async def test_verify_integrity_success(hippocampus, mock_redis, sample_memory):
     mock_redis.get.return_value = sample_memory.model_dump_json()
 
     # Mock the verify_integrity method on the Memory class
-    with patch.object(Memory, 'verify_integrity', return_value=True):
+    with patch.object(Memory, "verify_integrity", return_value=True):
         result = await hippocampus.verify_integrity("test-memory-id")
 
     assert result is True
@@ -405,7 +396,7 @@ async def test_verify_integrity_memory_not_found(hippocampus, mock_redis):
     mock_redis.get.return_value = None
 
     # Mock Qdrant also returning no results
-    with patch.object(hippocampus, 'retrieve_memory', return_value=None):
+    with patch.object(hippocampus, "retrieve_memory", return_value=None):
         result = await hippocampus.verify_integrity("nonexistent-id")
 
     assert result is False
@@ -418,7 +409,7 @@ async def test_verify_integrity_verification_fails(hippocampus, mock_redis, samp
     mock_redis.get.return_value = sample_memory.model_dump_json()
 
     # Mock the verify_integrity method to fail
-    with patch.object(Memory, 'verify_integrity', return_value=False):
+    with patch.object(Memory, "verify_integrity", return_value=False):
         result = await hippocampus.verify_integrity("test-memory-id")
 
     assert result is False
@@ -432,10 +423,7 @@ def test_health_check_all_healthy(hippocampus, mock_qdrant, mock_redis):
 
     health = hippocampus.health_check()
 
-    assert health == {
-        "qdrant_connected": True,
-        "redis_connected": True
-    }
+    assert health == {"qdrant_connected": True, "redis_connected": True}
 
 
 def test_health_check_qdrant_unhealthy(hippocampus, mock_qdrant, mock_redis):
@@ -446,10 +434,7 @@ def test_health_check_qdrant_unhealthy(hippocampus, mock_qdrant, mock_redis):
 
     health = hippocampus.health_check()
 
-    assert health == {
-        "qdrant_connected": False,
-        "redis_connected": True
-    }
+    assert health == {"qdrant_connected": False, "redis_connected": True}
 
 
 def test_health_check_redis_unhealthy(hippocampus, mock_qdrant, mock_redis):
@@ -460,10 +445,7 @@ def test_health_check_redis_unhealthy(hippocampus, mock_qdrant, mock_redis):
 
     health = hippocampus.health_check()
 
-    assert health == {
-        "qdrant_connected": True,
-        "redis_connected": False
-    }
+    assert health == {"qdrant_connected": True, "redis_connected": False}
 
 
 def test_health_check_all_unhealthy(hippocampus, mock_qdrant, mock_redis):
@@ -474,10 +456,7 @@ def test_health_check_all_unhealthy(hippocampus, mock_qdrant, mock_redis):
 
     health = hippocampus.health_check()
 
-    assert health == {
-        "qdrant_connected": False,
-        "redis_connected": False
-    }
+    assert health == {"qdrant_connected": False, "redis_connected": False}
 
 
 def test_check_qdrant_connection_success(hippocampus, mock_qdrant):
@@ -530,18 +509,11 @@ async def test_vector_search_with_none_filters(hippocampus, mock_qdrant):
     """Test vector search with None filters."""
     mock_qdrant.search.return_value = []
 
-    await hippocampus.vector_search(
-        query_vector=[0.5] * 768,
-        top_k=5,
-        filters=None
-    )
+    await hippocampus.vector_search(query_vector=[0.5] * 768, top_k=5, filters=None)
 
     # Verify search was called with None filters
     mock_qdrant.search.assert_called_with(
-        collection_name="test_memories",
-        query_vector=[0.5] * 768,
-        limit=5,
-        query_filter=None
+        collection_name="test_memories", query_vector=[0.5] * 768, limit=5, query_filter=None
     )
 
 
@@ -555,7 +527,7 @@ async def test_store_memory_with_complex_tags(hippocampus, mock_qdrant, mock_red
         summary="Tagged summary",
         source="test",
         tags=["python", "programming", "machine-learning", "AI"],
-        embedding_v1=[0.3] * 768
+        embedding_v1=[0.3] * 768,
     )
 
     result = await hippocampus.store_memory(memory_with_tags)
@@ -564,7 +536,7 @@ async def test_store_memory_with_complex_tags(hippocampus, mock_qdrant, mock_red
 
     # Verify the tags were included in the payload
     call_args = mock_qdrant.upsert.call_args
-    point = call_args[1]['points'][0]
+    point = call_args[1]["points"][0]
     assert "python" in point.payload["tags"]
     assert "machine-learning" in point.payload["tags"]
 
@@ -582,15 +554,12 @@ async def test_vector_search_with_empty_payload(hippocampus, mock_qdrant):
         "text": "Content",
         "summary": "Summary",
         "source": "test",
-        "hash": "test-hash"
+        "hash": "test-hash",
     }  # Minimal required fields
 
     mock_qdrant.search.return_value = [mock_point]
 
-    results = await hippocampus.vector_search(
-        query_vector=[0.5] * 768,
-        top_k=1
-    )
+    results = await hippocampus.vector_search(query_vector=[0.5] * 768, top_k=1)
 
     assert len(results) == 1
     assert results[0]["memory"].id == "empty-payload-memory"
@@ -609,11 +578,8 @@ async def test_vector_search_with_null_payload(hippocampus, mock_qdrant):
 
     mock_qdrant.search.return_value = [mock_point]
 
-    with patch('builtins.print') as mock_print:
-        results = await hippocampus.vector_search(
-            query_vector=[0.5] * 768,
-            top_k=1
-        )
+    with patch("builtins.print") as mock_print:
+        results = await hippocampus.vector_search(query_vector=[0.5] * 768, top_k=1)
 
     # Should return empty results due to validation error
     assert len(results) == 0

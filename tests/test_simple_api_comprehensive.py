@@ -13,7 +13,7 @@ from episemic.simple import Episemic, EpistemicSync, Memory, SearchResult
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_simple_api_comprehensive_workflow(mock_transformer):
     """Test comprehensive workflow with simple API."""
     # Mock the sentence transformer
@@ -33,7 +33,7 @@ async def test_simple_api_comprehensive_workflow(mock_transformer):
             "Python is a versatile programming language",
             title="Python Programming",
             tags=["python", "programming"],
-            metadata={"difficulty": "beginner"}
+            metadata={"difficulty": "beginner"},
         )
         assert memory1 is not None
         assert "Python" in memory1.text
@@ -43,7 +43,7 @@ async def test_simple_api_comprehensive_workflow(mock_transformer):
             "JavaScript is used for web development",
             title="JavaScript Basics",
             tags=["javascript", "web"],
-            metadata={"difficulty": "intermediate"}
+            metadata={"difficulty": "intermediate"},
         )
         assert memory2 is not None
 
@@ -70,7 +70,7 @@ async def test_simple_api_comprehensive_workflow(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_simple_api_error_scenarios(mock_transformer):
     """Test simple API error handling scenarios."""
     # Mock the sentence transformer
@@ -100,7 +100,7 @@ async def test_simple_api_error_scenarios(mock_transformer):
     await episemic.start()
 
     # Test with API failures
-    with patch.object(episemic._api, 'store_memory', return_value=None):
+    with patch.object(episemic._api, "store_memory", return_value=None):
         memory = await episemic.remember("failed memory")
         assert memory is None
 
@@ -116,7 +116,7 @@ async def test_simple_api_error_scenarios(mock_transformer):
 
 def test_simple_api_sync_wrapper():
     """Test synchronous wrapper functionality."""
-    with patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer'):
+    with patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer"):
         mock_model = MagicMock()
         mock_model.encode.return_value.tolist.return_value = [0.3] * 384
 
@@ -134,9 +134,7 @@ def test_simple_api_sync_wrapper():
 
         # Test remember
         memory = sync_episemic.remember(
-            "Sync API test memory",
-            title="Sync Test",
-            tags=["sync", "test"]
+            "Sync API test memory", title="Sync Test", tags=["sync", "test"]
         )
         # May be None due to mocking
 
@@ -167,7 +165,7 @@ async def test_simple_api_configuration_variations():
         postgres_host="custom-host",
         postgres_db="custom-db",
         postgres_user="custom-user",
-        postgres_password="custom-pass"
+        postgres_password="custom-pass",
     )
     assert episemic_pg._config.postgresql.host == "custom-host"
     assert episemic_pg._config.postgresql.database == "custom-db"
@@ -175,18 +173,12 @@ async def test_simple_api_configuration_variations():
     assert episemic_pg._config.postgresql.password == "custom-pass"
 
     # Test with qdrant configuration via kwargs
-    episemic_qdrant = Episemic(
-        qdrant_host="qdrant-host",
-        qdrant_port=6334
-    )
+    episemic_qdrant = Episemic(qdrant_host="qdrant-host", qdrant_port=6334)
     assert episemic_qdrant._config.qdrant.host == "qdrant-host"
     assert episemic_qdrant._config.qdrant.port == 6334
 
     # Test with redis configuration via kwargs
-    episemic_redis = Episemic(
-        redis_host="redis-host",
-        redis_port=6380
-    )
+    episemic_redis = Episemic(redis_host="redis-host", redis_port=6380)
     assert episemic_redis._config.redis.host == "redis-host"
     assert episemic_redis._config.redis.port == 6380
 
@@ -202,7 +194,7 @@ def test_memory_wrapper_properties():
         summary="Test summary",
         source="test",
         tags=["test", "memory"],
-        metadata={"key": "value"}
+        metadata={"key": "value"},
     )
 
     wrapped_memory = Memory(internal_memory)
@@ -233,14 +225,11 @@ def test_search_result_wrapper():
         title="Result Memory",
         text="Result content",
         summary="Result summary",
-        source="test"
+        source="test",
     )
 
     internal_result = InternalSearchResult(
-        memory=internal_memory,
-        score=0.85,
-        context="search context",
-        metadata={"search": "data"}
+        memory=internal_memory, score=0.85, context="search context", metadata={"search": "data"}
     )
 
     wrapped_result = SearchResult(internal_result)
@@ -259,7 +248,7 @@ def test_search_result_wrapper():
 @pytest.mark.asyncio
 async def test_create_memory_system_function():
     """Test create_memory_system convenience function."""
-    with patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer'):
+    with patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer"):
         mock_model = MagicMock()
         mock_model.encode.return_value.tolist.return_value = [0.4] * 384
 
@@ -270,7 +259,7 @@ async def test_create_memory_system_function():
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_simple_api_memory_retrieval_fallback(mock_transformer):
     """Test memory retrieval with fallback logic."""
     # Mock the sentence transformer
@@ -288,9 +277,7 @@ async def test_simple_api_memory_retrieval_fallback(mock_transformer):
     async with Episemic(config=config) as episemic:
         # This should use the fallback logic in remember()
         memory = await episemic.remember(
-            "Fallback test memory",
-            title="Fallback Test",
-            tags=["fallback"]
+            "Fallback test memory", title="Fallback Test", tags=["fallback"]
         )
         assert memory is not None
         assert memory.text == "Fallback test memory"
@@ -299,7 +286,7 @@ async def test_simple_api_memory_retrieval_fallback(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_simple_api_consolidation_operations(mock_transformer):
     """Test consolidation operations through simple API."""
     # Mock the sentence transformer
@@ -340,13 +327,14 @@ def test_simple_api_event_loop_handling():
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_simple_api_with_file_persistence(mock_transformer):
     """Test simple API with file-based persistence."""
     # Mock the sentence transformer
     mock_model = MagicMock()
     # Create a proper numpy-like array mock
     import numpy as np
+
     mock_array = np.array([0.7] * 384)
     mock_model.encode.return_value = mock_array
     mock_transformer.return_value = mock_model
@@ -365,10 +353,7 @@ async def test_simple_api_with_file_persistence(mock_transformer):
 
         # First session
         async with Episemic(config=config) as episemic1:
-            memory = await episemic1.remember(
-                "Persistent memory test",
-                title="Persistence Test"
-            )
+            memory = await episemic1.remember("Persistent memory test", title="Persistence Test")
             assert memory is not None
             memory_id = memory.id
 
