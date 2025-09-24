@@ -17,10 +17,7 @@ def test_config_creation():
     assert config.enable_hippocampus is True
 
     # Custom config
-    config = EpistemicConfig(
-        qdrant={"host": "custom-host", "port": 9999},
-        debug=True
-    )
+    config = EpistemicConfig(qdrant={"host": "custom-host", "port": 9999}, debug=True)
     assert config.qdrant.host == "custom-host"
     assert config.qdrant.port == 9999
     assert config.debug is True
@@ -28,11 +25,7 @@ def test_config_creation():
 
 def test_config_from_dict():
     """Test creating config from dictionary."""
-    config_dict = {
-        "qdrant": {"host": "test-host"},
-        "debug": True,
-        "enable_cortex": False
-    }
+    config_dict = {"qdrant": {"host": "test-host"}, "debug": True, "enable_cortex": False}
 
     config = EpistemicConfig.from_dict(config_dict)
     assert config.qdrant.host == "test-host"
@@ -53,10 +46,7 @@ def test_config_to_dict():
 
 def test_create_config_helper():
     """Test the create_config helper function."""
-    config = create_config(
-        enable_hippocampus=False,
-        debug=True
-    )
+    config = create_config(enable_hippocampus=False, debug=True)
 
     assert config.enable_hippocampus is False
     assert config.debug is True
@@ -91,7 +81,7 @@ async def test_api_initialization_with_disabled_services():
         enable_hippocampus=False,
         enable_cortex=False,
         enable_consolidation=False,
-        enable_retrieval=False
+        enable_retrieval=False,
     )
 
     api = EpistemicAPI(config)
@@ -115,7 +105,7 @@ async def test_api_context_manager():
         enable_hippocampus=True,  # Keep hippocampus enabled for minimum functionality
         enable_cortex=False,
         enable_consolidation=False,
-        enable_retrieval=False
+        enable_retrieval=False,
     )
 
     async with EpistemicAPI(config) as api:
@@ -128,10 +118,10 @@ def test_config_environment_structure():
     config = EpistemicConfig.from_env()
 
     # Should have all expected sections
-    assert hasattr(config, 'qdrant')
-    assert hasattr(config, 'postgresql')
-    assert hasattr(config, 'redis')
-    assert hasattr(config, 'consolidation')
+    assert hasattr(config, "qdrant")
+    assert hasattr(config, "postgresql")
+    assert hasattr(config, "redis")
+    assert hasattr(config, "consolidation")
 
     # Should have proper types
     assert isinstance(config.qdrant.host, str)

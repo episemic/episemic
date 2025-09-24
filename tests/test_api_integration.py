@@ -12,7 +12,7 @@ from episemic.models import Memory, SearchQuery
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_api_duckdb_backend_selection(mock_transformer):
     """Test API automatically selecting DuckDB backend."""
     # Mock the sentence transformer
@@ -42,13 +42,11 @@ async def test_api_duckdb_backend_selection(mock_transformer):
         success = await api.initialize()
         assert success is True
         assert api.hippocampus is not None
-        assert hasattr(api.hippocampus, 'get_embedding')  # DuckDB hippocampus
+        assert hasattr(api.hippocampus, "get_embedding")  # DuckDB hippocampus
 
         # Test storing memory
         memory_id = await api.store_memory(
-            text="Test memory for API integration",
-            title="API Test",
-            tags=["api", "test"]
+            text="Test memory for API integration", title="API Test", tags=["api", "test"]
         )
         assert memory_id is not None
 
@@ -63,7 +61,7 @@ async def test_api_duckdb_backend_selection(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('qdrant_client.QdrantClient')
+@patch("qdrant_client.QdrantClient")
 async def test_api_qdrant_preference_with_availability(mock_qdrant_client):
     """Test API preferring Qdrant when available."""
     # Mock successful Qdrant connection
@@ -83,8 +81,8 @@ async def test_api_qdrant_preference_with_availability(mock_qdrant_client):
 
 
 @pytest.mark.asyncio
-@patch('qdrant_client.QdrantClient')
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("qdrant_client.QdrantClient")
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_api_qdrant_fallback_to_duckdb(mock_transformer, mock_qdrant_client):
     """Test API falling back to DuckDB when Qdrant is unavailable."""
     # Mock the sentence transformer
@@ -108,7 +106,7 @@ async def test_api_qdrant_fallback_to_duckdb(mock_transformer, mock_qdrant_clien
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_api_fallback_search_functionality(mock_transformer):
     """Test API fallback search when retrieval engine is disabled."""
     # Mock the sentence transformer
@@ -129,9 +127,7 @@ async def test_api_fallback_search_functionality(mock_transformer):
 
     # Store a memory
     memory_id = await api.store_memory(
-        text="Fallback search test memory",
-        title="Fallback Test",
-        tags=["fallback", "search"]
+        text="Fallback search test memory", title="Fallback Test", tags=["fallback", "search"]
     )
     assert memory_id is not None
 
@@ -150,9 +146,9 @@ async def test_api_initialization_failure_handling():
     api = EpistemicAPI(config)
 
     # Mock hippocampus to fail initialization
-    with patch.object(api, 'hippocampus', None):
-        with patch.object(api, '_should_use_duckdb', return_value=True):
-            with patch('episemic.api.DuckDBHippocampus') as mock_duckdb:
+    with patch.object(api, "hippocampus", None):
+        with patch.object(api, "_should_use_duckdb", return_value=True):
+            with patch("episemic.api.DuckDBHippocampus") as mock_duckdb:
                 mock_duckdb.side_effect = Exception("Initialization failed")
 
                 success = await api.initialize()
@@ -161,7 +157,7 @@ async def test_api_initialization_failure_handling():
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_api_memory_operations_comprehensive(mock_transformer):
     """Test comprehensive memory operations through API."""
     # Mock the sentence transformer
@@ -186,7 +182,7 @@ async def test_api_memory_operations_comprehensive(mock_transformer):
         tags=["comprehensive", "test"],
         metadata={"test_type": "comprehensive", "priority": "high"},
         store_in_hippocampus=True,
-        store_in_cortex=False
+        store_in_cortex=False,
     )
     assert memory_id is not None
 
@@ -195,11 +191,7 @@ async def test_api_memory_operations_comprehensive(mock_transformer):
     # May be None if retrieval engine is disabled
 
     # Test search with tags
-    results = await api.search(
-        query="comprehensive test",
-        top_k=5,
-        tags=["comprehensive"]
-    )
+    results = await api.search(query="comprehensive test", top_k=5, tags=["comprehensive"])
     assert isinstance(results, list)
 
     # Test health check
@@ -209,7 +201,7 @@ async def test_api_memory_operations_comprehensive(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_api_context_manager(mock_transformer):
     """Test API context manager functionality."""
     # Mock the sentence transformer
@@ -227,10 +219,7 @@ async def test_api_context_manager(mock_transformer):
         assert api._initialized is True
 
         # Test basic operation
-        memory_id = await api.store_memory(
-            text="Context manager test",
-            title="Context Test"
-        )
+        memory_id = await api.store_memory(text="Context manager test", title="Context Test")
         assert memory_id is not None
 
 
@@ -272,7 +261,7 @@ def test_api_configuration_defaults():
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_api_search_with_fallback_error_handling(mock_transformer):
     """Test API search fallback with error handling."""
     # Mock the sentence transformer
@@ -292,11 +281,11 @@ async def test_api_search_with_fallback_error_handling(mock_transformer):
     await api.initialize()
 
     # Mock hippocampus to not have get_embedding method
-    with patch.object(api.hippocampus, 'get_embedding', side_effect=AttributeError("No method")):
+    with patch.object(api.hippocampus, "get_embedding", side_effect=AttributeError("No method")):
         results = await api.search("test query")
         assert results == []
 
     # Mock hippocampus vector search to fail
-    with patch.object(api.hippocampus, 'vector_search', side_effect=Exception("Search failed")):
+    with patch.object(api.hippocampus, "vector_search", side_effect=Exception("Search failed")):
         results = await api.search("test query")
         assert results == []

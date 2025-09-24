@@ -46,7 +46,7 @@ def sample_memory():
         summary="Test memory summary",
         source="test",
         tags=["test", "memory"],
-        metadata={"category": "test"}
+        metadata={"category": "test"},
     )
 
 
@@ -57,7 +57,7 @@ def sample_search_query():
         query="test query",
         top_k=5,
         filters={"tags": ["test"], "source": "test"},
-        embedding=[0.1] * 768
+        embedding=[0.1] * 768,
     )
 
 
@@ -70,15 +70,12 @@ async def test_retrieval_engine_initialization(mock_hippocampus, mock_cortex):
 
 
 @pytest.mark.asyncio
-async def test_search_with_vector_similarity(retrieval_engine, mock_hippocampus, sample_memory, sample_search_query):
+async def test_search_with_vector_similarity(
+    retrieval_engine, mock_hippocampus, sample_memory, sample_search_query
+):
     """Test search with vector similarity path."""
     # Mock hippocampus vector search results
-    mock_hippocampus.vector_search.return_value = [
-        {
-            "memory": sample_memory,
-            "score": 0.9
-        }
-    ]
+    mock_hippocampus.vector_search.return_value = [{"memory": sample_memory, "score": 0.9}]
 
     results = await retrieval_engine.search(sample_search_query)
 
@@ -86,7 +83,7 @@ async def test_search_with_vector_similarity(retrieval_engine, mock_hippocampus,
     mock_hippocampus.vector_search.assert_called_once_with(
         query_vector=sample_search_query.embedding,
         top_k=sample_search_query.top_k,
-        filters={"tags": ["test"], "source": "test"}
+        filters={"tags": ["test"], "source": "test"},
     )
 
     # Verify results
@@ -97,7 +94,9 @@ async def test_search_with_vector_similarity(retrieval_engine, mock_hippocampus,
 
 
 @pytest.mark.asyncio
-async def test_search_with_tag_based_search(retrieval_engine, mock_cortex, sample_memory, sample_search_query):
+async def test_search_with_tag_based_search(
+    retrieval_engine, mock_cortex, sample_memory, sample_search_query
+):
     """Test search with tag-based path."""
     # Mock cortex tag search results
     mock_cortex.search_by_tags.return_value = [sample_memory]
@@ -105,10 +104,7 @@ async def test_search_with_tag_based_search(retrieval_engine, mock_cortex, sampl
     results = await retrieval_engine.search(sample_search_query)
 
     # Verify cortex was called
-    mock_cortex.search_by_tags.assert_called_once_with(
-        tags=["test"],
-        limit=5
-    )
+    mock_cortex.search_by_tags.assert_called_once_with(tags=["test"], limit=5)
 
     # Verify results
     assert len(results) == 1
@@ -120,18 +116,11 @@ async def test_search_with_tag_based_search(retrieval_engine, mock_cortex, sampl
 async def test_search_with_context_memory(retrieval_engine, mock_cortex, sample_memory):
     """Test search with context memory ID."""
     # Create query with context memory ID
-    query = SearchQuery(
-        query="test",
-        top_k=3,
-        filters={"context_memory_id": "context-id"}
-    )
+    query = SearchQuery(query="test", top_k=3, filters={"context_memory_id": "context-id"})
 
     # Mock graph data
     mock_cortex.get_memory_graph.return_value = {
-        "nodes": [
-            {"id": "context-id"},
-            {"id": "related-id"}
-        ]
+        "nodes": [{"id": "context-id"}, {"id": "related-id"}]
     }
     mock_cortex.retrieve_memory.return_value = sample_memory
 
@@ -147,7 +136,7 @@ async def test_search_error_handling(retrieval_engine, mock_hippocampus, sample_
     # Make hippocampus raise an exception
     mock_hippocampus.vector_search.side_effect = Exception("Vector search failed")
 
-    with patch('builtins.print') as mock_print:
+    with patch("builtins.print") as mock_print:
         results = await retrieval_engine.search(sample_search_query)
 
     # Should return empty list on error
@@ -156,7 +145,9 @@ async def test_search_error_handling(retrieval_engine, mock_hippocampus, sample_
 
 
 @pytest.mark.asyncio
-async def test_retrieve_by_id_from_hippocampus(retrieval_engine, mock_hippocampus, mock_cortex, sample_memory):
+async def test_retrieve_by_id_from_hippocampus(
+    retrieval_engine, mock_hippocampus, mock_cortex, sample_memory
+):
     """Test retrieving memory by ID from hippocampus."""
     mock_hippocampus.retrieve_memory.return_value = sample_memory
 
@@ -169,7 +160,9 @@ async def test_retrieve_by_id_from_hippocampus(retrieval_engine, mock_hippocampu
 
 
 @pytest.mark.asyncio
-async def test_retrieve_by_id_fallback_to_cortex(retrieval_engine, mock_hippocampus, mock_cortex, sample_memory):
+async def test_retrieve_by_id_fallback_to_cortex(
+    retrieval_engine, mock_hippocampus, mock_cortex, sample_memory
+):
     """Test retrieving memory by ID with fallback to cortex."""
     mock_hippocampus.retrieve_memory.return_value = None
     mock_cortex.retrieve_memory.return_value = sample_memory
@@ -205,7 +198,7 @@ async def test_get_related_memories_by_tags(retrieval_engine, mock_cortex, sampl
         text="Base content",
         summary="Base summary",
         source="test",
-        tags=["python", "programming"]
+        tags=["python", "programming"],
     )
 
     # Create related memory
@@ -215,11 +208,11 @@ async def test_get_related_memories_by_tags(retrieval_engine, mock_cortex, sampl
         text="Related content",
         summary="Related summary",
         source="test",
-        tags=["python", "coding"]
+        tags=["python", "coding"],
     )
 
     # Mock the retrieval engine's retrieve_by_id method
-    with patch.object(retrieval_engine, 'retrieve_by_id', return_value=base_memory):
+    with patch.object(retrieval_engine, "retrieve_by_id", return_value=base_memory):
         mock_cortex.search_by_tags.return_value = [related_memory]
 
         results = await retrieval_engine.get_related_memories("base-id", max_related=3)
@@ -227,7 +220,7 @@ async def test_get_related_memories_by_tags(retrieval_engine, mock_cortex, sampl
     # Verify tag search was called
     mock_cortex.search_by_tags.assert_called_with(
         tags=["python", "programming"],
-        limit=6  # max_related * 2
+        limit=6,  # max_related * 2
     )
 
     assert len(results) == 1
@@ -244,19 +237,16 @@ async def test_get_related_memories_by_graph(retrieval_engine, mock_cortex, samp
         text="Base content",
         summary="Base summary",
         source="test",
-        tags=["test"]
+        tags=["test"],
     )
 
     # Mock graph data with connected nodes
     mock_cortex.get_memory_graph.return_value = {
-        "nodes": [
-            {"id": "base-id"},
-            {"id": "connected-id"}
-        ]
+        "nodes": [{"id": "base-id"}, {"id": "connected-id"}]
     }
     mock_cortex.retrieve_memory.return_value = sample_memory
 
-    with patch.object(retrieval_engine, 'retrieve_by_id', return_value=base_memory):
+    with patch.object(retrieval_engine, "retrieve_by_id", return_value=base_memory):
         results = await retrieval_engine.get_related_memories("base-id")
 
     # Verify graph traversal was called
@@ -267,7 +257,7 @@ async def test_get_related_memories_by_graph(retrieval_engine, mock_cortex, samp
 @pytest.mark.asyncio
 async def test_get_related_memories_no_base_memory(retrieval_engine):
     """Test getting related memories when base memory doesn't exist."""
-    with patch.object(retrieval_engine, 'retrieve_by_id', return_value=None):
+    with patch.object(retrieval_engine, "retrieve_by_id", return_value=None):
         results = await retrieval_engine.get_related_memories("nonexistent-id")
 
     assert results == []
@@ -276,8 +266,10 @@ async def test_get_related_memories_no_base_memory(retrieval_engine):
 @pytest.mark.asyncio
 async def test_get_related_memories_error_handling(retrieval_engine, sample_memory):
     """Test error handling in get_related_memories."""
-    with patch.object(retrieval_engine, 'retrieve_by_id', side_effect=Exception("Retrieval failed")):
-        with patch('builtins.print') as mock_print:
+    with patch.object(
+        retrieval_engine, "retrieve_by_id", side_effect=Exception("Retrieval failed")
+    ):
+        with patch("builtins.print") as mock_print:
             results = await retrieval_engine.get_related_memories("test-id")
 
     assert results == []
@@ -289,10 +281,7 @@ async def test_search_by_context(retrieval_engine, mock_cortex, sample_memory):
     """Test _search_by_context method."""
     # Mock graph data
     mock_cortex.get_memory_graph.return_value = {
-        "nodes": [
-            {"id": "context-id"},
-            {"id": "related-id"}
-        ]
+        "nodes": [{"id": "context-id"}, {"id": "related-id"}]
     }
     mock_cortex.retrieve_memory.return_value = sample_memory
 
@@ -312,7 +301,7 @@ async def test_search_by_context_error_handling(retrieval_engine, mock_cortex):
     """Test error handling in _search_by_context."""
     mock_cortex.get_memory_graph.side_effect = Exception("Graph error")
 
-    with patch('builtins.print') as mock_print:
+    with patch("builtins.print") as mock_print:
         results = await retrieval_engine._search_by_context("context-id", top_k=5)
 
     assert results == []
@@ -344,17 +333,9 @@ def test_build_qdrant_filters(retrieval_engine):
     assert result == {"retention_policy": "archival"}
 
     # Test with multiple filters
-    filters = {
-        "tags": ["test"],
-        "source": "api",
-        "retention_policy": "default"
-    }
+    filters = {"tags": ["test"], "source": "api", "retention_policy": "default"}
     result = retrieval_engine._build_qdrant_filters(filters)
-    expected = {
-        "tags": {"any": ["test"]},
-        "source": "api",
-        "retention_policy": "default"
-    }
+    expected = {"tags": {"any": ["test"]}, "source": "api", "retention_policy": "default"}
     assert result == expected
 
 
@@ -372,7 +353,9 @@ def test_calculate_tag_relevance_score(retrieval_engine, sample_memory):
     assert score == 0.25
 
     # Test with complete overlap
-    score = retrieval_engine._calculate_tag_relevance_score(sample_memory, ["python", "programming", "tutorial"])
+    score = retrieval_engine._calculate_tag_relevance_score(
+        sample_memory, ["python", "programming", "tutorial"]
+    )
     assert score == 1.0
 
     # Test with empty tags
@@ -388,23 +371,18 @@ def test_calculate_tag_overlap_score(retrieval_engine):
     """Test _calculate_tag_overlap_score method."""
     # Test with overlap
     score = retrieval_engine._calculate_tag_overlap_score(
-        ["python", "programming"],
-        ["python", "tutorial"]
+        ["python", "programming"], ["python", "tutorial"]
     )
     # Overlap: 1, Union: 3, Score: 1/3
-    assert score == 1/3
+    assert score == 1 / 3
 
     # Test with no overlap
-    score = retrieval_engine._calculate_tag_overlap_score(
-        ["python"],
-        ["javascript"]
-    )
+    score = retrieval_engine._calculate_tag_overlap_score(["python"], ["javascript"])
     assert score == 0.0
 
     # Test with identical tags
     score = retrieval_engine._calculate_tag_overlap_score(
-        ["python", "programming"],
-        ["python", "programming"]
+        ["python", "programming"], ["python", "programming"]
     )
     assert score == 1.0
 
@@ -420,16 +398,13 @@ def test_deduplicate_results(retrieval_engine, sample_memory):
     """Test _deduplicate_results method."""
     # Create duplicate results
     result1 = SearchResult(
-        memory=sample_memory,
-        score=0.9,
-        provenance={"context": "context1"},
-        retrieval_path=[]
+        memory=sample_memory, score=0.9, provenance={"context": "context1"}, retrieval_path=[]
     )
     result2 = SearchResult(
         memory=sample_memory,  # Same memory
         score=0.8,
         provenance={"context": "context2"},
-        retrieval_path=[]
+        retrieval_path=[],
     )
 
     # Create different memory
@@ -438,13 +413,10 @@ def test_deduplicate_results(retrieval_engine, sample_memory):
         title="Other Memory",
         text="Other content",
         summary="Other summary",
-        source="test"
+        source="test",
     )
     result3 = SearchResult(
-        memory=other_memory,
-        score=0.7,
-        provenance={"context": "context3"},
-        retrieval_path=[]
+        memory=other_memory, score=0.7, provenance={"context": "context3"}, retrieval_path=[]
     )
 
     results = [result1, result2, result3]
@@ -465,7 +437,7 @@ def test_rank_results(retrieval_engine, sample_search_query):
         text="Content 1",
         summary="Summary 1",
         source="test",
-        access_count=3
+        access_count=3,
     )
     memory2 = Memory(
         id="memory2",
@@ -473,7 +445,7 @@ def test_rank_results(retrieval_engine, sample_search_query):
         text="Content 2",
         summary="Summary 2",
         source="test",
-        access_count=10  # High access count
+        access_count=10,  # High access count
     )
 
     result1 = SearchResult(memory=memory1, score=0.8, provenance={}, retrieval_path=[])
@@ -489,7 +461,9 @@ def test_rank_results(retrieval_engine, sample_search_query):
     assert len(ranked) == 2
     # The boost should make memory2's score higher: 0.7 * 1.1 = 0.77
     boosted_score = 0.7 * 1.1
-    assert ranked[0].score >= 0.8 or (ranked[0].memory.id == "memory2" and ranked[0].score >= boosted_score)
+    assert ranked[0].score >= 0.8 or (
+        ranked[0].memory.id == "memory2" and ranked[0].score >= boosted_score
+    )
 
 
 def test_health_check(retrieval_engine, mock_hippocampus, mock_cortex):
@@ -499,10 +473,7 @@ def test_health_check(retrieval_engine, mock_hippocampus, mock_cortex):
 
     health = retrieval_engine.health_check()
 
-    assert health == {
-        "hippocampus_healthy": {"status": "healthy"},
-        "cortex_healthy": True
-    }
+    assert health == {"hippocampus_healthy": {"status": "healthy"}, "cortex_healthy": True}
 
 
 @pytest.mark.asyncio
@@ -511,7 +482,7 @@ async def test_search_query_without_embedding(retrieval_engine, mock_cortex, sam
     query = SearchQuery(
         query="test query",
         top_k=5,
-        filters={"tags": ["test"]}
+        filters={"tags": ["test"]},
         # No embedding attribute
     )
 
@@ -524,11 +495,11 @@ async def test_search_query_without_embedding(retrieval_engine, mock_cortex, sam
 
 
 @pytest.mark.asyncio
-async def test_search_access_count_increment(retrieval_engine, mock_hippocampus, mock_cortex, sample_memory, sample_search_query):
+async def test_search_access_count_increment(
+    retrieval_engine, mock_hippocampus, mock_cortex, sample_memory, sample_search_query
+):
     """Test that access count is incremented for search results."""
-    mock_hippocampus.vector_search.return_value = [
-        {"memory": sample_memory, "score": 0.9}
-    ]
+    mock_hippocampus.vector_search.return_value = [{"memory": sample_memory, "score": 0.9}]
 
     results = await retrieval_engine.search(sample_search_query)
 
@@ -537,7 +508,9 @@ async def test_search_access_count_increment(retrieval_engine, mock_hippocampus,
 
 
 @pytest.mark.asyncio
-async def test_search_multiple_paths_integration(retrieval_engine, mock_hippocampus, mock_cortex, sample_memory):
+async def test_search_multiple_paths_integration(
+    retrieval_engine, mock_hippocampus, mock_cortex, sample_memory
+):
     """Test search using multiple retrieval paths."""
     # Create different memories for different paths
     vector_memory = Memory(
@@ -546,7 +519,7 @@ async def test_search_multiple_paths_integration(retrieval_engine, mock_hippocam
         text="Vector content",
         summary="Vector summary",
         source="test",
-        tags=["vector"]
+        tags=["vector"],
     )
 
     tag_memory = Memory(
@@ -555,13 +528,11 @@ async def test_search_multiple_paths_integration(retrieval_engine, mock_hippocam
         text="Tag content",
         summary="Tag summary",
         source="test",
-        tags=["test", "tag"]
+        tags=["test", "tag"],
     )
 
     # Setup mocks for all paths
-    mock_hippocampus.vector_search.return_value = [
-        {"memory": vector_memory, "score": 0.9}
-    ]
+    mock_hippocampus.vector_search.return_value = [{"memory": vector_memory, "score": 0.9}]
     mock_cortex.search_by_tags.return_value = [tag_memory]
     mock_cortex.get_memory_graph.return_value = {"nodes": []}
 
@@ -569,7 +540,7 @@ async def test_search_multiple_paths_integration(retrieval_engine, mock_hippocam
         query="test",
         top_k=10,
         filters={"tags": ["test"], "context_memory_id": "context-id"},
-        embedding=[0.1] * 768
+        embedding=[0.1] * 768,
     )
 
     results = await retrieval_engine.search(query)

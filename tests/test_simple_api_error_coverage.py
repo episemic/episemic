@@ -11,7 +11,7 @@ from episemic.simple import Episemic, EpistemicSync
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_simple_api_start_failure_handling(mock_transformer):
     """Test simple API start failure handling."""
     # Mock the sentence transformer
@@ -29,7 +29,7 @@ async def test_simple_api_start_failure_handling(mock_transformer):
     episemic = Episemic(config=config)
 
     # Mock API initialization to fail
-    with patch.object(episemic._api, 'initialize', side_effect=Exception("Init failed")):
+    with patch.object(episemic._api, "initialize", side_effect=Exception("Init failed")):
         result = await episemic.start()
         assert result is False
         assert episemic._started is True  # Should still mark as started for basic functionality
@@ -55,7 +55,7 @@ def test_simple_api_sync_event_loop_edge_cases():
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_simple_api_forget_functionality(mock_transformer):
     """Test forget functionality in simple API."""
     # Mock the sentence transformer
@@ -84,7 +84,7 @@ async def test_simple_api_forget_functionality(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_simple_api_find_related_functionality(mock_transformer):
     """Test find_related functionality in simple API."""
     # Mock the sentence transformer
@@ -141,7 +141,7 @@ async def test_simple_api_not_started_edge_cases():
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_simple_api_consolidation_edge_cases(mock_transformer):
     """Test consolidation edge cases in simple API."""
     # Mock the sentence transformer
@@ -164,7 +164,7 @@ async def test_simple_api_consolidation_edge_cases(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_simple_api_health_check_variations(mock_transformer):
     """Test health check variations."""
     # Mock the sentence transformer
@@ -190,7 +190,7 @@ async def test_simple_api_health_check_variations(mock_transformer):
             "enable_cortex": False,
             "enable_consolidation": False,
             "enable_retrieval": False,
-        }
+        },
     ]
 
     for config_dict in configs:
@@ -201,7 +201,7 @@ async def test_simple_api_health_check_variations(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_simple_api_memory_retrieval_error_handling(mock_transformer):
     """Test memory retrieval error handling."""
     # Mock the sentence transformer
@@ -218,19 +218,19 @@ async def test_simple_api_memory_retrieval_error_handling(mock_transformer):
 
     async with Episemic(config=config) as episemic:
         # Mock API get_memory to raise exception
-        with patch.object(episemic._api, 'get_memory', side_effect=Exception("Get memory failed")):
+        with patch.object(episemic._api, "get_memory", side_effect=Exception("Get memory failed")):
             # This should trigger the fallback logic in remember()
             memory = await episemic.remember("Test memory with error")
             assert memory is not None  # Should use fallback logic
 
         # Test get with API error - should raise exception (no error handling in get)
-        with patch.object(episemic._api, 'get_memory', side_effect=Exception("Get failed")):
+        with patch.object(episemic._api, "get_memory", side_effect=Exception("Get failed")):
             with pytest.raises(Exception, match="Get failed"):
                 await episemic.get("any-id")
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_simple_api_config_kwargs_parsing(mock_transformer):
     """Test config kwargs parsing edge cases."""
     # Test with mixed kwargs
@@ -239,7 +239,7 @@ async def test_simple_api_config_kwargs_parsing(mock_transformer):
         postgres_db="custom-db",
         redis_port=6380,
         debug=True,
-        custom_field="custom_value"  # Should be added to config_dict
+        custom_field="custom_value",  # Should be added to config_dict
     )
 
     assert episemic._config.qdrant.host == "custom-qdrant"
@@ -250,7 +250,7 @@ async def test_simple_api_config_kwargs_parsing(mock_transformer):
 
 def test_simple_api_sync_wrapper_comprehensive():
     """Test comprehensive sync wrapper functionality."""
-    with patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer'):
+    with patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer"):
         config = EpistemicConfig()
         config.use_duckdb_fallback = True
         config.prefer_qdrant = False
@@ -261,9 +261,14 @@ def test_simple_api_sync_wrapper_comprehensive():
 
         # Test all sync methods exist and are callable
         methods_to_test = [
-            'start', 'remember', 'recall', 'get',
-            'find_related', 'forget', 'consolidate',
-            'health'
+            "start",
+            "remember",
+            "recall",
+            "get",
+            "find_related",
+            "forget",
+            "consolidate",
+            "health",
         ]
         # Note: 'auto_consolidate' and 'stop' methods don't exist in EpistemicSync
 

@@ -2,10 +2,7 @@
 
 import asyncio
 import json
-import uuid
-from datetime import datetime
 from pathlib import Path
-from typing import Any
 
 import duckdb
 from sentence_transformers import SentenceTransformer
@@ -238,7 +235,7 @@ class DuckDBHippocampus:
                 return 0.0
 
             # Calculate dot product
-            dot_product = sum(a * b for a, b in zip(vec1, vec2))
+            dot_product = sum(a * b for a, b in zip(vec1, vec2, strict=False))
 
             # Calculate magnitudes
             magnitude1 = math.sqrt(sum(a * a for a in vec1))
@@ -388,6 +385,32 @@ class DuckDBHippocampus:
             return result[0] if result else 0
         except Exception:
             return 0
+
+    async def get_all_memory_ids(self) -> list[str]:
+        """Get all memory IDs from active memories."""
+        try:
+            await self._ensure_initialized()
+
+            results = self.conn.execute("""
+                SELECT id FROM memories WHERE is_quarantined = FALSE
+            """).fetchall()
+
+            return [row[0] for row in results]
+        except Exception:
+            return []
+
+    async def remove_memory(self, memory_id: str) -> bool:
+        """Remove a memory completely from the hippocampus."""
+        try:
+            await self._ensure_initialized()
+
+            self.conn.execute("""
+                DELETE FROM memories WHERE id = ?
+            """, [memory_id])
+
+            return True
+        except Exception:
+            return False
 
     async def get_embedding(self, text: str) -> list[float]:
         """Generate embedding for text."""

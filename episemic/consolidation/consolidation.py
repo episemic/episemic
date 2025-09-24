@@ -85,15 +85,81 @@ class ConsolidationEngine:
 
     async def auto_consolidation_sweep(self) -> int:
         try:
-            # This would need to be implemented to scan hippocampus for eligible memories
-            # For now, this is a placeholder that would need hippocampus scanning capability
+            print("Starting auto consolidation sweep...")
 
-            print("Auto consolidation sweep completed")
-            return 0
+            # Get all memory IDs from hippocampus that are eligible for consolidation
+            eligible_memory_ids = await self._get_eligible_memory_ids()
+
+            if not eligible_memory_ids:
+                print("No memories eligible for consolidation")
+                return 0
+
+            print(f"Found {len(eligible_memory_ids)} memories eligible for consolidation")
+
+            # Consolidate each eligible memory
+            consolidated_count = 0
+            failed_count = 0
+
+            for memory_id in eligible_memory_ids:
+                try:
+                    success = await self.consolidate_memory(memory_id)
+                    if success:
+                        consolidated_count += 1
+                        # Remove memory from hippocampus after successful consolidation
+                        await self._remove_from_hippocampus(memory_id)
+                    else:
+                        failed_count += 1
+                except Exception as e:
+                    print(f"Error consolidating memory {memory_id}: {e}")
+                    failed_count += 1
+
+            print(f"Auto consolidation sweep completed: {consolidated_count} memories consolidated, {failed_count} failed")
+            return consolidated_count
 
         except Exception as e:
             print(f"Error during auto consolidation sweep: {e}")
             return 0
+
+    async def _get_eligible_memory_ids(self) -> list[str]:
+        """Get memory IDs from hippocampus that are eligible for consolidation."""
+        # Check if we have the method to get memory IDs
+        if hasattr(self.hippocampus, 'get_all_memory_ids'):
+            all_memory_ids = await self.hippocampus.get_all_memory_ids()
+        else:
+            # For now, return empty list if method doesn't exist
+            # This would need to be implemented in hippocampus classes
+            print("Warning: hippocampus does not support getting all memory IDs")
+            return []
+
+        eligible_ids = []
+
+        # Check each memory to see if it should be consolidated
+        for memory_id in all_memory_ids:
+            try:
+                memory = await self.hippocampus.retrieve_memory(memory_id)
+                if memory and self._should_consolidate(memory):
+                    eligible_ids.append(memory_id)
+            except Exception as e:
+                print(f"Error checking memory {memory_id}: {e}")
+                continue
+
+        return eligible_ids
+
+    async def _remove_from_hippocampus(self, memory_id: str) -> bool:
+        """Remove a memory from hippocampus after successful consolidation."""
+        try:
+            # Check if hippocampus has a remove method
+            if hasattr(self.hippocampus, 'remove_memory'):
+                return await self.hippocampus.remove_memory(memory_id)
+            elif hasattr(self.hippocampus, 'mark_quarantined'):
+                # If no remove method, mark as quarantined
+                return await self.hippocampus.mark_quarantined(memory_id)
+            else:
+                print(f"Warning: Cannot remove memory {memory_id} from hippocampus - method not available")
+                return False
+        except Exception as e:
+            print(f"Error removing memory {memory_id} from hippocampus: {e}")
+            return False
 
     async def create_consolidated_summary(self, memory_ids: list[str]) -> Memory | None:
         try:

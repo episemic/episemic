@@ -13,6 +13,9 @@ def mock_hippocampus():
     """Create a mock hippocampus."""
     hippocampus = MagicMock()
     hippocampus.retrieve_memory = AsyncMock()
+    hippocampus.get_all_memory_ids = AsyncMock(return_value=[])
+    hippocampus.remove_memory = AsyncMock(return_value=True)
+    hippocampus.mark_quarantined = AsyncMock(return_value=True)
     hippocampus.health_check = MagicMock(return_value={"status": "healthy"})
     return hippocampus
 
@@ -46,7 +49,7 @@ def sample_memory():
         created_at=datetime.utcnow() - timedelta(hours=3),  # Old enough to consolidate
         access_count=5,  # High enough to consolidate
         status=MemoryStatus.ACTIVE,
-        retention_policy=RetentionPolicy.DEFAULT
+        retention_policy=RetentionPolicy.DEFAULT,
     )
 
 
@@ -54,9 +57,7 @@ def sample_memory():
 def sample_consolidation_job():
     """Create a sample consolidation job."""
     return ConsolidationJob(
-        memory_ids=["memory1", "memory2", "memory3"],
-        job_type="consolidation",
-        status="pending"
+        memory_ids=["memory1", "memory2", "memory3"], job_type="consolidation", status="pending"
     )
 
 
@@ -71,12 +72,14 @@ async def test_consolidation_engine_initialization(mock_hippocampus, mock_cortex
 
 
 @pytest.mark.asyncio
-async def test_consolidate_memory_success(consolidation_engine, mock_hippocampus, mock_cortex, sample_memory):
+async def test_consolidate_memory_success(
+    consolidation_engine, mock_hippocampus, mock_cortex, sample_memory
+):
     """Test successful memory consolidation."""
     mock_hippocampus.retrieve_memory.return_value = sample_memory
     mock_cortex.store_memory.return_value = True
 
-    with patch('builtins.print') as mock_print:
+    with patch("builtins.print") as mock_print:
         result = await consolidation_engine.consolidate_memory("test-memory-id")
 
     assert result is True
@@ -90,7 +93,7 @@ async def test_consolidate_memory_not_found(consolidation_engine, mock_hippocamp
     """Test consolidation when memory is not found."""
     mock_hippocampus.retrieve_memory.return_value = None
 
-    with patch('builtins.print') as mock_print:
+    with patch("builtins.print") as mock_print:
         result = await consolidation_engine.consolidate_memory("nonexistent-id")
 
     assert result is False
@@ -110,7 +113,7 @@ async def test_consolidate_memory_should_not_consolidate(consolidation_engine, m
         created_at=datetime.utcnow(),  # Very recent
         access_count=1,  # Low access count
         status=MemoryStatus.ACTIVE,
-        retention_policy=RetentionPolicy.DEFAULT
+        retention_policy=RetentionPolicy.DEFAULT,
     )
 
     mock_hippocampus.retrieve_memory.return_value = recent_memory
@@ -120,12 +123,14 @@ async def test_consolidate_memory_should_not_consolidate(consolidation_engine, m
 
 
 @pytest.mark.asyncio
-async def test_consolidate_memory_cortex_failure(consolidation_engine, mock_hippocampus, mock_cortex, sample_memory):
+async def test_consolidate_memory_cortex_failure(
+    consolidation_engine, mock_hippocampus, mock_cortex, sample_memory
+):
     """Test consolidation when cortex storage fails."""
     mock_hippocampus.retrieve_memory.return_value = sample_memory
     mock_cortex.store_memory.return_value = False
 
-    with patch('builtins.print') as mock_print:
+    with patch("builtins.print") as mock_print:
         result = await consolidation_engine.consolidate_memory("test-memory-id")
 
     assert result is False
@@ -137,11 +142,13 @@ async def test_consolidate_memory_exception_handling(consolidation_engine, mock_
     """Test consolidation exception handling."""
     mock_hippocampus.retrieve_memory.side_effect = Exception("Retrieval error")
 
-    with patch('builtins.print') as mock_print:
+    with patch("builtins.print") as mock_print:
         result = await consolidation_engine.consolidate_memory("error-memory")
 
     assert result is False
-    mock_print.assert_called_with("Error during consolidation of memory error-memory: Retrieval error")
+    mock_print.assert_called_with(
+        "Error during consolidation of memory error-memory: Retrieval error"
+    )
 
 
 def test_should_consolidate_by_age(consolidation_engine):
@@ -156,7 +163,7 @@ def test_should_consolidate_by_age(consolidation_engine):
         created_at=datetime.utcnow() - timedelta(hours=5),  # Older than threshold
         access_count=1,
         status=MemoryStatus.ACTIVE,
-        retention_policy=RetentionPolicy.DEFAULT
+        retention_policy=RetentionPolicy.DEFAULT,
     )
 
     assert consolidation_engine._should_consolidate(old_memory) is True
@@ -174,7 +181,7 @@ def test_should_consolidate_by_access_count(consolidation_engine):
         created_at=datetime.utcnow(),  # Recent
         access_count=10,  # High access count
         status=MemoryStatus.ACTIVE,
-        retention_policy=RetentionPolicy.DEFAULT
+        retention_policy=RetentionPolicy.DEFAULT,
     )
 
     assert consolidation_engine._should_consolidate(high_access_memory) is True
@@ -191,7 +198,7 @@ def test_should_not_consolidate_ephemeral(consolidation_engine):
         created_at=datetime.utcnow() - timedelta(hours=5),
         access_count=10,
         status=MemoryStatus.ACTIVE,
-        retention_policy=RetentionPolicy.EPHEMERAL  # Should not consolidate
+        retention_policy=RetentionPolicy.EPHEMERAL,  # Should not consolidate
     )
 
     assert consolidation_engine._should_consolidate(ephemeral_memory) is False
@@ -208,7 +215,7 @@ def test_should_not_consolidate_inactive(consolidation_engine):
         created_at=datetime.utcnow() - timedelta(hours=5),
         access_count=10,
         status=MemoryStatus.QUARANTINED,  # Inactive status
-        retention_policy=RetentionPolicy.DEFAULT
+        retention_policy=RetentionPolicy.DEFAULT,
     )
 
     assert consolidation_engine._should_consolidate(inactive_memory) is False
@@ -225,7 +232,7 @@ def test_should_not_consolidate_recent_low_access(consolidation_engine):
         created_at=datetime.utcnow(),  # Recent
         access_count=1,  # Low access
         status=MemoryStatus.ACTIVE,
-        retention_policy=RetentionPolicy.DEFAULT
+        retention_policy=RetentionPolicy.DEFAULT,
     )
 
     assert consolidation_engine._should_consolidate(recent_low_access_memory) is False
@@ -235,35 +242,48 @@ def test_should_not_consolidate_recent_low_access(consolidation_engine):
 async def test_run_consolidation_job_success(consolidation_engine, sample_consolidation_job):
     """Test successful consolidation job execution."""
     # Mock consolidate_memory to return True for all memories
-    with patch.object(consolidation_engine, 'consolidate_memory', return_value=True) as mock_consolidate:
-        with patch('builtins.print') as mock_print:
+    with patch.object(
+        consolidation_engine, "consolidate_memory", return_value=True
+    ) as mock_consolidate:
+        with patch("builtins.print") as mock_print:
             result = await consolidation_engine.run_consolidation_job(sample_consolidation_job)
 
     assert result.status == "completed"
     assert mock_consolidate.call_count == 3
-    mock_print.assert_called_with(f"Consolidation job {sample_consolidation_job.id} completed: 3 memories consolidated")
+    mock_print.assert_called_with(
+        f"Consolidation job {sample_consolidation_job.id} completed: 3 memories consolidated"
+    )
 
 
 @pytest.mark.asyncio
-async def test_run_consolidation_job_partial_failure(consolidation_engine, sample_consolidation_job):
+async def test_run_consolidation_job_partial_failure(
+    consolidation_engine, sample_consolidation_job
+):
     """Test consolidation job with partial failures."""
+
     # Mock consolidate_memory to fail for one memory
     def mock_consolidate_side_effect(memory_id):
         return memory_id != "memory2"  # Fail for memory2
 
-    with patch.object(consolidation_engine, 'consolidate_memory', side_effect=mock_consolidate_side_effect):
-        with patch('builtins.print') as mock_print:
+    with patch.object(
+        consolidation_engine, "consolidate_memory", side_effect=mock_consolidate_side_effect
+    ):
+        with patch("builtins.print") as mock_print:
             result = await consolidation_engine.run_consolidation_job(sample_consolidation_job)
 
     assert result.status == "completed"  # Still completed if some succeed
-    mock_print.assert_called_with(f"Consolidation job {sample_consolidation_job.id} completed: 2 memories consolidated")
+    mock_print.assert_called_with(
+        f"Consolidation job {sample_consolidation_job.id} completed: 2 memories consolidated"
+    )
 
 
 @pytest.mark.asyncio
-async def test_run_consolidation_job_complete_failure(consolidation_engine, sample_consolidation_job):
+async def test_run_consolidation_job_complete_failure(
+    consolidation_engine, sample_consolidation_job
+):
     """Test consolidation job with complete failure."""
     # Mock consolidate_memory to always return False
-    with patch.object(consolidation_engine, 'consolidate_memory', return_value=False):
+    with patch.object(consolidation_engine, "consolidate_memory", return_value=False):
         result = await consolidation_engine.run_consolidation_job(sample_consolidation_job)
 
     assert result.status == "failed"
@@ -272,37 +292,60 @@ async def test_run_consolidation_job_complete_failure(consolidation_engine, samp
 
 
 @pytest.mark.asyncio
-async def test_run_consolidation_job_exception_handling(consolidation_engine, sample_consolidation_job):
+async def test_run_consolidation_job_exception_handling(
+    consolidation_engine, sample_consolidation_job
+):
     """Test consolidation job exception handling."""
-    with patch.object(consolidation_engine, 'consolidate_memory', side_effect=Exception("Consolidation error")):
-        with patch('builtins.print') as mock_print:
+    with patch.object(
+        consolidation_engine, "consolidate_memory", side_effect=Exception("Consolidation error")
+    ):
+        with patch("builtins.print") as mock_print:
             result = await consolidation_engine.run_consolidation_job(sample_consolidation_job)
 
     assert result.status == "failed"
     assert result.error_message == "Consolidation error"
-    mock_print.assert_called_with(f"Consolidation job {sample_consolidation_job.id} failed: Consolidation error")
+    mock_print.assert_called_with(
+        f"Consolidation job {sample_consolidation_job.id} failed: Consolidation error"
+    )
 
 
 @pytest.mark.asyncio
 async def test_auto_consolidation_sweep(consolidation_engine):
     """Test auto consolidation sweep."""
-    with patch('builtins.print') as mock_print:
+    # Test with no eligible memories
+    with patch("builtins.print") as mock_print:
         result = await consolidation_engine.auto_consolidation_sweep()
 
-    assert result == 0  # Currently returns 0 as it's a placeholder
-    mock_print.assert_called_with("Auto consolidation sweep completed")
+    assert result == 0
+    mock_print.assert_called_with("No memories eligible for consolidation")
 
 
 @pytest.mark.asyncio
 async def test_auto_consolidation_sweep_exception_handling(consolidation_engine):
     """Test auto consolidation sweep exception handling."""
-    # The current auto_consolidation_sweep doesn't actually access hippocampus
-    # It's a placeholder that always succeeds. Let's test it as is.
-    with patch('builtins.print') as mock_print:
+    # Test with exception in get_all_memory_ids
+    consolidation_engine.hippocampus.get_all_memory_ids.side_effect = Exception("Test error")
+
+    with patch("builtins.print") as mock_print:
         result = await consolidation_engine.auto_consolidation_sweep()
 
     assert result == 0
-    mock_print.assert_called_with("Auto consolidation sweep completed")
+    mock_print.assert_called_with("Error during auto consolidation sweep: Test error")
+
+
+@pytest.mark.asyncio
+async def test_auto_consolidation_sweep_with_eligible_memories(consolidation_engine, sample_memory):
+    """Test auto consolidation sweep with eligible memories."""
+    # Setup eligible memories
+    consolidation_engine.hippocampus.get_all_memory_ids.return_value = ["memory-1", "memory-2"]
+    consolidation_engine.hippocampus.retrieve_memory.return_value = sample_memory
+    consolidation_engine.cortex.store_memory.return_value = True
+
+    with patch("builtins.print") as mock_print:
+        result = await consolidation_engine.auto_consolidation_sweep()
+
+    assert result == 2
+    assert consolidation_engine.hippocampus.remove_memory.call_count == 2
 
 
 @pytest.mark.asyncio
@@ -315,7 +358,7 @@ async def test_create_consolidated_summary_success(consolidation_engine, mock_co
         text="Content 1",
         summary="Summary 1",
         source="source1",
-        tags=["tag1", "tag2"]
+        tags=["tag1", "tag2"],
     )
     memory2 = Memory(
         id="memory2",
@@ -323,7 +366,7 @@ async def test_create_consolidated_summary_success(consolidation_engine, mock_co
         text="Content 2",
         summary="Summary 2",
         source="source2",
-        tags=["tag2", "tag3"]
+        tags=["tag2", "tag3"],
     )
 
     mock_cortex.retrieve_memory.side_effect = [memory1, memory2]
@@ -360,7 +403,7 @@ async def test_create_consolidated_summary_storage_failure(consolidation_engine,
         text="Content 1",
         summary="Summary 1",
         source="source1",
-        tags=["tag1"]
+        tags=["tag1"],
     )
 
     mock_cortex.retrieve_memory.return_value = memory
@@ -376,7 +419,7 @@ async def test_create_consolidated_summary_exception_handling(consolidation_engi
     """Test consolidated summary creation exception handling."""
     mock_cortex.retrieve_memory.side_effect = Exception("Retrieval error")
 
-    with patch('builtins.print') as mock_print:
+    with patch("builtins.print") as mock_print:
         result = await consolidation_engine.create_consolidated_summary(["memory1"])
 
     assert result is None
@@ -387,19 +430,11 @@ def test_summarize_memories(consolidation_engine):
     """Test _summarize_memories method."""
     memories = [
         Memory(
-            id="memory1",
-            title="Memory 1",
-            text="Content 1",
-            summary="Summary 1",
-            source="test"
+            id="memory1", title="Memory 1", text="Content 1", summary="Summary 1", source="test"
         ),
         Memory(
-            id="memory2",
-            title="Memory 2",
-            text="Content 2",
-            summary="Summary 2",
-            source="test"
-        )
+            id="memory2", title="Memory 2", text="Content 2", summary="Summary 2", source="test"
+        ),
     ]
 
     result = consolidation_engine._summarize_memories(memories)
@@ -418,7 +453,7 @@ def test_create_meta_summary(consolidation_engine):
             text="Content 1",
             summary="Summary 1",
             source="source1",
-            tags=["tag1", "tag2"]
+            tags=["tag1", "tag2"],
         ),
         Memory(
             id="memory2",
@@ -426,8 +461,8 @@ def test_create_meta_summary(consolidation_engine):
             text="Content 2",
             summary="Summary 2",
             source="source2",
-            tags=["tag2", "tag3"]
-        )
+            tags=["tag2", "tag3"],
+        ),
     ]
 
     result = consolidation_engine._create_meta_summary(memories)
@@ -447,10 +482,7 @@ def test_health_check(consolidation_engine, mock_hippocampus, mock_cortex):
 
     health = consolidation_engine.health_check()
 
-    assert health == {
-        "hippocampus_healthy": {"hippocampus": "healthy"},
-        "cortex_healthy": True
-    }
+    assert health == {"hippocampus_healthy": {"hippocampus": "healthy"}, "cortex_healthy": True}
 
 
 def test_consolidation_engine_configuration(consolidation_engine):
@@ -468,7 +500,9 @@ def test_consolidation_engine_configuration(consolidation_engine):
 
 
 @pytest.mark.asyncio
-async def test_consolidation_workflow_integration(consolidation_engine, mock_hippocampus, mock_cortex):
+async def test_consolidation_workflow_integration(
+    consolidation_engine, mock_hippocampus, mock_cortex
+):
     """Test complete consolidation workflow."""
     # Create a memory that should be consolidated
     old_memory = Memory(
@@ -480,7 +514,7 @@ async def test_consolidation_workflow_integration(consolidation_engine, mock_hip
         created_at=datetime.utcnow() - timedelta(hours=5),
         access_count=1,
         status=MemoryStatus.ACTIVE,
-        retention_policy=RetentionPolicy.DEFAULT
+        retention_policy=RetentionPolicy.DEFAULT,
     )
 
     mock_hippocampus.retrieve_memory.return_value = old_memory

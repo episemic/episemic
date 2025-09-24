@@ -11,7 +11,7 @@ from episemic.models import Memory
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_store_memory_encoding_error(mock_transformer):
     """Test store_memory with encoding error."""
     # Mock the sentence transformer to fail during encoding
@@ -26,7 +26,7 @@ async def test_duckdb_store_memory_encoding_error(mock_transformer):
         title="Error Test",
         text="This will cause an error",
         summary="This will cause an error",
-        source="error_test"
+        source="error_test",
     )
 
     # This should handle encoding errors gracefully
@@ -37,7 +37,7 @@ async def test_duckdb_store_memory_encoding_error(mock_transformer):
 @pytest.mark.asyncio
 async def test_duckdb_retrieve_memory_not_found():
     """Test retrieve_memory when memory doesn't exist."""
-    with patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer'):
+    with patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer"):
         hippocampus = DuckDBHippocampus(db_path=None)
         await hippocampus._ensure_initialized()
 
@@ -47,7 +47,7 @@ async def test_duckdb_retrieve_memory_not_found():
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_mark_quarantined_nonexistent(mock_transformer):
     """Test mark_quarantined on non-existent memory."""
     # Mock the sentence transformer
@@ -74,7 +74,7 @@ async def test_duckdb_verify_integrity_error_paths():
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_get_memory_count_normal_operation(mock_transformer):
     """Test get_memory_count normal operation."""
     # Mock the sentence transformer
@@ -95,7 +95,7 @@ async def test_duckdb_get_memory_count_normal_operation(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_health_check_error_paths(mock_transformer):
     """Test error paths in health_check."""
     # Test health check with model error
@@ -121,14 +121,14 @@ async def test_duckdb_health_check_error_paths(mock_transformer):
     except Exception:
         pass
 
-    if hasattr(hippocampus, 'model') and hippocampus.model:
+    if hasattr(hippocampus, "model") and hippocampus.model:
         health = hippocampus.health_check()
         # Should handle encoding errors gracefully
         assert isinstance(health, dict)
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_initialization_with_file_creation_error(mock_transformer):
     """Test initialization with file creation error."""
     # Mock the sentence transformer
@@ -138,6 +138,7 @@ async def test_duckdb_initialization_with_file_creation_error(mock_transformer):
 
     # Use tempfile to create a valid test scenario
     import tempfile
+
     with tempfile.TemporaryDirectory() as temp_dir:
         valid_path = f"{temp_dir}/test.db"
         hippocampus = DuckDBHippocampus(db_path=valid_path)
@@ -148,7 +149,7 @@ async def test_duckdb_initialization_with_file_creation_error(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_vector_search_edge_cases(mock_transformer):
     """Test vector search edge cases."""
     # Mock the sentence transformer
@@ -179,7 +180,7 @@ async def test_duckdb_vector_search_edge_cases(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_multiple_initialization_calls(mock_transformer):
     """Test calling _ensure_initialized multiple times."""
     # Mock the sentence transformer
@@ -203,7 +204,7 @@ async def test_duckdb_multiple_initialization_calls(mock_transformer):
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_close_without_connection(mock_transformer):
     """Test close operation when no connection exists."""
     hippocampus = DuckDBHippocampus(db_path=None)
@@ -241,7 +242,7 @@ def test_duckdb_config_directory_creation():
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_with_different_model_names(mock_transformer):
     """Test DuckDB with different model configurations."""
     # Test with custom model name
@@ -249,10 +250,7 @@ async def test_duckdb_with_different_model_names(mock_transformer):
     mock_model.encode.return_value.tolist.return_value = [0.8] * 512  # Different size
     mock_transformer.return_value = mock_model
 
-    hippocampus = DuckDBHippocampus(
-        db_path=None,
-        model_name="custom-model-name"
-    )
+    hippocampus = DuckDBHippocampus(db_path=None, model_name="custom-model-name")
 
     await hippocampus._ensure_initialized()
 

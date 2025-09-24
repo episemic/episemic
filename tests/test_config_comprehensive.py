@@ -11,7 +11,7 @@ from episemic.config import (
     DuckDBConfig,
     PostgreSQLConfig,
     RedisConfig,
-    ConsolidationConfig
+    ConsolidationConfig,
 )
 
 
@@ -25,10 +25,7 @@ def test_qdrant_config():
 
     # Test custom values
     custom_config = QdrantConfig(
-        host="custom-host",
-        port=6334,
-        collection_name="custom_collection",
-        vector_size=512
+        host="custom-host", port=6334, collection_name="custom_collection", vector_size=512
     )
     assert custom_config.host == "custom-host"
     assert custom_config.port == 6334
@@ -43,10 +40,7 @@ def test_duckdb_config():
     assert config.model_name == "all-MiniLM-L6-v2"
 
     # Test custom values
-    custom_config = DuckDBConfig(
-        db_path="/tmp/test.db",
-        model_name="custom-model"
-    )
+    custom_config = DuckDBConfig(db_path="/tmp/test.db", model_name="custom-model")
     assert custom_config.db_path == "/tmp/test.db"
     assert custom_config.model_name == "custom-model"
 
@@ -62,11 +56,7 @@ def test_postgresql_config():
 
     # Test custom values
     custom_config = PostgreSQLConfig(
-        host="pg-host",
-        port=5433,
-        database="custom_db",
-        user="custom_user",
-        password="custom_pass"
+        host="pg-host", port=5433, database="custom_db", user="custom_user", password="custom_pass"
     )
     assert custom_config.host == "pg-host"
     assert custom_config.port == 5433
@@ -84,12 +74,7 @@ def test_redis_config():
     assert config.ttl == 3600
 
     # Test custom values
-    custom_config = RedisConfig(
-        host="redis-host",
-        port=6380,
-        db=1,
-        ttl=7200
-    )
+    custom_config = RedisConfig(host="redis-host", port=6380, db=1, ttl=7200)
     assert custom_config.host == "redis-host"
     assert custom_config.port == 6380
     assert custom_config.db == 1
@@ -109,7 +94,7 @@ def test_consolidation_config():
         threshold_hours=4,
         access_threshold=5,
         auto_consolidation_enabled=False,
-        consolidation_interval_minutes=120
+        consolidation_interval_minutes=120,
     )
     assert custom_config.threshold_hours == 4
     assert custom_config.access_threshold == 5
@@ -146,22 +131,13 @@ def test_episemic_config_defaults():
 def test_episemic_config_from_dict():
     """Test EpistemicConfig.from_dict functionality."""
     config_dict = {
-        "qdrant": {
-            "host": "custom-qdrant",
-            "port": 6334
-        },
-        "duckdb": {
-            "db_path": "/tmp/custom.db",
-            "model_name": "custom-model"
-        },
-        "postgresql": {
-            "host": "custom-pg",
-            "database": "custom_db"
-        },
+        "qdrant": {"host": "custom-qdrant", "port": 6334},
+        "duckdb": {"db_path": "/tmp/custom.db", "model_name": "custom-model"},
+        "postgresql": {"host": "custom-pg", "database": "custom_db"},
         "use_duckdb_fallback": False,
         "prefer_qdrant": True,
         "debug": True,
-        "log_level": "DEBUG"
+        "log_level": "DEBUG",
     }
 
     config = EpistemicConfig.from_dict(config_dict)
@@ -203,30 +179,25 @@ def test_episemic_config_from_env_complete():
         "QDRANT_HOST": "env-qdrant-host",
         "QDRANT_PORT": "6334",
         "QDRANT_COLLECTION": "env_collection",
-
         # DuckDB settings
         "DUCKDB_PATH": "/env/path/test.db",
         "DUCKDB_MODEL": "env-model",
-
         # Storage backend preferences
         "EPISEMIC_USE_DUCKDB": "false",
         "EPISEMIC_PREFER_QDRANT": "true",
-
         # PostgreSQL settings
         "POSTGRES_HOST": "env-pg-host",
         "POSTGRES_PORT": "5433",
         "POSTGRES_DB": "env_db",
         "POSTGRES_USER": "env_user",
         "POSTGRES_PASSWORD": "env_pass",
-
         # Redis settings
         "REDIS_HOST": "env-redis-host",
         "REDIS_PORT": "6380",
         "REDIS_DB": "2",
-
         # Debug settings
         "EPISEMIC_DEBUG": "true",
-        "EPISEMIC_LOG_LEVEL": "DEBUG"
+        "EPISEMIC_LOG_LEVEL": "DEBUG",
     }
 
     with patch.dict(os.environ, env_vars, clear=False):
@@ -309,12 +280,23 @@ def test_episemic_config_from_env_no_env_vars():
     """Test EpistemicConfig.from_env when no environment variables are set."""
     # Clear relevant environment variables
     env_vars_to_clear = [
-        "QDRANT_HOST", "QDRANT_PORT", "QDRANT_COLLECTION",
-        "DUCKDB_PATH", "DUCKDB_MODEL",
-        "EPISEMIC_USE_DUCKDB", "EPISEMIC_PREFER_QDRANT",
-        "POSTGRES_HOST", "POSTGRES_PORT", "POSTGRES_DB", "POSTGRES_USER", "POSTGRES_PASSWORD",
-        "REDIS_HOST", "REDIS_PORT", "REDIS_DB",
-        "EPISEMIC_DEBUG", "EPISEMIC_LOG_LEVEL"
+        "QDRANT_HOST",
+        "QDRANT_PORT",
+        "QDRANT_COLLECTION",
+        "DUCKDB_PATH",
+        "DUCKDB_MODEL",
+        "EPISEMIC_USE_DUCKDB",
+        "EPISEMIC_PREFER_QDRANT",
+        "POSTGRES_HOST",
+        "POSTGRES_PORT",
+        "POSTGRES_DB",
+        "POSTGRES_USER",
+        "POSTGRES_PASSWORD",
+        "REDIS_HOST",
+        "REDIS_PORT",
+        "REDIS_DB",
+        "EPISEMIC_DEBUG",
+        "EPISEMIC_LOG_LEVEL",
     ]
 
     # Backup existing values
@@ -349,7 +331,7 @@ def test_episemic_config_from_env_integer_conversion():
         "QDRANT_PORT": "6334",
         "POSTGRES_PORT": "5433",
         "REDIS_PORT": "6380",
-        "REDIS_DB": "3"
+        "REDIS_DB": "3",
     }
 
     with patch.dict(os.environ, env_vars, clear=False):
@@ -369,7 +351,7 @@ def test_episemic_config_custom_initialization():
         enable_cortex=False,
         enable_consolidation=False,
         debug=True,
-        log_level="WARNING"
+        log_level="WARNING",
     )
 
     assert config.use_duckdb_fallback is False

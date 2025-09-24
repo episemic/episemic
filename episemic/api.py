@@ -301,7 +301,7 @@ class EpistemicAPI:
                             embedding, top_k, {"tags": tags[0]} if tags else None
                         )
                         # Convert to SearchResult format
-                        from .models import SearchResult, Memory
+                        from .models import Memory, SearchResult
                         results = []
                         for result in search_results:
                             memory = Memory(

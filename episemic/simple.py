@@ -1,7 +1,6 @@
 """Simple, user-friendly API for Episemic Core."""
 
 import asyncio
-from typing import Any
 
 from .api import EpistemicAPI
 from .config import EpistemicConfig

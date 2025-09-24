@@ -10,7 +10,7 @@ from episemic.models import Memory
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_specific_error_lines(mock_transformer):
     """Test specific error lines in DuckDB hippocampus."""
     from episemic.hippocampus.duckdb_hippocampus import DuckDBHippocampus
@@ -28,7 +28,7 @@ async def test_duckdb_specific_error_lines(mock_transformer):
         title="Test Memory",
         text="Test content for specific lines",
         summary="Test summary",
-        source="test"
+        source="test",
     )
     result = await hippocampus.store_memory(memory)
     assert result is True
@@ -36,9 +36,9 @@ async def test_duckdb_specific_error_lines(mock_transformer):
     # Test specific methods to hit missing lines
 
     # Test vector search with filters (line around 283-284)
-    with patch.object(hippocampus, 'conn') as mock_con:
+    with patch.object(hippocampus, "conn") as mock_con:
         mock_con.execute.return_value.fetchall.return_value = []
-        results = await hippocampus.vector_search([0.1] * 384, top_k=5, filters={'source': 'test'})
+        results = await hippocampus.vector_search([0.1] * 384, top_k=5, filters={"source": "test"})
         assert results == []
 
     # Test _fallback_text_search specific paths (lines around 286-287)
@@ -91,11 +91,7 @@ async def test_retrieval_engine_specific_paths():
     from episemic.models import SearchQuery
 
     # Test with embedding
-    query_with_embedding = SearchQuery(
-        query="test",
-        top_k=5,
-        embedding=[0.1] * 384
-    )
+    query_with_embedding = SearchQuery(query="test", top_k=5, embedding=[0.1] * 384)
     results = await engine.search(query_with_embedding)
     assert isinstance(results, list)
 
@@ -140,7 +136,7 @@ async def test_api_specific_error_conditions():
 
 
 @pytest.mark.asyncio
-@patch('episemic.hippocampus.duckdb_hippocampus.SentenceTransformer')
+@patch("episemic.hippocampus.duckdb_hippocampus.SentenceTransformer")
 async def test_duckdb_initialization_edge_cases(mock_transformer):
     """Test DuckDB initialization edge cases."""
     from episemic.hippocampus.duckdb_hippocampus import DuckDBHippocampus
@@ -158,7 +154,7 @@ async def test_duckdb_initialization_edge_cases(mock_transformer):
         title="Fallback Test",
         text="Should work without embeddings",
         summary="Fallback summary",
-        source="test"
+        source="test",
     )
     result = await hippocampus.store_memory(memory)
     assert result is True  # Should work in fallback mode
@@ -175,17 +171,14 @@ def test_config_edge_cases():
         enable_hippocampus=True,
         enable_cortex=False,
         enable_consolidation=False,
-        enable_retrieval=True
+        enable_retrieval=True,
     )
 
     assert config.debug is False
     assert config.log_level == "DEBUG"
 
     # Test from_dict method
-    config_dict = {
-        "debug": True,
-        "enable_cortex": True
-    }
+    config_dict = {"debug": True, "enable_cortex": True}
     config_from_dict = EpistemicConfig.from_dict(config_dict)
     assert config_from_dict.debug is True
     assert config_from_dict.enable_cortex is True
@@ -224,12 +217,7 @@ async def test_hippocampus_error_conditions():
     try:
         hippocampus = Hippocampus()
         # If it succeeds, test some operations
-        memory = Memory(
-            title="Test",
-            text="Test content",
-            summary="Test summary",
-            source="test"
-        )
+        memory = Memory(title="Test", text="Test content", summary="Test summary", source="test")
         await hippocampus.store_memory(memory)
     except Exception:
         # Expected - Qdrant/Redis not available in test environment
@@ -242,40 +230,23 @@ def test_model_edge_cases():
     from episemic.models import Memory, MemoryLink, LinkType, SearchQuery, SearchResult
 
     # Test memory with minimal data
-    memory = Memory(
-        title="",
-        text="",
-        summary="",
-        source=""
-    )
+    memory = Memory(title="", text="", summary="", source="")
     assert memory.title == ""
     assert memory.text == ""
 
     # Test memory link with different types
-    link = MemoryLink(
-        target_id="test",
-        type=LinkType.DERIVED_FROM,
-        weight=0.0
-    )
+    link = MemoryLink(target_id="test", type=LinkType.DERIVED_FROM, weight=0.0)
     assert link.type == LinkType.DERIVED_FROM
     assert link.weight == 0.0
 
     # Test search query edge cases
-    query = SearchQuery(
-        query="",
-        top_k=0,
-        filters={},
-        include_quarantined=True
-    )
+    query = SearchQuery(query="", top_k=0, filters={}, include_quarantined=True)
     assert query.top_k == 0
     assert query.include_quarantined is True
 
     # Test search result
     result = SearchResult(
-        memory=memory,
-        score=1.0,
-        provenance={"test": "data"},
-        retrieval_path=["hippocampus"]
+        memory=memory, score=1.0, provenance={"test": "data"}, retrieval_path=["hippocampus"]
     )
     assert result.score == 1.0
     assert result.provenance == {"test": "data"}

@@ -11,7 +11,7 @@ def test_memory_creation():
         text="This is a test memory",
         summary="Test summary",
         source="test",
-        tags=["test", "memory"]
+        tags=["test", "memory"],
     )
 
     assert memory.title == "Test Memory"
@@ -24,10 +24,7 @@ def test_memory_creation():
 
 def test_memory_hash_computation():
     memory = Memory(
-        title="Test Memory",
-        text="This is a test memory",
-        summary="Test summary",
-        source="test"
+        title="Test Memory", text="This is a test memory", summary="Test summary", source="test"
     )
 
     expected_hash = memory.compute_hash()
@@ -37,10 +34,7 @@ def test_memory_hash_computation():
 
 def test_memory_integrity_verification():
     memory = Memory(
-        title="Test Memory",
-        text="This is a test memory",
-        summary="Test summary",
-        source="test"
+        title="Test Memory", text="This is a test memory", summary="Test summary", source="test"
     )
 
     assert memory.verify_integrity() is True
@@ -52,10 +46,7 @@ def test_memory_integrity_verification():
 
 def test_memory_access_increment():
     memory = Memory(
-        title="Test Memory",
-        text="This is a test memory",
-        summary="Test summary",
-        source="test"
+        title="Test Memory", text="This is a test memory", summary="Test summary", source="test"
     )
 
     initial_count = memory.access_count
@@ -69,11 +60,7 @@ def test_memory_access_increment():
 
 
 def test_memory_link():
-    link = MemoryLink(
-        target_id="test-target-id",
-        type=LinkType.CITES,
-        weight=0.8
-    )
+    link = MemoryLink(target_id="test-target-id", type=LinkType.CITES, weight=0.8)
 
     assert link.target_id == "test-target-id"
     assert link.type == LinkType.CITES

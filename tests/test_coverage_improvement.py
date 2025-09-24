@@ -34,7 +34,7 @@ async def test_api_cortex_disabled_debug():
 
     config = EpistemicConfig(
         debug=True,
-        enable_cortex=True  # Enable cortex to trigger initialization attempt
+        enable_cortex=True,  # Enable cortex to trigger initialization attempt
     )
     api = EpistemicAPI(config)
 
@@ -52,7 +52,7 @@ async def test_api_consolidation_engine_paths():
 
     config = EpistemicConfig(
         debug=True,
-        enable_consolidation=True  # Enable to trigger initialization
+        enable_consolidation=True,  # Enable to trigger initialization
     )
     api = EpistemicAPI(config)
 
@@ -66,10 +66,7 @@ async def test_api_retrieval_engine_paths():
     from episemic.api import EpistemicAPI
     from episemic.config import EpistemicConfig
 
-    config = EpistemicConfig(
-        debug=True,
-        enable_retrieval=True
-    )
+    config = EpistemicConfig(debug=True, enable_retrieval=True)
     api = EpistemicAPI(config)
 
     result = await api.initialize()
@@ -106,7 +103,7 @@ async def test_api_fallback_scenarios():
         enable_cortex=False,
         enable_consolidation=False,
         enable_retrieval=False,
-        debug=True  # Enable debug to cover debug paths
+        debug=True,  # Enable debug to cover debug paths
     )
     api = EpistemicAPI(config)
 
